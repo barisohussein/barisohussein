@@ -2,81 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Merged PRs Dashboard</title>
-  <script type="text/javascript">
-    window.PlotlyConfig = { MathJaxConfig: 'local' };
-  </script>
-  <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    #plot {
-      height: 900px;
-      width: 100%;
-    }
-  </style>
+  <title>Redirecting to Merged PRs Dashboard</title>
+  <meta http-equiv="refresh" content="0; url=pr_dashboard.html">
 </head>
 <body>
-  <div id="plot"></div>
-
-  <script type="text/javascript">
-    const plotData = [
-      {
-        type: "bar",
-        x: ["barisohussein"],
-        y: [1],
-        marker: { color: "#636efa" },
-        showlegend: false,
-        hovertemplate: "GitHub User=%{x}<br>Merged PR Count=%{y}<extra></extra>"
-      },
-      {
-        type: "table",
-        domain: { x: [0.0, 1.0], y: [0.0, 0.375] },
-        header: {
-          values: ["id", "number", "title", "user", "merged_at", "merged_by", "created_at", "closed_at", "body", "comments", "commits", "changed_files", "additions", "deletions"],
-          align: "left",
-          fill: { color: "lightgrey" }
-        },
-        cells: {
-          values: [
-            [2559114487], [3], ["Create test"], ["barisohussein"],
-            ["2025-06-02T03:47:32Z"], ["barisohussein"],
-            ["2025-06-02T03:47:25Z"], ["2025-06-02T03:47:32Z"],
-            [null], [0], [1], [1], [1], [0]
-          ],
-          align: "left",
-          fill: { color: "white" }
-        }
-      }
-    ];
-
-    const layout = {
-      annotations: [
-        {
-          text: "Merged PRs by User",
-          x: 0.5,
-          y: 1,
-          xref: "paper",
-          yref: "paper",
-          showarrow: false,
-          font: { size: 16 },
-          xanchor: "center",
-          yanchor: "bottom"
-        }
-      ],
-      xaxis: {
-        domain: [0.0, 1.0],
-        anchor: "y"
-      },
-      yaxis: {
-        domain: [0.625, 1.0],
-        anchor: "x"
-      }
-    };
-
-    Plotly.newPlot('plot', plotData, layout);
-  </script>
+  <p>Redirecting to the dashboard... If you're not redirected, <a href="pr_dashboard.html">click here</a>.</p>
 </body>
 </html>
