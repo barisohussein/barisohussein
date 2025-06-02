@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 # Load JSON data file from the repo
-with open("merged_prs_20250602_041846.json", "r") as f:
+with open("merged_prs_latest.json", "r") as f:
     data = json.load(f)
 
 df = pd.DataFrame(data)
