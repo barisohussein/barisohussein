@@ -1,38 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Hello Plotly</title>
+  <meta charset="UTF-8">
+  <title>Merged PRs Dashboard</title>
   <script type="text/javascript">
     window.PlotlyConfig = { MathJaxConfig: 'local' };
   </script>
   <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #plot {
+      height: 900px;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello World</h1>
-
-  <div id="9c9e9264-90d7-4556-a6ee-fb40ddbd183b" class="plotly-graph-div" style="height:100%; width:100%;"></div>
+  <div id="plot"></div>
 
   <script type="text/javascript">
-    window.PLOTLYENV = window.PLOTLYENV || {};
-    if (document.getElementById("9c9e9264-90d7-4556-a6ee-fb40ddbd183b")) {
-      Plotly.newPlot(
-        "9c9e9264-90d7-4556-a6ee-fb40ddbd183b",
-        [{
-          "hovertemplate": "GitHub User=%{x}<br>Merged PR Count=%{y}<extra></extra>",
-          "marker": { "color": "#636efa", "pattern": { "shape": "" } },
-          "type": "bar",
-          "x": ["barisohussein"],
-          "y": [1]
-        }],
-        {
-          "title": { "text": "Number of Merged PRs by User" },
-          "xaxis": { "title": { "text": "GitHub User" } },
-          "yaxis": { "title": { "text": "Merged PR Count" } },
-          "responsive": true
+    const plotData = [
+      {
+        type: "bar",
+        x: ["barisohussein"],
+        y: [1],
+        marker: { color: "#636efa" },
+        showlegend: false,
+        hovertemplate: "GitHub User=%{x}<br>Merged PR Count=%{y}<extra></extra>"
+      },
+      {
+        type: "table",
+        domain: { x: [0.0, 1.0], y: [0.0, 0.375] },
+        header: {
+          values: ["id", "number", "title", "user", "merged_at", "merged_by", "created_at", "closed_at", "body", "comments", "commits", "changed_files", "additions", "deletions"],
+          align: "left",
+          fill: { color: "lightgrey" }
+        },
+        cells: {
+          values: [
+            [2559114487], [3], ["Create test"], ["barisohussein"],
+            ["2025-06-02T03:47:32Z"], ["barisohussein"],
+            ["2025-06-02T03:47:25Z"], ["2025-06-02T03:47:32Z"],
+            [null], [0], [1], [1], [1], [0]
+          ],
+          align: "left",
+          fill: { color: "white" }
         }
-      );
-    }
+      }
+    ];
+
+    const layout = {
+      annotations: [
+        {
+          text: "Merged PRs by User",
+          x: 0.5,
+          y: 1,
+          xref: "paper",
+          yref: "paper",
+          showarrow: false,
+          font: { size: 16 },
+          xanchor: "center",
+          yanchor: "bottom"
+        }
+      ],
+      xaxis: {
+        domain: [0.0, 1.0],
+        anchor: "y"
+      },
+      yaxis: {
+        domain: [0.625, 1.0],
+        anchor: "x"
+      }
+    };
+
+    Plotly.newPlot('plot', plotData, layout);
   </script>
 </body>
 </html>
