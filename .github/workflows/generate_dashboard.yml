@@ -1,9 +1,7 @@
 name: Generate PR Dashboard
 
 on:
-  push:
-    branches:
-      - main  # or your default branch
+  workflow_dispatch:   # Enables manual trigger from GitHub UI
 
 jobs:
   build:
@@ -36,5 +34,4 @@ jobs:
           git diff --cached --quiet || git commit -m "Auto-update PR dashboard"
           git push
         env:
-          # Use GitHub token for pushing
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
