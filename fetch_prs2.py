@@ -2,6 +2,7 @@ import requests
 import os
 import json
 from datetime import datetime
+import time
 
 owner = "barisohussein"
 repo = "barisohussein"
@@ -39,13 +40,33 @@ while True:
 
     for pr in data:
         if pr.get("merged_at"):
+            # Fetch detailed info for this PR
+            pr_detail_url = pr["url"]
+            pr_detail_resp = requests.get(pr_detail_url, headers=headers)
+            if pr_detail_resp.status_code != 200:
+                print(f"Warning: Failed to fetch details for PR #{pr['number']}")
+                continue
+            pr_detail = pr_detail_resp.json()
+
             merged_prs.append({
-                "id": pr["id"],
-                "number": pr["number"],
-                "title": pr["title"],
-                "user": pr["user"]["login"],
-                "merged_at": pr["merged_at"]
+                "id": pr_detail["id"],
+                "number": pr_detail["number"],
+                "title": pr_detail["title"],
+                "user": pr_detail["user"]["login"],
+                "merged_at": pr_detail["merged_at"],
+                "merged_by": pr_detail["merged_by"]["login"] if pr_detail.get("merged_by") else None,
+                "created_at": pr_detail["created_at"],
+                "closed_at": pr_detail["closed_at"],
+                "body": pr_detail["body"],
+                "comments": pr_detail["comments"],
+                "commits": pr_detail["commits"],
+                "changed_files": pr_detail["changed_files"],
+                "additions": pr_detail["additions"],
+                "deletions": pr_detail["deletions"]
             })
+
+            # Be kind to GitHub API rate limits
+            time.sleep(0.1)
 
     page += 1
 
