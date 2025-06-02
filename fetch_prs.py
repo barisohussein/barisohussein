@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+from datetime import datetime
 
 owner = "barisohussein"
 repo = "barisohussein"
@@ -45,8 +46,12 @@ while True:
 
     page += 1
 
-# Save to JSON file
-with open("merged_prs.json", "w") as f:
+# Get timestamp for filename
+timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+
+filename = f"merged_prs_{timestamp}.json"
+
+with open(filename, "w") as f:
     json.dump(merged_prs, f, indent=2)
 
-print(f"Saved {len(merged_prs)} merged PRs to merged_prs.json")
+print(f"Saved {len(merged_prs)} merged PRs to {filename}")
