@@ -1,11 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Hello World</title>
+  <meta charset="utf-8" />
+  <title>Hello Plotly</title>
+  <script type="text/javascript">
+    window.PlotlyConfig = { MathJaxConfig: 'local' };
+  </script>
+  <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
 </head>
 <body>
-  <h1>Hello, World!</h1>
-  <p>This is a test page hosted with GitHub Pages.</p>
+  <h1>Hello World</h1>
+
+  <div id="9c9e9264-90d7-4556-a6ee-fb40ddbd183b" class="plotly-graph-div" style="height:100%; width:100%;"></div>
+
+  <script type="text/javascript">
+    window.PLOTLYENV = window.PLOTLYENV || {};
+    if (document.getElementById("9c9e9264-90d7-4556-a6ee-fb40ddbd183b")) {
+      Plotly.newPlot(
+        "9c9e9264-90d7-4556-a6ee-fb40ddbd183b",
+        [{
+          "hovertemplate": "GitHub User=%{x}<br>Merged PR Count=%{y}<extra></extra>",
+          "marker": { "color": "#636efa", "pattern": { "shape": "" } },
+          "type": "bar",
+          "x": ["barisohussein"],
+          "y": [1]
+        }],
+        {
+          "title": { "text": "Number of Merged PRs by User" },
+          "xaxis": { "title": { "text": "GitHub User" } },
+          "yaxis": { "title": { "text": "Merged PR Count" } },
+          "responsive": true
+        }
+      );
+    }
+  </script>
 </body>
 </html>
