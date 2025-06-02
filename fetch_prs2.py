@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-from datetime import datetime
 import time
 
 owner = "barisohussein"
@@ -70,8 +69,8 @@ while True:
 
     page += 1
 
-timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-filename = f"merged_prs_{timestamp}.json"
+# Always overwrite the same file
+filename = "merged_prs_latest.json"
 
 with open(filename, "w") as f:
     json.dump(merged_prs, f, indent=2)
