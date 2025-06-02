@@ -2,6 +2,7 @@ import requests
 import os
 import json
 from datetime import datetime
+import time
 
 owner = "barisohussein"
 repo = "barisohussein"
@@ -33,22 +34,26 @@ while True:
 
     for pr in data:
         if pr.get("merged_at"):
+            # Get full details for this PR to get additions, deletions, changed_files
+            pr_url = f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr['number']}"
+            pr_response = requests.get(pr_url, headers=headers)
+            pr_details = pr_response.json()
+
             merged_prs.append({
-                "id": pr["id"],
-                "number": pr["number"],
-                "title": pr["title"],
-                "user": pr["user"]["login"],
-                "merged_at": pr["merged_at"],
-                "additions": pr["additions"],
-                "deletions": pr["deletions"],
-                "changed_files": pr["changed_files"]
+                "id": pr_details["id"],
+                "number": pr_details["number"],
+                "title": pr_details["title"],
+                "user": pr_details["user"]["login"],
+                "merged_at": pr_details["merged_at"],
+                "additions": pr_details["additions"],
+                "deletions": pr_details["deletions"],
+                "changed_files": pr_details["changed_files"]
             })
+            time.sleep(0.5)  # be kind to API rate limits
 
     page += 1
 
-# Get timestamp for filename
 timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-
 filename = f"merged_prs_{timestamp}.json"
 
 with open(filename, "w") as f:
