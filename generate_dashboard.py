@@ -45,7 +45,7 @@ combined_fig.add_trace(table_fig['data'][0], row=2, col=1)
 # Final layout tweaks
 combined_fig.update_layout(height=900, showlegend=False)
 
-# Save HTML dashboard to docs/index.html
-combined_fig.write_html("docs/index.html", full_html=True, include_plotlyjs='cdn')
+# Save HTML dashboard to current directory as index.html
+combined_fig.write_html("index.html", full_html=True, include_plotlyjs='cdn')
 
-print("Dashboard with table saved as docs/index.html")
+print("Dashboard with table saved as index.html")
