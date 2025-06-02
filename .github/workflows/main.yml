@@ -21,8 +21,8 @@ jobs:
       - name: Install requests library
         run: pip install requests
 
-      - name: Run fetch_prs.py script
-        run: python fetch_prs.py
+      - name: Run fetch_prs2.py script
+        run: python fetch_prs2.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
