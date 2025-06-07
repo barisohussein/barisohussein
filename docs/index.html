@@ -3,56 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>PR Summary Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    canvas {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-  </style>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-  <h2>Pull Requests Merged by User</h2>
-  <canvas id="prChart"></canvas>
+  <h1>PR Summary Dashboard</h1>
+  <div id="bar-chart"></div>
 
   <script>
-    async function fetchData() {
-      const response = await fetch('pr_summary.json');
-      const data = await response.json();
+    fetch('pr_summary.json')
+      .then(response => response.json())
+      .then(data => {
+        const users = data.map(item => item.user);
+        const prCounts = data.map(item => item.pr_count);
 
-      const users = data.map(entry => entry.user);
-      const counts = data.map(entry => entry.pr_count);
+        const trace = {
+          x: users,
+          y: prCounts,
+          type: 'bar'
+        };
 
-      const ctx = document.getElementById('prChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: users,
-          datasets: [{
-            label: 'PRs Merged',
-            data: counts,
-            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              stepSize: 1
-            }
-          }
-        }
-      });
-    }
+        const layout = {
+          title: 'Number of PRs by User'
+        };
 
-    fetchData();
+        Plotly.newPlot('bar-chart', [trace], layout);
+      })
+      .catch(error => console.error('Error loading JSON:', error));
   </script>
 </body>
 </html>
