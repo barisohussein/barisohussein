@@ -1,34 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PR Summary Dashboard</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    #chart {
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+    }
+  </style>
 </head>
 <body>
   <h1>PR Summary Dashboard</h1>
-  <div id="bar-chart"></div>
+  <div id="chart">Loading...</div>
 
   <script>
-    fetch('pr_summary.json')
-      .then(response => response.json())
+    const timestamp = new Date().getTime();
+
+    fetch(`pr_summary.json?t=${timestamp}`)
+      .then(response => {
+        if (!response.ok) throw new Error("Failed to load JSON");
+        return response.json();
+      })
       .then(data => {
+        if (!data.length) {
+          document.getElementById('chart').innerText = "No data available.";
+          return;
+        }
+
         const users = data.map(item => item.user);
         const prCounts = data.map(item => item.pr_count);
 
         const trace = {
           x: users,
           y: prCounts,
-          type: 'bar'
+          type: 'bar',
+          marker: { color: 'steelblue' }
         };
 
         const layout = {
-          title: 'Number of PRs by User'
+          title: 'Number of Merged PRs by User',
+          xaxis: { title: 'GitHub User' },
+          yaxis: { title: 'Merged PR Count', dtick: 1 }
         };
 
-        Plotly.newPlot('bar-chart', [trace], layout);
+        Plotly.newPlot('chart', [trace], layout);
       })
-      .catch(error => console.error('Error loading JSON:', error));
+      .catch(error => {
+        document.getElementById('chart').innerText = "Error loading data.";
+        console.error(error);
+      });
   </script>
 </body>
 </html>
