@@ -1,0 +1,28 @@
+name: Lighthouse Audit
+
+on:
+  schedule:
+    # Runs every 30 minutes
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Lighthouse on target URL
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          urls: |
+            https://google.com
+          configPath: .lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Print Lighthouse scores
+        run: |
+          echo "Run completed. See artifacts or Lighthouse report URL above."
