@@ -19,7 +19,6 @@ jobs:
         with:
           urls: |
             https://google.com
-          configPath: .lighthouserc.json
           uploadArtifacts: true
           temporaryPublicStorage: true
 
