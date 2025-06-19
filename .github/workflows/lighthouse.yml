@@ -1,27 +1,37 @@
-name: Lighthouse Audit
+name: Lighthouse Audit for BrooksRunning
 
 on:
   schedule:
-    # Runs every 30 minutes
-    - cron: "*/30 * * * *"
-  workflow_dispatch:
+    - cron: "*/30 * * * *"  # Every 30 minutes
+  workflow_dispatch:        # Allows manual run
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout (no repo needed, just placeholder)
         uses: actions/checkout@v3
 
-      - name: Run Lighthouse on target URL
-        uses: treosh/lighthouse-ci-action@v9
-        with:
-          urls: |
-            https://google.com
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-      - name: Print Lighthouse scores
+      - name: Install dependencies
         run: |
-          echo "Run completed. See artifacts or Lighthouse report URL above."
+          sudo apt-get install -y libatk-bridge2.0-0 libgtk-3-0 libgbm-dev
+          npm install -g lighthouse jq
+
+      - name: Run Lighthouse on brooksrunning.com
+        run: |
+          lighthouse https://www.brooksrunning.com \
+            --quiet \
+            --chrome-flags="--headless" \
+            --output=json \
+            --output-path=report.json
+
+      - name: Print key Lighthouse scores
+        run: |
+          echo "=== Lighthouse Scores for https://www.brooksrunning.com ==="
+          cat report.json | jq '.categories | {
+            performance: .performance.score,
+            accessibility: .accessibility.score,
+            best_practices: ."best-practices".score,
+            seo: .seo.score
+          }'
