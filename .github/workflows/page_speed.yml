@@ -10,33 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: pip install requests pandas
+      - name: Install dependencies
+        run: pip install requests pandas
 
-    - name: Run PageSpeed script
-      env:
-        API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
-      run: |
-        python pagespeed_logger.py
-    - name: Commit and push results
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git reset --hard  # clean any uncommitted changes (optional, if safe)
-        git pull --rebase origin master
-        git add pagespeed_scores.csv
-        if ! git diff --cached --quiet; then
-          git commit -m "Update PageSpeed scores $(date +'%Y-%m-%d %H:%M:%S')"
-          git push origin master
-        else
-          echo "No changes to commit"
-        fi
+      - name: Run PageSpeed script with debug logging
+        env:
+          API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+        run: |
+          python pagespeed_logger.py
+          echo "=== Current CSV content ==="
+          cat pagespeed_scores.csv
+          echo "=== End CSV content ==="
 
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin master
+          git add pagespeed_scores.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Update PageSpeed scores $(date +'%Y-%m-%d %H:%M:%S')"
+            git push origin master
+          else
+            echo "No changes to commit"
+          fi
