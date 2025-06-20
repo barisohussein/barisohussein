@@ -1,18 +1,23 @@
-name: Lighthouse Audit
+name: Lighthouse Audit Append Scores (CSV)
 
 on:
-  workflow_dispatch:  # Manual trigger via GitHub UI
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout code (full history)
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Install Lighthouse
-        run: npm install -g lighthouse
+      - name: Install dependencies
+        run: npm install -g lighthouse jq
 
       - name: Run Lighthouse and save JSON report
         run: |
@@ -22,8 +27,35 @@ jobs:
             --output=json \
             --output-path=report.json
 
-      - name: Upload Lighthouse JSON report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-report-json
-          path: report.json
+      - name: Extract scores and prepare CSV line
+        id: prepare_csv
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          PERF=$(jq '.categories.performance.score' report.json)
+          ACC=$(jq '.categories.accessibility.score' report.json)
+          BP=$(jq '.categories["best-practices"].score' report.json)
+          SEO=$(jq '.categories.seo.score' report.json)
+          echo "timestamp,performance,accessibility,best_practices,seo" > header.csv
+          echo "$TIMESTAMP,$PERF,$ACC,$BP,$SEO" > new_line.csv
+          # Output the new line as a workflow output (optional)
+          echo "::set-output name=csv_line::$TIMESTAMP,$PERF,$ACC,$BP,$SEO"
+
+      - name: Append to lighthouse-scores.csv or create if missing
+        run: |
+          FILE="lighthouse-scores.csv"
+          if [ ! -f "$FILE" ]; then
+            # Create file with header + first line
+            cat header.csv > "$FILE"
+            cat new_line.csv >> "$FILE"
+          else
+            # Append only new line (no header)
+            cat new_line.csv >> "$FILE"
+          fi
+
+      - name: Commit and push updated CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add lighthouse-scores.csv
+          git diff --quiet && echo "No changes to commit" || git commit -m "Add Lighthouse scores $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git push origin ${{ github.ref_name }}
