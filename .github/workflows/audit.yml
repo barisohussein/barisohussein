@@ -1,7 +1,7 @@
 name: Lighthouse Audit
 
 on:
-  workflow_dispatch:  # Allows manual trigger via GitHub UI
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   lighthouse:
@@ -11,10 +11,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Lighthouse CI Action
-        uses: treosh/lighthouse-ci-action@12.6.1
+      - name: Install Lighthouse
+        run: npm install -g lighthouse
+
+      - name: Run Lighthouse and save JSON report
+        run: |
+          lighthouse https://www.brooksrunning.com \
+            --quiet \
+            --chrome-flags="--headless" \
+            --output=json \
+            --output-path=report.json
+
+      - name: Upload Lighthouse JSON report artifact
+        uses: actions/upload-artifact@v3
         with:
-          urls: |
-            https://www.brooksrunning.com
-          uploadArtifacts: true
-          temporaryPublicStorage: true
+          name: lighthouse-report-json
+          path: report.json
