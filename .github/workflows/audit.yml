@@ -17,7 +17,10 @@ jobs:
           fetch-depth: 0
 
       - name: Install dependencies
-        run: npm install -g lighthouse jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          npm install -g lighthouse
 
       - name: Run Lighthouse and save JSON report
         run: |
@@ -37,7 +40,6 @@ jobs:
           SEO=$(jq '.categories.seo.score' report.json)
           echo "timestamp,performance,accessibility,best_practices,seo" > header.csv
           echo "$TIMESTAMP,$PERF,$ACC,$BP,$SEO" > new_line.csv
-          # Output the new line as a workflow output (optional)
           echo "::set-output name=csv_line::$TIMESTAMP,$PERF,$ACC,$BP,$SEO"
 
       - name: Append to lighthouse-scores.csv or create if missing
