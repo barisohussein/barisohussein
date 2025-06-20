@@ -34,7 +34,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -m "stash before pull" || echo "Nothing to stash"
           git pull --rebase origin master
+          git stash pop || echo "No stash to pop"
           git add pagespeed_scores.csv
           if ! git diff --cached --quiet; then
             git commit -m "Update PageSpeed scores $(date +'%Y-%m-%d %H:%M:%S')"
@@ -42,3 +44,4 @@ jobs:
           else
             echo "No changes to commit"
           fi
+
