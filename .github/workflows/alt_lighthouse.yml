@@ -1,0 +1,19 @@
+name: Lighthouse CI Audit
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+  workflow_dispatch:      # allows manual trigger
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Lighthouse on brooksrunning.com
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: 'https://www.brooksrunning.com'
+          configPath: '.lighthouserc.json'
+          uploadArtifacts: true         # saves HTML/JSON reports
+          temporaryPublicStorage: true  # allows you to view results via a shareable link
