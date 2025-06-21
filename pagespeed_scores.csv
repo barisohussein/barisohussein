@@ -12,3 +12,5 @@ timestamp,url,strategy,performance,test_type
 >>>>>>> Stashed changes,,,,
 2025-06-20 12:46:07,https://www.brooksrunning.com/en_us,mobile,16.0,mobile_slow
 2025-06-20 12:47:34,https://www.brooksrunning.com/en_us,mobile,15.0,mobile_fast
+2025-06-21 01:48:13,https://www.brooksrunning.com/en_us,mobile,22.0,mobile_slow
+2025-06-21 01:50:21,https://www.brooksrunning.com/en_us,mobile,22.0,mobile_fast
