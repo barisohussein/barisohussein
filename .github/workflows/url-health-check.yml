@@ -1,20 +1,25 @@
-name: Check URLs
+name: Check URLs and Send Alert
 
 on:
+  workflow_dispatch:    # Manual trigger
   schedule:
-    - cron: '0 9 * * *'  # runs daily at 9am UTC
+    - cron: '0 9 * * *'  # Scheduled daily at 9am UTC
 
 jobs:
   url-check:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
+
       - name: Install dependencies
         run: pip install beautifulsoup4 requests
+
       - name: Run URL check script
         env:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
