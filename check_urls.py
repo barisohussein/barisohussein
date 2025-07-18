@@ -6,6 +6,7 @@ import os
 # --- STEP 1: Define URLs to check ---
 urls_to_check = [
     "https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html",
+    "https://www.amazon.com/404",
     # Add more URLs here
 ]
 
