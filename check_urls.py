@@ -61,14 +61,13 @@ def send_email(subject, body):
 
 def main():
     sitemap_index_url = "https://www.brooksrunning.com/sitemap_index.xml"
-    filters = ['category']
+    filters = ['category','shoes', 'womens', 'mens', 'product']
     #filters = ['shoes', '.html', 'womens', 'mens', 'product', 'category']
 
     manual_urls = {
         # Add any URLs you want to check manually here:
         "https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html",
-        "https://www.brooksrunning.com/en_us/featured/accessories/journey-hat/280530.html",
-        "https://www.amazon.com/404"
+        "https://www.brooksrunning.com/en_us/featured/accessories/journey-hat/280530.html"
     }
 
     all_sitemaps = get_sitemap_urls_from_index(sitemap_index_url)
