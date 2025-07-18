@@ -1,26 +1,21 @@
-name: URL Health Check
+name: Check URLs
 
 on:
   schedule:
-    - cron: '0 * * * *' # every hour
-  workflow_dispatch:
+    - cron: '0 9 * * *'  # runs daily at 9am UTC
 
 jobs:
-  check_urls:
+  url-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-
+          python-version: '3.x'
       - name: Install dependencies
-        run: pip install requests
-
-      - name: Run URL health check
+        run: pip install beautifulsoup4 requests
+      - name: Run URL check script
         env:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
