@@ -26,4 +26,5 @@ jobs:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          CC_RECIPIENT: ${{ secrets.CC_RECIPIENT }}
         run: python check_urls.py
