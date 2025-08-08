@@ -49,7 +49,7 @@ def send_email(subject, body):
     sender = os.environ['EMAIL_USERNAME']
     password = os.environ['EMAIL_PASSWORD']
     recipient = os.environ['EMAIL_RECIPIENT']
-    cc_recipient = os.environ.get('EMAIL_CC')  # Optional CC address
+    cc_recipient = os.environ.get('CC_RECIPIENT')  # Optional CC address
 
     msg = MIMEText(body)
     msg["Subject"] = subject
