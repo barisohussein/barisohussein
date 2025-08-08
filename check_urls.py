@@ -55,8 +55,7 @@ def send_email(subject, body):
     msg["Subject"] = subject
     msg["From"] = sender
     msg["To"] = recipient
-    if cc_recipient:
-        msg["Cc"] = cc_recipient
+    msg["Cc"] = cc_recipient
 
     # Build list of all recipients for sending
     recipients = [recipient]
@@ -70,7 +69,7 @@ def send_email(subject, body):
 
 def main():
     sitemap_index_url = "https://www.brooksrunning.com/sitemap_index.xml"
-    filters = ['category', 'shoes', 'womens', 'mens', 'product']
+    filters = ['category'] #, 'shoes', 'womens', 'mens', 'product']
 
     manual_urls = {
         "https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html",
