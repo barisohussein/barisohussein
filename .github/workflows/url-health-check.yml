@@ -2,7 +2,7 @@ name: Check URLs and Send Alert
 
 on:
   schedule:
-      - cron: '10 14 * * *'  # 7:10 AM PDT = 14:10 UTC
+    - cron: '*/15 * * * *'  # Every 15 minutes UTC
   workflow_dispatch: # allows manual trigger
 
 jobs:
