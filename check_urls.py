@@ -61,38 +61,39 @@ def send_email(subject, body):
 
 def main():
     sitemap_index_url = "https://www.brooksrunning.com/sitemap_index.xml"
-    filters = ['category','shoes', 'womens', 'mens', 'product']
-    #filters = ['shoes', '.html', 'womens', 'mens', 'product', 'category']
+    filters = ['category', 'shoes', 'womens', 'mens', 'product']
 
     manual_urls = {
-        # Add any URLs you want to check manually here:
         "https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html",
-        "https://www.brooksrunning.com/en_us/featured/accessories/journey-hat/280530.html"
-    }
+        "https://www.brooksrunning.com/en_us/featured/accessories/journey-hat/280530.html",
+        "https://www.brooksrunning.com/en_us/sale/womens/23",
+        "https://www.brooksrunning.com/en_us/mens/",
+        "https://www.brooksrunning.com/en_us/sale/mens/shoes/",
+        "https://www.brooksrunning.com/en_us/featured/ghost/mens/",
+        "https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-max-2/110431.html?dwvar_110431_color=125"
 
+    }
     all_sitemaps = get_sitemap_urls_from_index(sitemap_index_url)
     product_category_sitemaps = [s for s in all_sitemaps if 'product' in s or 'category' in s]
 
     filtered_urls = get_filtered_urls(product_category_sitemaps, filters)
 
-    # Combine filtered URLs with manual URLs
     all_urls_to_check = filtered_urls.union(manual_urls)
-
     print(f"\n✅ Total URLs to check (including manual): {len(all_urls_to_check)}")
 
     broken_urls = get_broken_urls(all_urls_to_check)
 
+    # Only send email if broken URLs exist
     if broken_urls:
         subject = "[Alert] Broken URLs Detected"
         body = "The following URLs returned an error:\n\n"
         for url, status in broken_urls:
             body += f"{url} - {status}\n"
-    else:
-        subject = "[Info] All URLs are Live"
-        body = "✅ All checked URLs on brooksrunning.com are live and returning HTTP 200."
 
-    send_email(subject, body)
-    print("\nEmail sent with the results.")
+        send_email(subject, body)
+        print("\n🚨 Email sent with broken URLs list.")
+    else:
+        print("\n✅ All URLs are live. No email sent.")
 
 if __name__ == "__main__":
     main()
