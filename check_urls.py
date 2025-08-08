@@ -44,20 +44,29 @@ def get_broken_urls(urls):
             broken.append((url, str(e)))
             print(f"❌ Error checking {url}: {e}")
     return broken
-
+    
 def send_email(subject, body):
     sender = os.environ['EMAIL_USERNAME']
     password = os.environ['EMAIL_PASSWORD']
     recipient = os.environ['EMAIL_RECIPIENT']
+    cc_recipient = os.environ.get('EMAIL_CC')  # Optional CC address
 
     msg = MIMEText(body)
     msg["Subject"] = subject
     msg["From"] = sender
     msg["To"] = recipient
+    if cc_recipient:
+        msg["Cc"] = cc_recipient
+
+    # Build list of all recipients for sending
+    recipients = [recipient]
+    if cc_recipient:
+        recipients.append(cc_recipient)
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(sender, password)
-        smtp.send_message(msg)
+        smtp.sendmail(sender, recipients, msg.as_string())
+
 
 def main():
     sitemap_index_url = "https://www.brooksrunning.com/sitemap_index.xml"
