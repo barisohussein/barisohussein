@@ -74,7 +74,6 @@ def main():
     manual_urls = {
         "https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html",
         "https://www.brooksrunning.com/en_us/featured/accessories/journey-hat/280530.html",
-        "https://www.brooksrunning.com/en_us/sale/womens/23",
         "https://www.brooksrunning.com/en_us/mens/",
         "https://www.brooksrunning.com/en_us/sale/mens/shoes/",
         "https://www.brooksrunning.com/en_us/featured/ghost/mens/",
