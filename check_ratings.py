@@ -21,7 +21,8 @@ def send_email(subject, body):
     msg["Subject"] = subject
     msg["From"] = sender
     msg["To"] = recipient
-    msg["Cc"] = cc_recipient
+    if cc_recipient:
+        msg["Cc"] = cc_recipient
 
     recipients = [recipient]
     if cc_recipient:
@@ -41,51 +42,40 @@ driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install()),
     options=chrome_options
 )
-#url ="https://www.brooksrunning.com/en_us/mens/shoes/?sz=12&srule=sort_newArrival-descending"
+
 url = "https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/"
 driver.get(url)
 
 wait = WebDriverWait(driver, 20)
 wait.until(EC.presence_of_element_located((By.CLASS_NAME, "a-rating")))
 
-# Scroll to load all products (lazy-loading)
-last_height = driver.execute_script("return document.body.scrollHeight")
-while True:
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-    new_height = driver.execute_script("return document.body.scrollHeight")
-    if new_height == last_height:
-        break
-    last_height = new_height
+# Ensure page fully loads
+time.sleep(3)
 
-# Scrape all product ratings
-rating_divs = driver.find_elements(By.CLASS_NAME, "a-rating")
-zero_review_products = []
+# Grab the first product's rating div
+first_rating_div = driver.find_element(By.CLASS_NAME, "a-rating")
 
-for i, rating_div in enumerate(rating_divs, start=1):
-    # Grab second v--hidden span for rating text
-    spans = rating_div.find_elements(By.CLASS_NAME, "v--hidden")
-    rating_text = spans[1].text.strip() if len(spans) >= 2 else "No rating"
+# Extract rating text (second v--hidden span)
+spans = first_rating_div.find_elements(By.CLASS_NAME, "v--hidden")
+rating_text = spans[1].text.strip() if len(spans) >= 2 else "No rating"
 
-    # Grab product name
-    try:
-        product_name = rating_div.find_element(By.XPATH, "./ancestor::li//a[@title]").get_attribute("title").strip()
-    except:
-        product_name = f"Product {i}"
+# Grab product name
+try:
+    product_name = first_rating_div.find_element(
+        By.XPATH, "./ancestor::li//a[@title]"
+    ).get_attribute("title").strip()
+except:
+    product_name = "First Product"
 
-    print(f"{product_name} — {rating_text}")
-
-    # Check for 0 reviews
-    if "0 reviews" in rating_text.lower():
-        zero_review_products.append(f"{product_name} — {rating_text}")
+print(f"{product_name} — {rating_text}")
 
 driver.quit()
 
-# Send alert email if any products have 0 reviews
-if zero_review_products:
-    subject = "[Alert] Products with 0 Reviews Detected"
-    body = "The following products have 0 reviews:\n\n" + "\n".join(zero_review_products)
+# Check only the first product
+if "0 reviews" in rating_text.lower():
+    subject = "[Alert] First Product Has 0 Reviews"
+    body = f"The first product on the page has 0 reviews:\n\n{product_name} — {rating_text}"
     send_email(subject, body)
-    print("\n🚨 Email sent for products with 0 reviews.")
+    print("\n🚨 Email sent: first product has 0 reviews.")
 else:
-    print("\n✅ All products have reviews. No email sent.")
+    print("\n✅ First product has reviews. No email sent.")
