@@ -28,4 +28,4 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
           CC_RECIPIENT: ${{ secrets.EMAIL_CC }}
-        run: python check_urls.py
+        run: python check_ratings.py
