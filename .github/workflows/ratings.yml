@@ -2,7 +2,7 @@ name: Check Ratings and Send Alert
 
 on:
   schedule:
-    - cron: '*/60 * * * *'  # Every 60 minutes UTC
+    - cron: '0 */3 * * *'  # Every 60 minutes UTC
   workflow_dispatch: # allows manual trigger
 
 jobs:
