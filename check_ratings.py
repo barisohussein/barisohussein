@@ -41,8 +41,8 @@ driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install()),
     options=chrome_options
 )
-
-url = "https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/"
+url ="https://www.brooksrunning.com/en_us/mens/shoes/?sz=12&srule=sort_newArrival-descending"
+#url = "https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/"
 driver.get(url)
 
 wait = WebDriverWait(driver, 20)
