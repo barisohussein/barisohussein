@@ -68,9 +68,7 @@ def send_email(subject, body):
 
 
 def main():
-    sitemap_index_url = "https://www.brooksrunning.com/sitemap_index.xml"
-    filters = ['category'] #, 'shoes', 'womens', 'mens', 'product']
-
+    # Removed: sitemap_index_url and filters
     manual_urls = {
         "https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html",
         "https://www.brooksrunning.com/en_us/featured/accessories/journey-hat/280530.html",
@@ -149,13 +147,9 @@ def main():
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/ghost-max-3/120457.html',
         'https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html?dwvar_100049_color=681'
     }
-    all_sitemaps = get_sitemap_urls_from_index(sitemap_index_url)
-    product_category_sitemaps = [s for s in all_sitemaps if 'product' in s or 'category' in s]
 
-    filtered_urls = get_filtered_urls(product_category_sitemaps, filters)
-
-    all_urls_to_check = filtered_urls.union(manual_urls)
-    print(f"\n✅ Total URLs to check (including manual): {len(all_urls_to_check)}")
+    all_urls_to_check = manual_urls
+    print(f"\n✅ Total URLs to check: {len(all_urls_to_check)}")
 
     broken_urls = get_broken_urls(all_urls_to_check)
 
@@ -170,6 +164,7 @@ def main():
         print("\n🚨 Email sent with broken URLs list.")
     else:
         print("\n✅ All URLs are live. No email sent.")
+
 
 if __name__ == "__main__":
     main()
