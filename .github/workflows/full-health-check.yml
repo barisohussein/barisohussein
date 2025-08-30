@@ -1,8 +1,8 @@
-name: Brooks Shoes Health Check
+name: Site Health Check
 
 on:
   schedule:
-    - cron: '0 */3 * * *'   # every 3 hours UTC
+    - cron: '0 */6 * * *'   # every 3 hours UTC
   workflow_dispatch:
 
 jobs:
