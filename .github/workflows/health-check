@@ -1,0 +1,31 @@
+name: Brooks Shoes Health Check
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'   # every 3 hours UTC
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install selenium webdriver-manager
+
+      - name: Run Brooks Health Check
+        env:
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          CC_RECIPIENT: ${{ secrets.EMAIL_CC }}
+        run: python health_check.py
