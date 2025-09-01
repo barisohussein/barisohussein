@@ -2,7 +2,7 @@ name: Check Ratings and Send Alert
 
 on:
   schedule:
-    - cron: '0 */10 * * *'  # Every 60 minutes UTC
+    - cron: '0 */4 * * *'  # Every 60 minutes UTC
   workflow_dispatch: # allows manual trigger
 
 jobs:
@@ -27,5 +27,5 @@ jobs:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
-          CC_RECIPIENT: ${{ secrets.EMAIL_CC }}
+          #CC_RECIPIENT: ${{ secrets.EMAIL_CC }}
         run: python check_ratings.py
