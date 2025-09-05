@@ -66,8 +66,11 @@ axs[0].plot(dates, cls_p75, marker="^", linewidth=2, color="tab:red", label="CLS
 axs[0].axhline(thresholds["cls"][0], color="green", linestyle="--", label="Good ≤ 0.1")
 axs[0].axhline(thresholds["cls"][1], color="orange", linestyle="--", label="Needs Improvement ≤ 0.25")
 
-# Flip axis but make 0 visible
-max_val = max(cls_p75 + thresholds["cls"]) * 1.1  # slightly higher than max for padding
+# Convert CLS values to floats
+cls_p75 = [float(x) for x in cls_p75]
+
+# Calculate max for flipped y-axis
+max_val = max(cls_p75 + thresholds["cls"]) * 1.1
 axs[0].set_ylim(max_val, 0)  # reversed axis, 0 at bottom
 
 axs[0].set_title("Cumulative Layout Shift (CLS)", fontsize=14, weight="bold")
