@@ -6,7 +6,8 @@ import smtplib
 from email.message import EmailMessage
 
 # --- 1. Fetch CrUX data ---
-API_KEY = "AIzaSyDxXxxGTNlxHdHHqYK7YI_linKyMz7HUvU"
+CRUX_API = os.environ["CRUX_API"]
+API_KEY = CRUX_API
 URL = f"https://chromeuxreport.googleapis.com/v1/records:queryHistoryRecord?key={API_KEY}"
 
 payload = {
