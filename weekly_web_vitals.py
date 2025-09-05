@@ -35,7 +35,9 @@ lcp_p75 = extract_metric("largest_contentful_paint")
 inp_p75 = extract_metric("interaction_to_next_paint")
 
 # --- 2. Plot metrics ---
-plt.style.use("seaborn-whitegrid")
+plt.style.use("ggplot")      # clean, minimal
+plt.style.use("bmh")         # clean with grids
+plt.style.use("classic")     # traditional matplotlib
 fig, axs = plt.subplots(3, 1, figsize=(14, 14), sharex=True)
 fig.subplots_adjust(top=0.88)
 
