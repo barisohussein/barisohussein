@@ -100,7 +100,7 @@ plt.close()
 # --- 3. Send email via Gmail ---
 EMAIL_ADDRESS = os.environ["EMAIL_ADDRESS"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
-TO_EMAIL = "recipient@example.com"  # change to your recipient
+TO_EMAIL = "barisohussein3@gmail.com"  # change to your recipient
 
 msg = EmailMessage()
 msg['Subject'] = "Weekly Web Performance Report – BrooksRunning.com"
