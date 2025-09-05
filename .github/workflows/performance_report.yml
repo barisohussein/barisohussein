@@ -26,4 +26,5 @@ jobs:
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          CRUX_API: ${{ secrets.CRUX_API }}
         run: python weekly_web_vitals.py
