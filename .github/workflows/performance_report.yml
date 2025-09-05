@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install requests matplotlib
+          pip install requests matplotlib seaborn
 
       - name: Run weekly report script
         env:
