@@ -42,13 +42,13 @@ plt.style.use("classic")     # traditional matplotlib
 fig, axs = plt.subplots(3, 1, figsize=(14, 14), sharex=True)
 fig.subplots_adjust(top=0.88)
 
-# Title + subtitle
+# --- TITLE + SUBTITLE ---
 fig.suptitle(
     "Web Performance Report – BrooksRunning.com",
-    fontsize=20, weight="bold", y=0.95
+    fontsize=20, weight="bold", y=0.93
 )
 fig.text(
-    0.5, 0.91,
+    0.5, 0.88,
     "25-week Chrome UX Report history (p75) for Phone users\n"
     "Metrics include Cumulative Layout Shift (CLS), Largest Contentful Paint (LCP), and Interaction to Next Paint (INP).",
     ha="center", fontsize=12, color="dimgray"
@@ -65,11 +65,16 @@ thresholds = {
 axs[0].plot(dates, cls_p75, marker="^", linewidth=2, color="tab:red", label="CLS p75")
 axs[0].axhline(thresholds["cls"][0], color="green", linestyle="--", label="Good ≤ 0.1")
 axs[0].axhline(thresholds["cls"][1], color="orange", linestyle="--", label="Needs Improvement ≤ 0.25")
-axs[0].set_ylim(axs[0].get_ylim()[::-1])  # flip y-axis
+
+# Flip axis but make 0 visible
+max_val = max(cls_p75 + thresholds["cls"]) * 1.1  # slightly higher than max for padding
+axs[0].set_ylim(max_val, 0)  # reversed axis, 0 at bottom
+
 axs[0].set_title("Cumulative Layout Shift (CLS)", fontsize=14, weight="bold")
 axs[0].set_ylabel("Score (p75)", fontsize=12)
 axs[0].legend(loc="upper left", frameon=True)
 axs[0].grid(alpha=0.3)
+
 
 # --- LCP ---
 axs[1].plot(dates, lcp_p75, marker="o", linewidth=2, color="tab:blue", label="LCP p75")
