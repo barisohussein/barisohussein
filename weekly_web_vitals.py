@@ -27,8 +27,9 @@ periods = data.get("record", {}).get("collectionPeriods", [])
 dates = [datetime.date(p["lastDate"]["year"], p["lastDate"]["month"], p["lastDate"]["day"]) for p in periods]
 
 def extract_metric(metric_name):
-    """Extract p75 timeseries safely"""
-    return metrics.get(metric_name, {}).get("percentilesTimeseries", {}).get("p75s", [])
+    """Extract p75 timeseries safely and convert to floats"""
+    raw = metrics.get(metric_name, {}).get("percentilesTimeseries", {}).get("p75s", [])
+    return [float(x) for x in raw if x is not None]
 
 # Extract metrics
 cls_p75 = extract_metric("cumulative_layout_shift")
@@ -36,9 +37,7 @@ lcp_p75 = extract_metric("largest_contentful_paint")
 inp_p75 = extract_metric("interaction_to_next_paint")
 
 # --- 2. Plot metrics ---
-plt.style.use("ggplot")      # clean, minimal
-plt.style.use("bmh")         # clean with grids
-plt.style.use("classic")     # traditional matplotlib
+plt.style.use("ggplot")  # clean, minimal
 fig, axs = plt.subplots(3, 1, figsize=(14, 14), sharex=True)
 fig.subplots_adjust(top=0.88)
 
@@ -65,19 +64,14 @@ thresholds = {
 axs[0].plot(dates, cls_p75, marker="^", linewidth=2, color="tab:red", label="CLS p75")
 axs[0].axhline(thresholds["cls"][0], color="green", linestyle="--", label="Good ≤ 0.1")
 axs[0].axhline(thresholds["cls"][1], color="orange", linestyle="--", label="Needs Improvement ≤ 0.25")
-
-# Convert CLS values to floats
-cls_p75 = [float(x) for x in cls_p75]
-
-# Calculate max for flipped y-axis
-max_val = max(cls_p75 + thresholds["cls"]) * 1.1
-axs[0].set_ylim(max_val, 0)  # reversed axis, 0 at bottom
-
 axs[0].set_title("Cumulative Layout Shift (CLS)", fontsize=14, weight="bold")
 axs[0].set_ylabel("Score (p75)", fontsize=12)
 axs[0].legend(loc="upper left", frameon=True)
 axs[0].grid(alpha=0.3)
 
+# Force y-axis start at 0 and end slightly above max value
+cls_max = max(max(cls_p75, default=0), thresholds["cls"][1]) * 1.1
+axs[0].set_ylim(0, cls_max)
 
 # --- LCP ---
 axs[1].plot(dates, lcp_p75, marker="o", linewidth=2, color="tab:blue", label="LCP p75")
@@ -101,15 +95,15 @@ axs[2].grid(alpha=0.3)
 plt.xticks(rotation=45)
 plt.tight_layout(rect=[0, 0, 1, 0.9])
 
-# Save plot
+# --- 3. Save plot ---
 plot_path = "/tmp/web_vitals_report.png"
 plt.savefig(plot_path, dpi=150)
 plt.close()
 
-# --- 3. Send email via Gmail ---
+# --- 4. Send email via Gmail ---
 EMAIL_ADDRESS = os.environ["EMAIL_ADDRESS"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
-TO_EMAIL = "barisohussein3@gmail.com"  # change to your recipient
+TO_EMAIL = "barisohussein3@gmail.com"  # recipient
 
 msg = EmailMessage()
 msg['Subject'] = "Weekly Web Performance Report – BrooksRunning.com"
