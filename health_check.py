@@ -13,10 +13,15 @@ from email.mime.text import MIMEText
 
 # ---------------- Email function ----------------
 def send_email(subject, body):
-    sender = os.environ['EMAIL_USERNAME']
-    password = os.environ['EMAIL_PASSWORD']
-    recipient = os.environ['EMAIL_RECIPIENT']
-    cc_recipient = os.environ.get('CC_RECIPIENT')
+    sender = os.environ.get("EMAIL_USERNAME")
+    password = os.environ.get("EMAIL_PASSWORD")
+    recipient = os.environ.get("EMAIL_RECIPIENT")
+    cc_recipient = os.environ.get("CC_RECIPIENT")
+
+    # Validate required environment variables
+    if not sender or not password or not recipient:
+        print("⚠️ Missing required email environment variables. Email not sent.")
+        return
 
     msg = MIMEText(body)
     msg["Subject"] = subject
@@ -24,14 +29,24 @@ def send_email(subject, body):
     msg["To"] = recipient
     if cc_recipient:
         msg["Cc"] = cc_recipient
+    else:
+        print("ℹ️ No CC recipient configured, continuing without CC.")
 
     recipients = [recipient]
     if cc_recipient:
         recipients.append(cc_recipient)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login(sender, password)
-        smtp.sendmail(sender, recipients, msg.as_string())
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+            print("📧 Attempting SMTP login...")
+            smtp.login(sender, password)
+            smtp.sendmail(sender, recipients, msg.as_string())
+            print("✅ Email sent successfully.")
+    except smtplib.SMTPAuthenticationError as e:
+        print("🚨 SMTP Authentication failed. Check your Gmail App Password and username.")
+        print(str(e))
+    except Exception as e:
+        print("🚨 Failed to send email:", str(e))
 
 
 # ---------------- Selenium health check ----------------
