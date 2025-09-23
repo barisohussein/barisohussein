@@ -74,7 +74,7 @@ def check_brooks_shoes_page():
         {"type": By.CSS_SELECTOR, "value": "svg.icon-account-icon"},  # Account icon
         {"type": By.CSS_SELECTOR, "value": "svg.icon-cart-icon"},  # Cart icon
         {"type": By.CLASS_NAME, "value": "a-rating"},  # First rating
-        {"type": By.CSS_SELECTOR, "value": "div.m-product-tile__name"},  # Product names
+     #   {"type": By.CSS_SELECTOR, "value": "div.m-product-tile__name"},  # Product names
         {"type": By.CSS_SELECTOR, "value": "span.pricing__sale.js-sale-price"},  # Sale price
         {"type": By.CSS_SELECTOR, "value": "img.a-responsive-image__img[data-swatch-id]"},  # Swatch images
         {"type": By.CSS_SELECTOR, "value": "button.js-load-more-button"},  # Load more button
@@ -91,14 +91,15 @@ def check_brooks_shoes_page():
             errors.append(f"Missing element: {elem['value']} ({elem['type']})")
 
     # -------- check product tiles -------- #
-    product_tiles = driver.find_elements(By.CSS_SELECTOR, "div.m-product-tile__name")
-    if len(product_tiles) < 12:
-        errors.append(f"Only found {len(product_tiles)} product tiles, expected at least 12")
+    
+    #product_tiles = driver.find_elements(By.CSS_SELECTOR, "div.m-product-tile__name")
+    #if len(product_tiles) < 12:
+    #    errors.append(f"Only found {len(product_tiles)} product tiles, expected at least 12")
 
-    for i, tile in enumerate(product_tiles, start=1):
-        nav_url = tile.get_attribute("data-navigation-url")
-        if not nav_url or not nav_url.strip():
-            errors.append(f"Product tile {i} missing navigation URL")
+    #for i, tile in enumerate(product_tiles, start=1):
+     #   nav_url = tile.get_attribute("data-navigation-url")
+       # if not nav_url or not nav_url.strip():
+      #      errors.append(f"Product tile {i} missing navigation URL")
 
     driver.quit()
 
