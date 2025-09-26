@@ -71,11 +71,21 @@ print(f"{product_name} — {rating_text}")
 
 driver.quit()
 
-# Check only the first product
-if "0 reviews" in rating_text.lower():
+import re
+import re
+
+# ---------------- Check only the first product ----------------
+# Extract number of reviews safely from rating_text
+match = re.search(r"(\d+)\s+reviews", rating_text.lower())
+num_reviews = int(match.group(1)) if match else -1
+
+if num_reviews == 0:
     subject = "[Alert] First Product Has 0 Reviews"
     body = f"The first product on the page has 0 reviews:\n\n{product_name} — {rating_text}"
+    # Send email
     send_email(subject, body)
-    print("\n🚨 Email sent: first product has 0 reviews.")
+    print(f"\n🚨 Email sent: first product has 0 reviews.\n{product_name} — {rating_text}")
 else:
-    print("\n✅ First product has reviews. No email sent.")
+    print(f"\n✅ First product has {num_reviews if num_reviews >= 0 else 'unknown'} reviews. No email sent.\n{product_name} — {rating_text}")
+
+
