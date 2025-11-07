@@ -1,0 +1,88 @@
+import socket
+import ssl
+from datetime import datetime, timezone
+import pandas as pd
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+
+def get_cert_info(host, port=443, timeout=5):
+    """Get SSL certificate info for a host."""
+    try:
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+
+        with socket.create_connection((host, port), timeout=timeout) as sock:
+            with context.wrap_socket(sock, server_hostname=host) as ssock:
+                cert_der = ssock.getpeercert(binary_form=True)
+                cert = x509.load_der_x509_certificate(cert_der, default_backend())
+
+                # Convert naive datetimes to aware UTC
+                valid_from = cert.not_valid_before.replace(tzinfo=timezone.utc)
+                valid_to = cert.not_valid_after.replace(tzinfo=timezone.utc)
+
+                now = datetime.now(timezone.utc)
+                days_left = (valid_to - now).days
+                valid = valid_from <= now <= valid_to
+
+                # Get SANs
+                try:
+                    san_extension = cert.extensions.get_extension_for_oid(
+                        x509.ExtensionOID.SUBJECT_ALTERNATIVE_NAME
+                    )
+                    sans = "; ".join([str(name.value) for name in san_extension.value])
+                except x509.extensions.ExtensionNotFound:
+                    sans = ""
+
+                return {
+                    "host": host,
+                    "issuer": cert.issuer.rfc4514_string(),
+                    "issued_to": cert.subject.rfc4514_string(),
+                    "valid_from": valid_from.strftime("%Y-%m-%d"),
+                    "valid_to": valid_to.strftime("%Y-%m-%d"),
+                    "days_left": days_left,
+                    "valid": valid,
+                    "san": sans,
+                    "serial_number": str(cert.serial_number),
+                    "signature_algorithm": cert.signature_algorithm_oid._name
+                }
+
+    except Exception as e:
+        return {"host": host, "error": str(e)}
+
+# Example usage
+urls = [
+    "brooksrunning.com",
+    "www.brooksrunning.com",
+    "brooksrunning.ca",
+    "www.brooksrunning.ca",
+    "brooksrunning.co.uk",
+    "www.brooksrunning.co.uk",
+    "brooksrunning.eu",
+    "www.brooksrunning.eu",
+    "brooksrunning.au",
+    "www.brooksrunning.au",
+    "brooksrunning.jp",
+    "www.brooksrunning.jp",
+    "brooksrunning.de",
+    "www.brooksrunning.de",
+    "brooksrunning.fr",
+    "www.brooksrunning.fr",
+    "brooksrunning.com.br",
+    "www.brooksrunning.com.br",
+    "brooksrunning.mx",
+    "www.brooksrunning.mx",
+    "brooksrunning.in",
+    "www.brooksrunning.in",
+    "brooksrunning.sg",
+    "www.brooksrunning.sg",
+    "brooksrunning.hk",
+    "www.brooksrunning.hk"
+]
+
+
+results = [get_cert_info(url) for url in urls]
+
+df = pd.DataFrame(results)
+print(df)
