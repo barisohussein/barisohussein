@@ -24,7 +24,7 @@ jobs:
 
       - name: Run Camry Alert Script
         env:
-          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          EMAIL_USERNAME: ${{ secrets.EMAIL_CAMRY_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_CAMRY_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_CAMRY_USERNAME }}
         run: python car/camry_alert.py
