@@ -15,7 +15,7 @@ import time
 def send_email(subject, body):
     sender = "barisobrooks@gmail.com"
     password = os.environ['EMAIL_CAMRY_PASSWORD']
-    recipient = "barisobrooks@gmail.com"
+    recipient = "barisohussein3@gmail.com"
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = sender
@@ -45,11 +45,17 @@ time.sleep(3)  # allow full page load
 
 listings_divs = driver.find_elements(By.CSS_SELECTOR, "#srp-results .listing")
 
-# --- Full listings with details ---
 full_listings = []
 urls = set()
 
 for div in listings_divs:
+    # Extract price from the span inside this listing
+    try:
+        price_span = div.find_element(By.CSS_SELECTOR, ".dv-payment-amount")
+        price_text = price_span.text.strip()
+    except:
+        price_text = div.get_attribute("data-vehicle-price") or "N/A"
+
     listing = {
         "vehicle_id": div.get_attribute("data-vehicle-id"),
         "vin": div.get_attribute("data-vehicle-vin"),
@@ -57,7 +63,7 @@ for div in listings_divs:
         "year": div.get_attribute("data-vehicle-year"),
         "stock_number": div.get_attribute("data-vehicle-stock-number"),
         "make_model": div.get_attribute("data-vehicle-make-model"),
-        "price": div.get_attribute("data-vehicle-price"),
+        "price": price_text,
         "discount": div.get_attribute("data-vehicle-discount"),
         "dealer": div.get_attribute("data-dealer-name"),
         "exterior_color": div.get_attribute("data-exteriorColor"),
@@ -65,9 +71,10 @@ for div in listings_divs:
         "trim": div.get_attribute("data-ag-trim"),
         "vdp_url": div.get_attribute("data-ag-vdp-url")
     }
+
     full_listings.append(listing)
     urls.add(listing["vdp_url"])
-    print(listing["vdp_url"])
+    print(listing["vdp_url"], "-", listing["price"])
 
 driver.quit()
 
