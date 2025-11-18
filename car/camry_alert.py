@@ -4,23 +4,36 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from dotenv import load_dotenv
 import os
 
 URL = "https://www.dwtoyotalasvegas.com/used-vehicles/?make=Toyota&model=Camry"
-DATA_FILE = "known_listings.json"
+
+# Folder where JSON is stored
+DATA_FOLDER = "car"
+DATA_FILE = os.path.join(DATA_FOLDER, "known_listings.json")
+
+# Ensure the folder exists
+os.makedirs(DATA_FOLDER, exist_ok=True)
 
 # Load known listings from file
 def load_known_listings():
-    if os.path.exists(DATA_FILE):
+    # If file doesn't exist, create an empty one
+    if not os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "w") as f:
+            json.dump([], f)
+
+    # Load safely
+    try:
         with open(DATA_FILE, "r") as f:
-            return set(json.load(f))
-    return set()
+            data = json.load(f)
+            return set(data)
+    except:
+        return set()
 
 # Save listings back to file
 def save_known_listings(listings):
     with open(DATA_FILE, "w") as f:
-        json.dump(list(listings), f)
+        json.dump(list(listings), f, indent=2)
 
 # Send alert email or SMS
 def send_alert(new_listings):
@@ -47,26 +60,39 @@ def send_alert(new_listings):
 
 # Scrape the page for listings
 def fetch_listings():
+    print("\nScraping website...\n")
     response = requests.get(URL, timeout=10)
     soup = BeautifulSoup(response.text, "html.parser")
 
     listings = set()
 
-    # Find each listing card by CSS class
-    cars = soup.select(".vehicle-card")  # may need adjustment based on site HTML
-    
-    for car in cars:
-        link = car.find("a", href=True)
-        if link:
-            full_url = "https://www.dwtoyotalasvegas.com" + link["href"]
-            listings.add(full_url)
+    # Correct selector
+    cars = soup.select("div.vehicle-card")
+
+    print(f"Found {len(cars)} vehicles on the page.\n")
+
+    for idx, car in enumerate(cars, start=1):
+        title = car.select_one("h2.vehicle-card__title")
+        price = car.select_one("span.vehicle-card__price")
+        link = car.select_one("a.vehicle-card-link")
+
+        title = title.get_text(strip=True) if title else "Unknown"
+        price = price.get_text(strip=True) if price else "Unknown"
+        url = "https://www.dwtoyotalasvegas.com" + link["href"] if link else ""
+
+        print(f"--- Listing #{idx} ---")
+        print(f"Title: {title}")
+        print(f"Price: {price}")
+        print(f"URL: {url}\n")
+
+        if url:
+            listings.add(url)
 
     return listings
 
 
-# Main program
 def main():
-    print("Checking for new Camry listings...")
+    print("Checking for new Camry listings...\n")
 
     known = load_known_listings()
     current = fetch_listings()
@@ -74,11 +100,15 @@ def main():
     new_listings = current - known
 
     if new_listings:
-        print(f"Found {len(new_listings)} new listings!")
+        print(f"\n🔥 Found {len(new_listings)} NEW listings!")
+        for nl in new_listings:
+            print("NEW:", nl)
+
         send_alert(new_listings)
         save_known_listings(current)
     else:
-        print("No new listings.")
+        print("No new listings.\n")
+
 
 if __name__ == "__main__":
     main()
