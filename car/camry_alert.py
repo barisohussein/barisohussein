@@ -85,7 +85,7 @@ with open(FULL_FILE, "w") as f:
     json.dump(full_listings, f, indent=2)
 print(f"✅ Saved full listings to {FULL_FILE}")
 
-# --- Save known URLs and detect new ---
+# --- Save known URLs and detect new listings ---
 KNOWN_FILE = "car/known_listings.json"
 try:
     with open(KNOWN_FILE, "r") as f:
@@ -93,13 +93,24 @@ try:
 except:
     known_urls = set()
 
-new_listings = urls - known_urls
+# Filter new listings with full info
+new_listings_info = [l for l in full_listings if l["vdp_url"] not in known_urls]
 
-if new_listings:
-    print(f"🔥 Found {len(new_listings)} new listings!")
+if new_listings_info:
+    print(f"🔥 Found {len(new_listings_info)} new listings!")
+    email_body_lines = []
+    for l in new_listings_info:
+        line = (
+            f"{l['year']} {l['make_model']} — {l['price']}\n"
+            f"Condition: {l['condition']}, Trim: {l['trim']}, Stock #: {l['stock_number']}\n"
+            f"Dealer: {l['dealer']}\n"
+            f"URL: {l['vdp_url']}\n"
+            "---------------------------"
+        )
+        email_body_lines.append(line)
     send_email(
-        f"New Camry Listings ({len(new_listings)})",
-        "\n".join(new_listings)
+        f"New Camry Listings ({len(new_listings_info)})",
+        "\n".join(email_body_lines)
     )
 
 # --- Save current URLs ---
