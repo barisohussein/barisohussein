@@ -26,12 +26,12 @@ jobs:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
-        run: python camry_alert.py
+        run: python car/camry_alert.py
 
       - name: Save listing database
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add known_listings.json
+          git add car/known_listings.json
           git commit -m "Update known listings" || echo "No changes"
           git push
