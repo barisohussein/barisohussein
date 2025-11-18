@@ -1,41 +1,39 @@
-import requests
-from bs4 import BeautifulSoup
+import os
 import json
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import os
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 
 URL = "https://www.dwtoyotalasvegas.com/used-vehicles/?make=Toyota&model=Camry"
-
-# Folder where JSON is stored
 DATA_FOLDER = "car"
 DATA_FILE = os.path.join(DATA_FOLDER, "known_listings.json")
 
-# Ensure the folder exists
 os.makedirs(DATA_FOLDER, exist_ok=True)
 
-# Load known listings from file
+# Load known listings
 def load_known_listings():
-    # If file doesn't exist, create an empty one
     if not os.path.exists(DATA_FILE):
         with open(DATA_FILE, "w") as f:
             json.dump([], f)
-
-    # Load safely
     try:
         with open(DATA_FILE, "r") as f:
-            data = json.load(f)
-            return set(data)
+            return set(json.load(f))
     except:
         return set()
 
-# Save listings back to file
+# Save listings
 def save_known_listings(listings):
     with open(DATA_FILE, "w") as f:
         json.dump(list(listings), f, indent=2)
 
-# Send alert email or SMS
+# Send alert email
 def send_alert(new_listings):
     sender = os.environ["EMAIL_USERNAME"]
     password = os.environ["EMAIL_PASSWORD"]
@@ -57,39 +55,44 @@ def send_alert(new_listings):
 
     print("Alert sent!")
 
-
-# Scrape the page for listings
+# Scrape the page with Selenium
 def fetch_listings():
-    print("\nScraping website...\n")
-    response = requests.get(URL, timeout=10)
-    soup = BeautifulSoup(response.text, "html.parser")
+    print("\nLoading page with Selenium...")
 
-    listings = set()
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
 
-    # Correct selector
-    cars = soup.select("div.vehicle-card")
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-    print(f"Found {len(cars)} vehicles on the page.\n")
+    try:
+        driver.get(URL)
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "srp-results")))
 
-    for idx, car in enumerate(cars, start=1):
-        title = car.select_one("h2.vehicle-card__title")
-        price = car.select_one("span.vehicle-card__price")
-        link = car.select_one("a.vehicle-card-link")
+        listings_divs = driver.find_elements(By.CSS_SELECTOR, "#srp-results .listing")
+        print(f"Found {len(listings_divs)} listings\n")
 
-        title = title.get_text(strip=True) if title else "Unknown"
-        price = price.get_text(strip=True) if price else "Unknown"
-        url = "https://www.dwtoyotalasvegas.com" + link["href"] if link else ""
+        listings = set()
 
-        print(f"--- Listing #{idx} ---")
-        print(f"Title: {title}")
-        print(f"Price: {price}")
-        print(f"URL: {url}\n")
+        for idx, div in enumerate(listings_divs, start=1):
+            url = div.get_attribute("data-ag-vdp-url")
+            title = div.get_attribute("data-vehicle-make-model")
+            price = div.get_attribute("data-vehicle-price")
+            trim = div.get_attribute("data-ag-trim")
 
-        if url:
             listings.add(url)
 
-    return listings
+            print(f"--- Listing #{idx} ---")
+            print(f"Title: {title}")
+            print(f"Price: {price}")
+            print(f"Trim: {trim}")
+            print(f"URL: {url}\n")
 
+        return listings
+
+    finally:
+        driver.quit()
 
 def main():
     print("Checking for new Camry listings...\n")
@@ -108,7 +111,6 @@ def main():
         save_known_listings(current)
     else:
         print("No new listings.\n")
-
 
 if __name__ == "__main__":
     main()
