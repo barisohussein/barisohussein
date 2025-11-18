@@ -38,3 +38,12 @@ jobs:
         with:
           name: camry-json
           path: car/
+      # Step 6: Commit JSON files back to repo
+      - name: Commit JSON files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add car/full_listings.json car/known_listings.json
+          git commit -m "Update Camry listings JSON [skip ci]" || echo "No changes to commit"
+          git push
+
