@@ -12,9 +12,9 @@ from email.mime.text import MIMEText
 
 # --- Email function same as ratings ---
 def send_email(subject, body):
-    sender = os.environ['EMAIL_CAMRY']
+    sender = "barisobrooks@gmail.com"
     password = os.environ['EMAIL_CAMRY_PASSWORD']
-    recipient = os.environ['EMAIL_CAMRY']
+    recipient = "barisobrooks@gmail.com"
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = sender
