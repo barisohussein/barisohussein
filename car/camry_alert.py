@@ -24,9 +24,9 @@ def save_known_listings(listings):
 
 # Send alert email or SMS
 def send_alert(new_listings):
-    sender = os.environ["EMAIL_SENDER"]
+    sender = os.environ["EMAIL_USERNAME"]
     password = os.environ["EMAIL_PASSWORD"]
-    receiver = os.environ["EMAIL_RECEIVER"]
+    receiver = os.environ["EMAIL_RECIPIENT"]
 
     subject = f"🚗 New Camry Listing Found ({len(new_listings)})"
     body = "New Toyota Camry listings:\n\n" + "\n".join(new_listings)
