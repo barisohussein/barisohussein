@@ -16,21 +16,6 @@
   },
   {
     "vehicle_id": "",
-    "vin": "4T1C11AK1RU251319",
-    "condition": "Used",
-    "year": "2024",
-    "stock_number": "00136355",
-    "make_model": "Toyota Camry",
-    "price": "$23,788",
-    "discount": "",
-    "dealer": "David Wilson's Toyota of Las Vegas",
-    "exterior_color": null,
-    "body_type": "Sedan",
-    "trim": "LE",
-    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1C11AK1RU251319/"
-  },
-  {
-    "vehicle_id": "",
     "vin": "4T1G11AK3RU193361",
     "condition": "Used",
     "year": "2024",
@@ -61,6 +46,21 @@
   },
   {
     "vehicle_id": "",
+    "vin": "4T1C11AK1RU251319",
+    "condition": "Used",
+    "year": "2024",
+    "stock_number": "00136355",
+    "make_model": "Toyota Camry",
+    "price": "$23,788",
+    "discount": "",
+    "dealer": "David Wilson's Toyota of Las Vegas",
+    "exterior_color": null,
+    "body_type": "Sedan",
+    "trim": "LE",
+    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1C11AK1RU251319/"
+  },
+  {
+    "vehicle_id": "",
     "vin": "4T1G11BK5PU086601",
     "condition": "Used",
     "year": "2023",
@@ -73,21 +73,6 @@
     "body_type": "Sedan",
     "trim": "SE AWD",
     "vdp_url": "/vehicle/Used/2023/Toyota/Camry/4T1G11BK5PU086601/"
-  },
-  {
-    "vehicle_id": "",
-    "vin": "4T1F11AK0RU254127",
-    "condition": "Used",
-    "year": "2024",
-    "stock_number": "00136647",
-    "make_model": "Toyota Camry",
-    "price": "$28,888",
-    "discount": "",
-    "dealer": "David Wilson's Toyota of Las Vegas",
-    "exterior_color": null,
-    "body_type": "Sedan",
-    "trim": "XLE",
-    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1F11AK0RU254127/"
   },
   {
     "vehicle_id": "",
@@ -118,6 +103,21 @@
     "body_type": "Sedan",
     "trim": "LE",
     "vdp_url": "/vehicle/Used/2025/Toyota/Camry/4T1DBADK8SU518779/"
+  },
+  {
+    "vehicle_id": "",
+    "vin": "4T1F11AK0RU254127",
+    "condition": "Used",
+    "year": "2024",
+    "stock_number": "00136647",
+    "make_model": "Toyota Camry",
+    "price": "$28,888",
+    "discount": "",
+    "dealer": "David Wilson's Toyota of Las Vegas",
+    "exterior_color": null,
+    "body_type": "Sedan",
+    "trim": "XLE",
+    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1F11AK0RU254127/"
   },
   {
     "vehicle_id": "",
