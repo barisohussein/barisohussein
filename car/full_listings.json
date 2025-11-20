@@ -1,6 +1,21 @@
 [
   {
     "vehicle_id": "",
+    "vin": "4T1G11AK2LU947812",
+    "condition": "Used",
+    "year": "2020",
+    "stock_number": "00136765",
+    "make_model": "Toyota Camry",
+    "price": "$17,188",
+    "discount": "",
+    "dealer": "David Wilson's Toyota of Las Vegas",
+    "exterior_color": null,
+    "body_type": "Sedan",
+    "trim": "4-DOOR SE SEDAN",
+    "vdp_url": "/vehicle/Used/2020/Toyota/Camry/4T1G11AK2LU947812/"
+  },
+  {
+    "vehicle_id": "",
     "vin": "4T1G11AK3RU193361",
     "condition": "Used",
     "year": "2024",
@@ -43,6 +58,21 @@
     "body_type": "Sedan",
     "trim": "SE AWD",
     "vdp_url": "/vehicle/Used/2023/Toyota/Camry/4T1G11BK5PU086601/"
+  },
+  {
+    "vehicle_id": "",
+    "vin": "4T1G11AK6RU192222",
+    "condition": "Used",
+    "year": "2024",
+    "stock_number": "00136624",
+    "make_model": "Toyota Camry",
+    "price": "$25,488",
+    "discount": "",
+    "dealer": "David Wilson's Toyota of Las Vegas",
+    "exterior_color": null,
+    "body_type": "Sedan",
+    "trim": "SE",
+    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1G11AK6RU192222/"
   },
   {
     "vehicle_id": "",
@@ -136,36 +166,6 @@
   },
   {
     "vehicle_id": "",
-    "vin": "4T1G11AK2LU947812",
-    "condition": "Used",
-    "year": "2020",
-    "stock_number": "00136765",
-    "make_model": "Toyota Camry",
-    "price": "$17,188",
-    "discount": "",
-    "dealer": "David Wilson's Toyota of Las Vegas",
-    "exterior_color": null,
-    "body_type": "Sedan",
-    "trim": "SE",
-    "vdp_url": "/vehicle/Used/2020/Toyota/Camry/4T1G11AK2LU947812/"
-  },
-  {
-    "vehicle_id": "",
-    "vin": "4T1R11AK4PU139394",
-    "condition": "Used",
-    "year": "2023",
-    "stock_number": "136717",
-    "make_model": "Toyota Camry",
-    "price": "$20,688",
-    "discount": "",
-    "dealer": "David Wilson's Toyota of Las Vegas",
-    "exterior_color": null,
-    "body_type": "Sedan",
-    "trim": "LE",
-    "vdp_url": "/vehicle/Used/2023/Toyota/Camry/4T1R11AK4PU139394/"
-  },
-  {
-    "vehicle_id": "",
     "vin": "4T1G11AK1MU570441",
     "condition": "Used",
     "year": "2021",
@@ -193,20 +193,5 @@
     "body_type": "Sedan",
     "trim": "SE",
     "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1S11AK6RU907090/"
-  },
-  {
-    "vehicle_id": "",
-    "vin": "4T1G11AK6RU192222",
-    "condition": "Used",
-    "year": "2024",
-    "stock_number": "00136624",
-    "make_model": "Toyota Camry",
-    "price": "$25,488",
-    "discount": "",
-    "dealer": "David Wilson's Toyota of Las Vegas",
-    "exterior_color": null,
-    "body_type": "Sedan",
-    "trim": "SE",
-    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1G11AK6RU192222/"
   }
 ]
