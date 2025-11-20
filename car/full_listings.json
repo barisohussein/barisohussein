@@ -121,21 +121,6 @@
   },
   {
     "vehicle_id": "",
-    "vin": "4T1DAACKXSU055337",
-    "condition": "Used",
-    "year": "2025",
-    "stock_number": "00136629",
-    "make_model": "Toyota Camry",
-    "price": "$33,588",
-    "discount": "",
-    "dealer": "David Wilson's Toyota of Las Vegas",
-    "exterior_color": null,
-    "body_type": "Sedan",
-    "trim": "XLE",
-    "vdp_url": "/vehicle/Used/2025/Toyota/Camry/4T1DAACKXSU055337/"
-  },
-  {
-    "vehicle_id": "",
     "vin": "4T1KZ1AK5RU103520",
     "condition": "Used",
     "year": "2024",
@@ -148,6 +133,21 @@
     "body_type": "Sedan",
     "trim": "XSE V6",
     "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1KZ1AK5RU103520/"
+  },
+  {
+    "vehicle_id": "",
+    "vin": "4T1DAACKXSU055337",
+    "condition": "Used",
+    "year": "2025",
+    "stock_number": "00136629",
+    "make_model": "Toyota Camry",
+    "price": "$33,588",
+    "discount": "",
+    "dealer": "David Wilson's Toyota of Las Vegas",
+    "exterior_color": null,
+    "body_type": "Sedan",
+    "trim": "XLE",
+    "vdp_url": "/vehicle/Used/2025/Toyota/Camry/4T1DAACKXSU055337/"
   },
   {
     "vehicle_id": "",
