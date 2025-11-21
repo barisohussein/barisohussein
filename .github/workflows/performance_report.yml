@@ -24,7 +24,7 @@ jobs:
 
       - name: Run weekly report script
         env:
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_USERNAME }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_CAMRY_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_CAMRY_PASSWORD }}
           CRUX_API: ${{ secrets.CRUX_API }}
         run: python weekly_web_vitals.py
