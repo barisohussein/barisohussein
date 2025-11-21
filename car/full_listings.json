@@ -193,5 +193,20 @@
     "body_type": "Sedan",
     "trim": "SE",
     "vdp_url": "/vehicle/Used/2021/Toyota/Camry/4T1G11AK1MU570441/"
+  },
+  {
+    "vehicle_id": "",
+    "vin": "4T1S11AK3RU239216",
+    "condition": "Used",
+    "year": "2024",
+    "stock_number": "254414A",
+    "make_model": "Toyota Camry",
+    "price": "$24,988",
+    "discount": "",
+    "dealer": "David Wilson's Toyota of Las Vegas",
+    "exterior_color": null,
+    "body_type": "Sedan",
+    "trim": "SE",
+    "vdp_url": "/vehicle/Used/2024/Toyota/Camry/4T1S11AK3RU239216/"
   }
 ]
