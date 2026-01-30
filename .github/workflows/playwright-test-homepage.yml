@@ -1,8 +1,7 @@
 name: Run Brooks Test
 
 on:
-  schedule:
-    - cron: '30 14 * * *'  # 7:30 AM PDT
+  #schedule:cron: '30 14 * * *'  # 7:30 AM PDT
   workflow_dispatch:       # allows manual run
 
 jobs:
