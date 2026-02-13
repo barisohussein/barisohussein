@@ -1,0 +1,230 @@
+[
+  {
+    "id": "brooks-homepage",
+    "name": "Homepage",
+    "type": "Web Page",
+    "endpoint": "https://www.brooksrunning.com/",
+    "status": "healthy",
+    "latency": 287.5,
+    "availability": 99.97,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Homepage loading successfully. All hero images and navigation rendering correctly. Page load within acceptable limits.",
+    "businessMetrics": {
+      "pageLoadTime": 287,
+      "heroImageLoad": 145,
+      "navigationLoad": 92,
+      "bounceRate": 12.3,
+      "conversionRate": 3.2
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-pdp",
+    "name": "Product Detail Pages",
+    "type": "Web Page",
+    "endpoint": "/en_us/products/<product-id>/",
+    "status": "healthy",
+    "latency": 312.8,
+    "availability": 99.94,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Product pages loading correctly. Image carousel, size selector, and add-to-cart functionality operational.",
+    "businessMetrics": {
+      "pageLoadTime": 312,
+      "imageCarouselLoad": 156,
+      "sizeAvailability": 98.5,
+      "addToCartSuccessRate": 99.1,
+      "productReviewsLoad": 89
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-category",
+    "name": "Category Pages",
+    "type": "Web Page",
+    "endpoint": "/en_us/c/<category-id>/",
+    "status": "healthy",
+    "latency": 345.2,
+    "availability": 99.92,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Category pages rendering properly. Product grid, filters, and sort functionality working as expected.",
+    "businessMetrics": {
+      "pageLoadTime": 345,
+      "productGridLoad": 198,
+      "filterLoad": 87,
+      "sortFunctionality": 99.8,
+      "productsDisplayed": 48
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-search",
+    "name": "Search Functionality",
+    "type": "Web Page",
+    "endpoint": "/en_us/search?q=<term>",
+    "status": "degraded",
+    "latency": 456.3,
+    "availability": 98.87,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Search experiencing slightly elevated response times. Autocomplete working but search results page slower than baseline. Investigating potential Elasticsearch optimization.",
+    "businessMetrics": {
+      "searchLatency": 456,
+      "autocompleteSpeed": 123,
+      "resultsAccuracy": 94.2,
+      "zeroResultsRate": 8.3,
+      "searchSuccessRate": 91.7
+    },
+    "performanceData": [],
+    "incidents": [
+      {
+        "id": "inc-search-001",
+        "severity": "warning",
+        "message": "Search latency spike detected - investigating Elasticsearch cluster",
+        "timestamp": "2026-02-01T18:45:00Z"
+      }
+    ]
+  },
+  {
+    "id": "brooks-cart-api",
+    "name": "Cart API",
+    "type": "API",
+    "endpoint": "/s/-/dw/data/v23_3/baskets/<basket_id>",
+    "status": "healthy",
+    "latency": 89.4,
+    "availability": 99.98,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Cart API performing optimally. Add to cart, update quantity, and remove operations all completing successfully.",
+    "businessMetrics": {
+      "apiLatency": 89,
+      "addToCartSuccessRate": 99.6,
+      "updateCartSuccessRate": 99.8,
+      "cartErrorRate": 0.2,
+      "averageCartValue": 187.45,
+      "cartAbandonmentRate": 68.2
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-checkout-start",
+    "name": "Guest Checkout Start",
+    "type": "Web Page",
+    "endpoint": "/en_us/check-out/check-out-process/",
+    "status": "healthy",
+    "latency": 423.1,
+    "availability": 99.91,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Checkout initialization working properly. Guest checkout forms loading correctly, payment provider integration stable.",
+    "businessMetrics": {
+      "pageLoadTime": 423,
+      "formLoadTime": 156,
+      "checkoutStartRate": 24.3,
+      "guestCheckoutRate": 67.8,
+      "checkoutErrorRate": 1.2
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-checkout-shipping",
+    "name": "Checkout Shipping Stage",
+    "type": "Web Page",
+    "endpoint": "/en_us/check-out/check-out-process/?stage=shipping",
+    "status": "healthy",
+    "latency": 398.7,
+    "availability": 99.89,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Shipping stage performing well. Address validation, shipping method selection, and UPS/FedEx rate calculation all operational.",
+    "businessMetrics": {
+      "pageLoadTime": 398,
+      "addressValidationTime": 145,
+      "shippingRateCalculation": 234,
+      "shippingMethodSelectionRate": 98.9,
+      "addressErrorRate": 2.1
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-order-api",
+    "name": "Order API",
+    "type": "API",
+    "endpoint": "/s/-/dw/data/v23_3/orders/<order_no>",
+    "status": "down",
+    "latency": 1247.3,
+    "availability": 94.23,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "CRITICAL: Order API experiencing significant latency and timeout issues. Payment processing delays detected. Engineering team investigating database connection pool exhaustion.",
+    "businessMetrics": {
+      "apiLatency": 1247,
+      "orderPlacementSuccessRate": 94.2,
+      "paymentProcessingTime": 892,
+      "orderFailureRate": 5.8,
+      "timeoutRate": 4.3,
+      "revenueImpact": 12450.00
+    },
+    "performanceData": [],
+    "incidents": [
+      {
+        "id": "inc-order-001",
+        "severity": "critical",
+        "message": "Order API timeout rate elevated - payment processing failures detected",
+        "timestamp": "2026-02-01T19:15:00Z"
+      },
+      {
+        "id": "inc-order-002",
+        "severity": "critical",
+        "message": "Database connection pool exhaustion - 503 errors on order submission",
+        "timestamp": "2026-02-01T18:52:00Z"
+      },
+      {
+        "id": "inc-order-003",
+        "severity": "warning",
+        "message": "Payment gateway latency spike - investigating with payment processor",
+        "timestamp": "2026-02-01T18:30:00Z"
+      }
+    ]
+  },
+  {
+    "id": "brooks-account",
+    "name": "Customer Account",
+    "type": "Web Page",
+    "endpoint": "/en_us/account",
+    "status": "healthy",
+    "latency": 367.2,
+    "availability": 99.93,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Account pages loading successfully. Order history, saved addresses, and profile management all functional.",
+    "businessMetrics": {
+      "pageLoadTime": 367,
+      "orderHistoryLoad": 234,
+      "profileUpdateSuccessRate": 99.4,
+      "loginSuccessRate": 97.8,
+      "accountCreationRate": 15.2
+    },
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "brooks-promotions-api",
+    "name": "Promotions API",
+    "type": "API",
+    "endpoint": "/s/-/dw/data/v23_3/promotions",
+    "status": "healthy",
+    "latency": 76.8,
+    "availability": 99.96,
+    "lastCheck": "2026-02-01T19:30:00Z",
+    "diagnostic": "Promotions API responding quickly. Discount calculations, coupon validation, and promotional pricing all working correctly.",
+    "businessMetrics": {
+      "apiLatency": 76,
+      "promoCodeSuccessRate": 98.7,
+      "discountCalculationTime": 45,
+      "activePromotions": 23,
+      "promoCodeRedemptionRate": 34.5
+    },
+    "performanceData": [],
+    "incidents": []
+  }
+]

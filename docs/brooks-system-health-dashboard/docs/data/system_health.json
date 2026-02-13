@@ -1,0 +1,94 @@
+[
+  {
+    "id": "sys-001",
+    "name": "API Gateway",
+    "type": "API",
+    "status": "healthy",
+    "latency": 45.3,
+    "availability": 99.98,
+    "lastCheck": "2026-02-01T12:00:00Z",
+    "diagnostic": "All systems operating within normal parameters. Response times are optimal.",
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "sys-002",
+    "name": "Auth Service",
+    "type": "Service",
+    "status": "healthy",
+    "latency": 32.1,
+    "availability": 99.95,
+    "lastCheck": "2026-02-01T12:00:00Z",
+    "diagnostic": "Performance metrics are stable. No anomalies detected in the last hour.",
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "sys-003",
+    "name": "Database Primary",
+    "type": "Database",
+    "status": "degraded",
+    "latency": 125.7,
+    "availability": 98.45,
+    "lastCheck": "2026-02-01T12:00:00Z",
+    "diagnostic": "Elevated response times detected. Monitoring for potential issues.",
+    "performanceData": [],
+    "incidents": [
+      {
+        "id": "inc-001",
+        "severity": "warning",
+        "message": "High memory usage detected",
+        "timestamp": "2026-02-01T10:30:00Z"
+      }
+    ]
+  },
+  {
+    "id": "sys-004",
+    "name": "Cache Layer",
+    "type": "Cache",
+    "status": "healthy",
+    "latency": 12.5,
+    "availability": 99.99,
+    "lastCheck": "2026-02-01T12:00:00Z",
+    "diagnostic": "System health is excellent. All endpoints responding as expected.",
+    "performanceData": [],
+    "incidents": []
+  },
+  {
+    "id": "sys-005",
+    "name": "Message Queue",
+    "type": "Queue",
+    "status": "down",
+    "latency": 523.8,
+    "availability": 92.13,
+    "lastCheck": "2026-02-01T12:00:00Z",
+    "diagnostic": "Critical: Service experiencing significant disruptions. Team has been notified.",
+    "performanceData": [],
+    "incidents": [
+      {
+        "id": "inc-002",
+        "severity": "critical",
+        "message": "Connection pool exhausted",
+        "timestamp": "2026-02-01T11:45:00Z"
+      },
+      {
+        "id": "inc-003",
+        "severity": "critical",
+        "message": "Service timeout detected",
+        "timestamp": "2026-02-01T09:15:00Z"
+      }
+    ]
+  },
+  {
+    "id": "sys-006",
+    "name": "Storage Service",
+    "type": "Storage",
+    "status": "healthy",
+    "latency": 67.2,
+    "availability": 99.92,
+    "lastCheck": "2026-02-01T12:00:00Z",
+    "diagnostic": "All systems operating within normal parameters. Response times are optimal.",
+    "performanceData": [],
+    "incidents": []
+  }
+]
