@@ -1,0 +1,25 @@
+{
+    "lastUpdated": "2026-02-01T06:45:00Z",
+    "systems": {
+      "checkout": {
+        "name": "Checkout",
+        "status": "degraded",
+        "latency": 820,
+        "latencyTrend": "up",
+        "availability": 99.21,
+        "lastCheck": "2026-02-01T06:44:00Z",
+        "customerJourney": "Checkout → Payment → Order Confirmation",
+        "impactLevel": "High",
+        "diagnostic": "Payment gateway latency elevated. No failures detected.",
+        "incidents": [
+          {
+            "id": "inc-1",
+            "severity": "warning",
+            "message": "Payment response times increased",
+            "timestamp": "2026-02-01T06:20:00Z"
+          }
+        ]
+      }
+    }
+  }
+  

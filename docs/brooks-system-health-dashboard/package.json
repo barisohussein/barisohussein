@@ -1,0 +1,37 @@
+{
+  "name": "system-health-dashboard",
+  "version": "2.0.0",
+  "description": "Enterprise-grade system health monitoring dashboard with real-time status updates and performance charts",
+  "main": "scripts/healthCheck.js",
+  "scripts": {
+    "check": "node scripts/healthCheck.js",
+    "dev": "npx serve docs",
+    "build": "echo 'No build step required - static files'",
+    "test": "node scripts/healthCheck.js"
+  },
+  "keywords": [
+    "monitoring",
+    "health-check",
+    "dashboard",
+    "system-status",
+    "observability",
+    "sre",
+    "devops"
+  ],
+  "author": "Brooks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/system-health-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/system-health-dashboard/issues"
+  },
+  "homepage": "https://github.com/yourusername/system-health-dashboard#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

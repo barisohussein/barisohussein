@@ -1,0 +1,61 @@
+z<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrooksRunning.com Health Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="dashboard-title">🏃 BrooksRunning.com Health Dashboard</h1>
+                <div class="header-actions">
+                    <div class="status-summary">
+                        <span class="status-badge status-healthy" id="healthyCount">0 Healthy</span>
+                        <span class="status-badge status-degraded" id="degradedCount">0 Degraded</span>
+                        <span class="status-badge status-down" id="downCount">0 Down</span>
+                    </div>
+                    <button class="refresh-btn" id="refreshBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="last-updated" id="lastUpdated">Last updated: --</div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="systems-grid" id="systemsGrid">
+                <!-- System cards will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Drawer Panel -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer-panel" id="drawerPanel">
+        <div class="drawer-header">
+            <h2 class="drawer-title" id="drawerTitle">System Details</h2>
+            <button class="drawer-close" id="drawerClose">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="drawer-content" id="drawerContent">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

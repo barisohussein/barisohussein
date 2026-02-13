@@ -1,0 +1,199 @@
+name: System Health Check
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+  
+  # Run on push to main
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/healthCheck.js'
+      - '.github/workflows/health.yml'
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run health checks
+        id: health_check
+        run: |
+          node scripts/healthCheck.js
+          echo "check_status=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+      
+      - name: Commit and push results
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Add the updated JSON files
+          git add data/system_health.json data/health_history.json || true
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Update system health data - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            git push
+          fi
+      
+      - name: Upload health report
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-report-${{ github.run_number }}
+          path: |
+            data/system_health.json
+            data/health_history.json
+          retention-days: 30
+      
+      - name: Create status badge
+        run: |
+          mkdir -p badges
+          
+          # Count statuses
+          HEALTHY=$(jq '[.[] | select(.status=="healthy")] | length' data/system_health.json)
+          TOTAL=$(jq 'length' data/system_health.json)
+          
+          # Determine badge color
+          if [ "$HEALTHY" -eq "$TOTAL" ]; then
+            COLOR="brightgreen"
+            MESSAGE="all systems operational"
+          elif [ "$HEALTHY" -gt $((TOTAL / 2)) ]; then
+            COLOR="yellow"
+            MESSAGE="partial outage"
+          else
+            COLOR="red"
+            MESSAGE="major outage"
+          fi
+          
+          # Create badge JSON
+          cat > badges/health.json << EOF
+          {
+            "schemaVersion": 1,
+            "label": "status",
+            "message": "$MESSAGE",
+            "color": "$COLOR"
+          }
+          EOF
+      
+      - name: Send Slack notification (on failure)
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "⚠️ System Health Check Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "⚠️ System Health Alert"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*One or more systems are experiencing issues*\n\nWorkflow: ${{ github.workflow }}\nRun: ${{ github.run_number }}"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Dashboard"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      
+      - name: Comment on commit (if issues found)
+        if: steps.health_check.outputs.check_status != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const healthData = JSON.parse(fs.readFileSync('data/system_health.json', 'utf8'));
+            
+            const issues = healthData.filter(s => s.status !== 'healthy');
+            
+            if (issues.length > 0) {
+              let comment = '## 🚨 System Health Issues Detected\n\n';
+              
+              issues.forEach(system => {
+                const emoji = system.status === 'down' ? '❌' : '⚠️';
+                comment += `${emoji} **${system.name}** (${system.type})\n`;
+                comment += `   - Status: ${system.status}\n`;
+                comment += `   - Latency: ${Math.round(system.latency)}ms\n`;
+                comment += `   - Diagnostic: ${system.diagnostic}\n\n`;
+              });
+              
+              comment += `\n[View Full Dashboard](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)`;
+              
+              github.rest.repos.createCommitComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: context.sha,
+                body: comment
+              });
+            }
+
+  deploy-dashboard:
+    needs: health-check
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
