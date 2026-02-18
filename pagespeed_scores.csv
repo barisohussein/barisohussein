@@ -938,5 +938,7 @@ timestamp,url,strategy,performance,test_type
 2026-02-16 13:10:48,https://www.brooksrunning.com/en_us,mobile,28.000000000000004,mobile_fast
 2026-02-17 02:26:51,https://www.brooksrunning.com/en_us,mobile,29.0,mobile_slow
 2026-02-17 02:26:51,https://www.brooksrunning.com/en_us,mobile,29.0,mobile_fast
-2026-02-17 13:10:23,https://www.brooksrunning.com/en_us,mobile,28.999999999999996,mobile_slow
-2026-02-17 13:10:23,https://www.brooksrunning.com/en_us,mobile,28.999999999999996,mobile_fast
+2026-02-17 13:10:23,https://www.brooksrunning.com/en_us,mobile,29.0,mobile_slow
+2026-02-17 13:10:23,https://www.brooksrunning.com/en_us,mobile,29.0,mobile_fast
+2026-02-18 02:29:52,https://www.brooksrunning.com/en_us,mobile,38.0,mobile_slow
+2026-02-18 02:29:52,https://www.brooksrunning.com/en_us,mobile,38.0,mobile_fast
