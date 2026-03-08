@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-"""
-Brooks DPO — Website Health Monitor
-Simple version optimized for GitHub Actions
-"""
 
 import csv
 import os
 import time
 import yaml
+import json
 from datetime import datetime, timezone
 
 from selenium import webdriver
@@ -21,9 +18,14 @@ HEADERS = [
     "timestamp",
     "name",
     "url",
-    "status",
+    "page_type",
+    "status_code",
     "response_time_ms",
-    "error"
+    "is_up",
+    "keywords_checked",
+    "keywords_passed",
+    "keywords_failed",
+    "error",
 ]
 
 
@@ -39,26 +41,33 @@ def make_driver():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
 
-    driver = webdriver.Chrome(options=options)
-    return driver
+    return webdriver.Chrome(options=options)
 
 
 def check_url(driver, entry):
 
+    url = entry["url"]
+    keywords = entry.get("keywords", [])
+
     start = time.time()
 
     result = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "name": entry["name"],
-        "url": entry["url"],
-        "status": "DOWN",
+        "url": url,
+        "page_type": entry.get("page_type", ""),
+        "status_code": "",
         "response_time_ms": "",
-        "error": ""
+        "is_up": "false",
+        "keywords_checked": json.dumps(keywords),
+        "keywords_passed": "[]",
+        "keywords_failed": "[]",
+        "error": "",
     }
 
     try:
 
-        driver.get(entry["url"])
+        driver.get(url)
 
         WebDriverWait(driver, 20).until(
             lambda d: d.execute_script("return document.readyState") == "complete"
@@ -67,10 +76,24 @@ def check_url(driver, entry):
         elapsed = int((time.time() - start) * 1000)
 
         result["response_time_ms"] = elapsed
-        result["status"] = "UP"
+        result["status_code"] = 200
+
+        page = driver.page_source.lower()
+
+        passed = [k for k in keywords if k.lower() in page]
+        failed = [k for k in keywords if k.lower() not in page]
+
+        result["keywords_passed"] = json.dumps(passed)
+        result["keywords_failed"] = json.dumps(failed)
+
+        result["is_up"] = "true" if not failed else "false"
+
+        if failed:
+            result["error"] = f"Missing keywords: {', '.join(failed)}"
 
     except Exception as e:
 
+        result["status_code"] = 500
         result["error"] = str(e)[:120]
 
     return result
@@ -81,6 +104,7 @@ def ensure_csv():
     os.makedirs(os.path.dirname(RESULTS_FILE), exist_ok=True)
 
     if not os.path.exists(RESULTS_FILE):
+
         with open(RESULTS_FILE, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=HEADERS)
             writer.writeheader()
@@ -109,7 +133,8 @@ def main():
             results.append(r)
 
             print(
-                f"  {r['status']} | {r['response_time_ms']}ms {r['error']}"
+                f"{'UP' if r['is_up']=='true' else 'DOWN'} "
+                f"[{r['response_time_ms']}ms]"
             )
 
     finally:
@@ -123,7 +148,7 @@ def main():
         for r in results:
             writer.writerow(r)
 
-    up = sum(1 for r in results if r["status"] == "UP")
+    up = sum(1 for r in results if r["is_up"] == "true")
 
     print(f"\n{up}/{len(results)} healthy")
 
