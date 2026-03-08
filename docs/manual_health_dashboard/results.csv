@@ -6,3 +6,30 @@ timestamp,name,url,page_type,status_code,response_time_ms,is_up,keywords_checked
 2026-03-08T19:28:41Z,Search,https://www.brooksrunning.com/en_us/search,SEARCH,200,759,false,"[""ghost""]","[""ghost""]",[],"Search failed: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""input[type='search']""}
   (Sessi"
 2026-03-08T19:28:42Z,Ghost 16 PDP,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,PDP,200,789,true,"[""cart""]","[""cart""]",[],
+2026-03-08T19:41:38Z,Homepage,https://www.brooksrunning.com/en_us/,HOME,200,2579,true,"[""Brooks"", ""Run Happy""]","[""Brooks"", ""Run Happy""]",[],
+2026-03-08T19:41:41Z,Men's Running Shoes PLP,https://www.brooksrunning.com/en_us/mens-running-shoes/,PLP,200,2294,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T19:41:44Z,Women's Running Shoes PLP,https://www.brooksrunning.com/en_us/womens-running-shoes/,PLP,200,1859,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T19:41:47Z,Shoe Finder,https://www.brooksrunning.com/en_us/shoefinder/,SHOEFINDER,200,1165,false,[],[],[],"Selector check failed: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""button[data-finder-type=""button_start""]""}
+  (Session info: chrome=145.0.7632.116); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x55cf6241bb6a <unknown>
+#1 0x55cf61e2ea32 <unknown>
+#2 0x55cf61e83d66 <unknown>
+#3 0x55cf61e83fa1 <unknown>
+#4 0x55cf61ecf144 <unknown>
+#5 0x55cf61ecc369 <unknown>
+#6 0x55cf61e75c0f <unknown>
+#7 0x55cf61e769d1 <unknown>
+#8 0x55cf623e06b9 <unknown>
+#9 0x55cf623e35c1 <unknown>
+#10 0x55cf623cce29 <unknown>
+#11 0x55cf623e417e <unknown>
+#12 0x55cf623b34b0 <unknown>
+#13 0x55cf62408578 <unknown>
+#14 0x55cf6240874b <unknown>
+#15 0x55cf6241a1a3 <unknown>
+#16 0x7f63d689caa4 <unknown>
+#17 0x7f63d6929c6c <unknown>
+"
+2026-03-08T19:41:48Z,Search,https://www.brooksrunning.com/en_us/search,SEARCH,200,605,true,"[""ghost""]","[""ghost""]",[],
+2026-03-08T19:41:49Z,Ghost 16 PDP,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,PDP,200,525,true,"[""cart""]","[""cart""]",[],
