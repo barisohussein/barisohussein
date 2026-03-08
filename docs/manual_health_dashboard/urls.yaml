@@ -1,0 +1,9 @@
+urls:
+  - name: Homepage
+    url: https://www.brooksrunning.com/
+
+  - name: Shoe Finder
+    url: https://www.brooksrunning.com/en_us/shoefinder/
+
+  - name: Ghost 16
+    url: https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/
