@@ -1,1 +1,8 @@
 timestamp,name,url,page_type,status_code,response_time_ms,is_up,keywords_checked,keywords_passed,keywords_failed,error
+2026-03-08T19:28:31Z,Homepage,https://www.brooksrunning.com/en_us/,HOME,200,2358,true,"[""Brooks"", ""Run Happy""]","[""Brooks"", ""Run Happy""]",[],
+2026-03-08T19:28:34Z,Men's Running Shoes PLP,https://www.brooksrunning.com/en_us/mens-running-shoes/,PLP,200,2145,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T19:28:37Z,Women's Running Shoes PLP,https://www.brooksrunning.com/en_us/womens-running-shoes/,PLP,200,2067,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T19:28:39Z,Shoe Finder,https://www.brooksrunning.com/en_us/shoefinder/,SHOEFINDER,200,1642,false,"[""shoe""]","[""shoe""]",[],"ShoeFinder failed: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""button[data-finder-type=""button"
+2026-03-08T19:28:41Z,Search,https://www.brooksrunning.com/en_us/search,SEARCH,200,759,false,"[""ghost""]","[""ghost""]",[],"Search failed: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""input[type='search']""}
+  (Sessi"
+2026-03-08T19:28:42Z,Ghost 16 PDP,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,PDP,200,789,true,"[""cart""]","[""cart""]",[],
