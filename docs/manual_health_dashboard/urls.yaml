@@ -24,8 +24,7 @@ urls:
   - name: Shoe Finder
     url: https://www.brooksrunning.com/en_us/shoefinder/
     page_type: SHOEFINDER
-    keywords:
-      - shoe
+    selector: button[data-finder-type="button_start"]
 
   - name: Search
     url: https://www.brooksrunning.com/en_us/search
