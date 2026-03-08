@@ -10,38 +10,35 @@ permissions:
 
 jobs:
   check-websites:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Chrome (stable)
+      - name: Install Chrome
         run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update -q
+          sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
-          pip install \
-            pyyaml \
-            undetected-chromedriver \
-            selenium
+          pip install selenium pyyaml
 
-      - name: Run website checks
+      - name: Run health checks
         run: python docs/manual_health_dashboard/check_health.py
 
-      - name: Commit updated results
+      - name: Commit results
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git add docs/manual_health_dashboard/results.csv
-          git diff --staged --quiet || git commit -m "chore: health check [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git diff --staged --quiet || git commit -m "health check update"
           git push
