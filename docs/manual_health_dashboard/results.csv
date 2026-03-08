@@ -195,3 +195,30 @@ Stacktrace:
 "
 2026-03-08T22:17:32Z,Search,https://www.brooksrunning.com/en_us/search,SEARCH,200,703,true,"[""ghost""]","[""ghost""]",[],
 2026-03-08T22:17:33Z,Ghost 16 PDP,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,PDP,200,979,true,"[""cart""]","[""cart""]",[],
+2026-03-08T22:47:45Z,Homepage,https://www.brooksrunning.com/en_us/,HOME,200,2508,true,"[""Brooks"", ""Run Happy""]","[""Brooks"", ""Run Happy""]",[],
+2026-03-08T22:47:47Z,Men's Running Shoes PLP,https://www.brooksrunning.com/en_us/mens-running-shoes/,PLP,200,2110,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T22:47:50Z,Women's Running Shoes PLP,https://www.brooksrunning.com/en_us/womens-running-shoes/,PLP,200,2070,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T22:47:53Z,Shoe Finder,https://www.brooksrunning.com/en_us/shoefinder/,SHOEFINDER,200,1384,false,[],[],[],"Selector check failed: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""button[data-finder-type=""button_start""]""}
+  (Session info: chrome=145.0.7632.116); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x561431c69b6a <unknown>
+#1 0x56143167ca32 <unknown>
+#2 0x5614316d1d66 <unknown>
+#3 0x5614316d1fa1 <unknown>
+#4 0x56143171d144 <unknown>
+#5 0x56143171a369 <unknown>
+#6 0x5614316c3c0f <unknown>
+#7 0x5614316c49d1 <unknown>
+#8 0x561431c2e6b9 <unknown>
+#9 0x561431c315c1 <unknown>
+#10 0x561431c1ae29 <unknown>
+#11 0x561431c3217e <unknown>
+#12 0x561431c014b0 <unknown>
+#13 0x561431c56578 <unknown>
+#14 0x561431c5674b <unknown>
+#15 0x561431c681a3 <unknown>
+#16 0x7f6b72a9caa4 <unknown>
+#17 0x7f6b72b29c6c <unknown>
+"
+2026-03-08T22:47:54Z,Search,https://www.brooksrunning.com/en_us/search,SEARCH,200,703,true,"[""ghost""]","[""ghost""]",[],
+2026-03-08T22:47:55Z,Ghost 16 PDP,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,PDP,200,721,true,"[""cart""]","[""cart""]",[],
