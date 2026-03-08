@@ -99,6 +99,17 @@ def check_add_to_cart(driver):
 
 def check_url(driver, entry):
 
+    selector = entry.get("selector")
+
+    if selector:
+    
+        ok, err = check_selector(driver, selector)
+
+    if not ok:
+        result["is_up"] = "false"
+        result["error"] = f"Selector check failed: {err}"
+        return result
+
     url = entry["url"]
     keywords = entry.get("keywords", [])
 
