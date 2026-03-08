@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Brooks DPO — Website Health Monitor
+Runs in GitHub Actions with headless Chrome
+"""
 
 import csv
 import os
@@ -10,6 +14,8 @@ from datetime import datetime, timezone
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+
 
 RESULTS_FILE = "docs/manual_health_dashboard/results.csv"
 URLS_FILE = "docs/manual_health_dashboard/urls.yaml"
@@ -44,12 +50,60 @@ def make_driver():
     return webdriver.Chrome(options=options)
 
 
+def check_shoefinder(driver):
+
+    try:
+        button = driver.find_element(By.CSS_SELECTOR, 'button[data-finder-type="button_start"]')
+
+        if button.is_displayed() and button.is_enabled():
+            button.click()
+            return True, ""
+
+        return False, "Button not clickable"
+
+    except Exception as e:
+        return False, str(e)[:120]
+
+
+def check_search(driver):
+
+    try:
+
+        search_box = driver.find_element(By.CSS_SELECTOR, "input[type='search']")
+
+        search_box.clear()
+        search_box.send_keys("ghost")
+        search_box.submit()
+
+        WebDriverWait(driver, 10).until(
+            lambda d: "ghost" in d.page_source.lower()
+        )
+
+        return True, ""
+
+    except Exception as e:
+        return False, str(e)[:120]
+
+
+def check_add_to_cart(driver):
+
+    try:
+
+        button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+
+        if button.is_displayed():
+            return True, ""
+
+        return False, "Add to cart missing"
+
+    except Exception as e:
+        return False, str(e)[:120]
+
+
 def check_url(driver, entry):
 
     url = entry["url"]
     keywords = entry.get("keywords", [])
-
-    start = time.time()
 
     result = {
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -64,6 +118,8 @@ def check_url(driver, entry):
         "keywords_failed": "[]",
         "error": "",
     }
+
+    start = time.time()
 
     try:
 
@@ -91,6 +147,32 @@ def check_url(driver, entry):
         if failed:
             result["error"] = f"Missing keywords: {', '.join(failed)}"
 
+        page_type = entry.get("page_type")
+
+        if page_type == "SHOEFINDER":
+
+            ok, err = check_shoefinder(driver)
+
+            if not ok:
+                result["is_up"] = "false"
+                result["error"] = f"ShoeFinder failed: {err}"
+
+        if page_type == "SEARCH":
+
+            ok, err = check_search(driver)
+
+            if not ok:
+                result["is_up"] = "false"
+                result["error"] = f"Search failed: {err}"
+
+        if page_type == "PDP":
+
+            ok, err = check_add_to_cart(driver)
+
+            if not ok:
+                result["is_up"] = "false"
+                result["error"] = f"Add-to-cart failed: {err}"
+
     except Exception as e:
 
         result["status_code"] = 500
@@ -104,7 +186,6 @@ def ensure_csv():
     os.makedirs(os.path.dirname(RESULTS_FILE), exist_ok=True)
 
     if not os.path.exists(RESULTS_FILE):
-
         with open(RESULTS_FILE, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=HEADERS)
             writer.writeheader()
@@ -134,7 +215,7 @@ def main():
 
             print(
                 f"{'UP' if r['is_up']=='true' else 'DOWN'} "
-                f"[{r['response_time_ms']}ms]"
+                f"[{r['response_time_ms']}ms] {r['error']}"
             )
 
     finally:
