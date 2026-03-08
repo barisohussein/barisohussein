@@ -59,3 +59,6 @@ timestamp,name,url,page_type,status_code,response_time_ms,is_up,keywords_checked
 2026-03-07T22:52:12Z,Cart,https://www.brooksrunning.com/en_us/cart,CART,,,false,"[""Cart"", ""Brooks""]",[],[],There is no such driver by url https://chromedriver.storage.googleapis.com/145.0.7632/chromedriver_mac_arm64.zip
 2026-03-07T22:52:12Z,Search Results,https://www.brooksrunning.com/en_us/search?q=ghost,SEARCH,,,false,"[""Ghost""]",[],[],There is no such driver by url https://chromedriver.storage.googleapis.com/145.0.7632/chromedriver_mac_arm64.zip
 2026-03-07T22:52:13Z,Shoe Finder,https://www.brooksrunning.com/en_us/shoe-finder/,CONTENT,,,false,"[""Shoe Finder"", ""Brooks""]",[],[],There is no such driver by url https://chromedriver.storage.googleapis.com/145.0.7632/chromedriver_mac_arm64.zip
+2026-03-08T19:09:05.213759+00:00,Homepage,https://www.brooksrunning.com/,UP,1579,
+2026-03-08T19:09:06.793168+00:00,Shoe Finder,https://www.brooksrunning.com/en_us/shoefinder/,UP,1235,
+2026-03-08T19:09:08.028280+00:00,Ghost 16,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,UP,725,
