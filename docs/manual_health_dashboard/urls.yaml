@@ -20,3 +20,21 @@ urls:
     keywords:
       - Brooks
       - running shoes
+
+  - name: Shoe Finder
+    url: https://www.brooksrunning.com/en_us/shoefinder/
+    page_type: SHOEFINDER
+    keywords:
+      - shoe
+
+  - name: Search
+    url: https://www.brooksrunning.com/en_us/search
+    page_type: SEARCH
+    keywords:
+      - ghost
+
+  - name: Ghost 16 PDP
+    url: https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/
+    page_type: PDP
+    keywords:
+      - cart
