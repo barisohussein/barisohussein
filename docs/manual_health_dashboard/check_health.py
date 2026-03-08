@@ -49,22 +49,19 @@ def make_driver():
 
     return webdriver.Chrome(options=options)
 
-
-def check_shoefinder(driver):
+def check_selector(driver, selector):
 
     try:
-        button = driver.find_element(By.CSS_SELECTOR, 'button[data-finder-type="button_start"]')
+        element = driver.find_element(By.CSS_SELECTOR, selector)
 
-        if button.is_displayed() and button.is_enabled():
-            button.click()
+        if element.is_displayed():
             return True, ""
 
-        return False, "Button not clickable"
+        return False, "Element found but not visible"
 
     except Exception as e:
-        return False, str(e)[:120]
-
-
+        return False, str(e)
+        
 def check_search(driver):
 
     try:
