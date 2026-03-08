@@ -1,9 +1,22 @@
 urls:
+
   - name: Homepage
-    url: https://www.brooksrunning.com/
+    url: https://www.brooksrunning.com/en_us/
+    page_type: HOME
+    keywords:
+      - Brooks
+      - Run Happy
 
-  - name: Shoe Finder
-    url: https://www.brooksrunning.com/en_us/shoefinder/
+  - name: Men's Running Shoes PLP
+    url: https://www.brooksrunning.com/en_us/mens-running-shoes/
+    page_type: PLP
+    keywords:
+      - Brooks
+      - running shoes
 
-  - name: Ghost 16
-    url: https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/
+  - name: Women's Running Shoes PLP
+    url: https://www.brooksrunning.com/en_us/womens-running-shoes/
+    page_type: PLP
+    keywords:
+      - Brooks
+      - running shoes
