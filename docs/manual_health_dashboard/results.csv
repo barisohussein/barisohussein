@@ -62,3 +62,6 @@ timestamp,name,url,page_type,status_code,response_time_ms,is_up,keywords_checked
 2026-03-08T19:09:05.213759+00:00,Homepage,https://www.brooksrunning.com/,UP,1579,
 2026-03-08T19:09:06.793168+00:00,Shoe Finder,https://www.brooksrunning.com/en_us/shoefinder/,UP,1235,
 2026-03-08T19:09:08.028280+00:00,Ghost 16,https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-16/,UP,725,
+2026-03-08T19:15:06Z,Homepage,https://www.brooksrunning.com/en_us/,HOME,200,1090,true,"[""Brooks"", ""Run Happy""]","[""Brooks"", ""Run Happy""]",[],
+2026-03-08T19:15:08Z,Men's Running Shoes PLP,https://www.brooksrunning.com/en_us/mens-running-shoes/,PLP,200,2344,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
+2026-03-08T19:15:10Z,Women's Running Shoes PLP,https://www.brooksrunning.com/en_us/womens-running-shoes/,PLP,200,4047,true,"[""Brooks"", ""running shoes""]","[""Brooks"", ""running shoes""]",[],
