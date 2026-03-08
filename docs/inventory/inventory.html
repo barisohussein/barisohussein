@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brooks Running — DPO Operational Coverage Inventory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --blue:#1A66A0; --blue-dark:#124e7a; --blue-light:#e8f2fa; --blue-mid:#d0e7f5;
+  --bg:#f0f4f8; --surface:#fff; --s2:#f7f9fc; --border:#dde4ec; --bdk:#c0ccd8;
+  --text:#0f1b2b; --tmid:#4a5e74; --tdim:#8a9cb0;
+  --green:#0a9160; --gbg:#e4f7f0; --gbd:#a8e4cc;
+  --amber:#c96f00; --abg:#fff7e6; --abd:#fcd99a;
+  --red:#c93030;   --rbg:#fdf0f0; --rbd:#f5b8b8;
+  --purple:#6d28d9; --pbg:#f2effe; --pbd:#d4c3f9;
+  --teal:#0e7490;   --tbg:#e0f8ff; --tbd:#7fe0f4;
+  --slate:#475569;  --sbg:#f1f5f9; --sbd:#cbd5e1;
+  --orange:#c2410c; --obg:#fff7ed; --obd:#fdba74;
+  --font-d:'Barlow Condensed',sans-serif;
+  --font-b:'Barlow',sans-serif;
+  --r:8px;
+  --sh:0 1px 4px rgba(0,0,0,.07);
+  --shm:0 4px 16px rgba(0,0,0,.10);
+  --shl:0 8px 32px rgba(0,0,0,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);min-height:100vh;}
+button{cursor:pointer;font-family:var(--font-b);}
+input,select,textarea{font-family:var(--font-b);}
+
+/* ── HEADER ──────────────────────────────────────────── */
+header{
+  background:var(--blue);height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 16px rgba(26,102,160,.32);
+}
+.hl{display:flex;align-items:center;gap:16px;}
+.logo{font-family:var(--font-d);font-size:22px;font-weight:800;color:#fff;letter-spacing:.06em;}
+.hsep{width:1px;height:28px;background:rgba(255,255,255,.3);}
+.htitle{font-family:var(--font-d);font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.9);}
+.hright{display:flex;align-items:center;gap:8px;}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:var(--r);font-family:var(--font-d);font-size:12px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border:none;
+  transition:all .15s;white-space:nowrap;cursor:pointer;
+}
+.btn-white{background:#fff;color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.btn-white:hover{background:#e8f2fa;transform:translateY(-1px);}
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);}
+.btn-ghost:hover{background:rgba(255,255,255,.22);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:var(--blue-dark);}
+.btn-outline{background:var(--surface);color:var(--tmid);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--bdk);color:var(--text);}
+
+/* ── MAIN ─────────────────────────────────────────────── */
+main{max-width:1500px;margin:0 auto;padding:26px 32px 70px;}
+
+/* ── KPI SECTION ──────────────────────────────────────── */
+.kpi-sec{margin-bottom:18px;}
+.kpi-sec-lbl{
+  font-family:var(--font-d);font-size:11px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--tdim);
+  margin-bottom:8px;display:flex;align-items:center;gap:10px;
+}
+.kpi-sec-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+.kpi-sec-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.kpi-row{
+  display:grid;gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;box-shadow:var(--sh);
+}
+.r6{grid-template-columns:repeat(6,1fr);}
+.r7{grid-template-columns:repeat(7,1fr);}
+
+.kpi{
+  background:var(--surface);padding:14px 16px;
+  display:flex;flex-direction:column;gap:3px;
+  position:relative;overflow:hidden;
+}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.kb::before{background:var(--blue);}
+.kpi.kg::before{background:var(--green);}
+.kpi.ka::before{background:var(--amber);}
+.kpi.kp::before{background:var(--purple);}
+.kpi.kt::before{background:var(--teal);}
+.kpi.ks::before{background:var(--slate);}
+.kpi.ko::before{background:var(--orange);}
+.kpi.kr::before{background:var(--red);}
+
+.kpi-lbl{font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tdim);}
+.kpi-val{font-family:var(--font-d);font-size:30px;font-weight:800;line-height:1;margin:2px 0;}
+.vb{color:var(--blue);} .vg{color:var(--green);} .va{color:var(--amber);}
+.vp{color:var(--purple);} .vt{color:var(--teal);} .vs{color:var(--slate);}
+.vo{color:var(--orange);} .vr{color:var(--red);}
+.kpi-sub{font-size:11px;color:var(--tdim);line-height:1.3;}
+.kpi-bar{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden;}
+.kpi-bar-fill{height:100%;border-radius:2px;transition:width .6s;}
+
+/* ── TOOLBAR ──────────────────────────────────────────── */
+.toolbar{display:flex;align-items:center;gap:8px;margin:22px 0 14px;flex-wrap:wrap;}
+.sw{position:relative;flex:1;min-width:180px;max-width:280px;}
+.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--tdim);}
+.si{width:100%;padding:9px 12px 9px 33px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;}
+.si:focus{border-color:var(--blue);}
+.fs{padding:9px 11px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;}
+.fs:focus{border-color:var(--blue);}
+.tr{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.vtog{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.vb-btn{padding:8px 11px;background:var(--surface);border:none;color:var(--tdim);display:flex;align-items:center;transition:all .15s;}
+.vb-btn.on{background:var(--blue);color:#fff;}
+.vb-btn:not(.on):hover{background:var(--s2);}
+
+/* ── GROUP HEADER ────────────────────────────────────── */
+.gh{display:flex;align-items:center;gap:10px;margin:20px 0 9px;}
+.gl{font-family:var(--font-d);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tmid);white-space:nowrap;}
+.gline{flex:1;height:1px;background:var(--border);}
+.gcnt{font-family:var(--font-d);font-size:11px;font-weight:700;background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:99px;}
+
+/* ── CARD GRID ────────────────────────────────────────── */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:11px;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow .15s,transform .15s;}
+.card:hover{box-shadow:var(--shm);transform:translateY(-1px);}
+.ctbar{height:3px;}
+.cbody{padding:13px 14px 12px;}
+
+.chdr{display:flex;align-items:flex-start;justify-content:space-between;gap:7px;margin-bottom:8px;}
+.cbadges{display:flex;gap:4px;flex-wrap:wrap;}
+.cacts{display:flex;gap:3px;flex-shrink:0;}
+
+.badge{padding:2px 8px;border-radius:99px;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.tchip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+
+.ib{width:25px;height:25px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--tmid);display:flex;align-items:center;justify-content:center;transition:all .15s;text-decoration:none;}
+.ib:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+.ib.del:hover{border-color:var(--red);color:var(--red);background:var(--rbg);}
+
+.cname{font-family:var(--font-d);font-size:17px;font-weight:700;line-height:1.2;margin-bottom:4px;}
+.cdesc{font-size:12px;color:var(--tmid);line-height:1.5;margin-bottom:9px;}
+.cmeta{display:flex;flex-wrap:wrap;gap:5px;padding-top:8px;border-top:1px solid var(--s2);}
+.mc{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tdim);}
+
+.ap{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;font-family:var(--font-d);letter-spacing:.05em;text-transform:uppercase;}
+.ap.yes{background:var(--gbg);color:var(--green);border:1px solid var(--gbd);}
+.ap.no{background:var(--s2);color:var(--tdim);border:1px solid var(--border);}
+.ap .dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+/* Alert severity pill */
+.sev-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;font-family:var(--font-d);letter-spacing:.05em;text-transform:uppercase;}
+.sev-p1{background:#fdf0f0;color:#c93030;border:1px solid #f5b8b8;}
+.sev-p2{background:#fff7e6;color:#c96f00;border:1px solid #fcd99a;}
+
+.cpills{margin-top:7px;padding-top:7px;border-top:1px solid var(--s2);}
+.cplbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tdim);font-family:var(--font-d);margin-bottom:4px;}
+.cpw{display:flex;flex-wrap:wrap;gap:3px;}
+.cpill{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid);}
+/* Alert pills are orange-tinted */
+.cpill-alert{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--obg);color:var(--orange);border:1px solid var(--obd);}
+
+.cov{margin-top:5px;font-size:11px;color:var(--tmid);line-height:1.6;}
+.ctags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+.tag{padding:2px 6px;border-radius:4px;font-size:10px;background:var(--s2);color:var(--tmid);border:1px solid var(--border);}
+.cnotes{margin-top:6px;font-size:11px;color:var(--tdim);line-height:1.5;border-top:1px solid var(--s2);padding-top:6px;}
+
+/* ── TABLE VIEW ───────────────────────────────────────── */
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:auto;box-shadow:var(--sh);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{text-align:left;padding:10px 12px;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tdim);background:var(--s2);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#f5f9fc;}
+tbody td{padding:8px 12px;vertical-align:middle;}
+.tdn{font-weight:600;font-size:13px;white-space:nowrap;}
+.tda{display:flex;gap:3px;}
+.tdc{max-width:240px;}
+.ctag{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid);margin:1px;}
+.ctag-alert{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;background:var(--obg);color:var(--orange);border:1px solid var(--obd);margin:1px;}
+
+/* ── EMPTY ────────────────────────────────────────────── */
+.empty{text-align:center;padding:70px 20px;color:var(--tdim);}
+.eico{font-size:36px;margin-bottom:10px;}
+
+/* ── MODAL ────────────────────────────────────────────── */
+.backdrop{position:fixed;inset:0;background:rgba(8,18,30,.48);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.backdrop.open{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;box-shadow:var(--shl);transform:translateY(12px);transition:transform .2s;}
+.backdrop.open .modal{transform:translateY(0);}
+.mhdr{padding:17px 22px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1;}
+.mhdr h2{font-family:var(--font-d);font-size:18px;font-weight:700;}
+.mcls{width:27px;height:27px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--tmid);display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;}
+.mcls:hover{background:var(--rbg);border-color:var(--red);color:var(--red);}
+.mbody{padding:16px 22px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.s2c{grid-column:1/-1;}
+.field{display:flex;flex-direction:column;gap:4px;}
+.field label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tmid);}
+.field input,.field select,.field textarea{padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);}
+.field textarea{resize:vertical;min-height:60px;}
+.fh{font-size:10px;color:var(--tdim);}
+.mftr{padding:13px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:var(--surface);}
+
+/* ── CONFIRM ──────────────────────────────────────────── */
+.cbd{position:fixed;inset:0;background:rgba(8,18,30,.5);z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s;}
+.cbd.open{opacity:1;pointer-events:all;}
+.cbox{background:var(--surface);border-radius:10px;padding:26px;max-width:320px;width:100%;box-shadow:var(--shl);text-align:center;}
+.cbox h3{font-family:var(--font-d);font-size:18px;font-weight:700;margin-bottom:7px;}
+.cbox p{font-size:13px;color:var(--tmid);margin-bottom:17px;line-height:1.6;}
+.cbtns{display:flex;gap:8px;justify-content:center;}
+.bdel{padding:9px 20px;border-radius:var(--r);border:none;background:var(--red);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.bdel:hover{opacity:.85;}
+
+/* ── PRINT ────────────────────────────────────────────── */
+@media print{
+  header{position:relative;}
+  .toolbar,.cacts,.hright,.ib{display:none!important;}
+  .backdrop,.cbd{display:none!important;}
+  body,main{background:white;}
+  .card{break-inside:avoid;}
+}
+/* ── RESPONSIVE ───────────────────────────────────────── */
+@media(max-width:1100px){.r7{grid-template-columns:repeat(4,1fr);}.r6{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:700px){
+  header{padding:0 16px;}main{padding:16px 16px 40px;}
+  .r6,.r7{grid-template-columns:repeat(2,1fr);}
+  .fg{grid-template-columns:1fr;}.cg{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hl">
+    <span class="logo">BROOKS</span>
+    <div class="hsep"></div>
+    <span class="htitle">Digital Products Operations · Operational Coverage Inventory</span>
+  </div>
+  <div class="hright">
+    <button class="btn btn-ghost" onclick="exportCSV()">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>Export CSV
+    </button>
+    <button class="btn btn-ghost" onclick="exportReport()">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="1" width="10" height="12" rx="1"/><line x1="4" y1="5" x2="10" y2="5"/><line x1="4" y1="8" x2="10" y2="8"/></svg>Download Report
+    </button>
+    <button class="btn btn-white" onclick="openModal()">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="7" y1="1" x2="7" y2="13"/><line x1="1" y1="7" x2="13" y2="7"/></svg>Add Entry
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ROW 1: TOOLS -->
+  <div class="kpi-sec">
+    <div class="kpi-sec-lbl">
+      <div class="kpi-sec-icon" style="background:#e8f2fa;">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#1A66A0" stroke-width="1.8"><rect x="2" y="3" width="12" height="9" rx="1"/><line x1="5" y1="14" x2="11" y2="14"/></svg>
+      </div>
+      Tools &amp; Platforms
+    </div>
+    <div class="kpi-row r6" id="kpi-tools"></div>
+  </div>
+
+  <!-- ROW 2: SITE CHECKS -->
+  <div class="kpi-sec">
+    <div class="kpi-sec-lbl">
+      <div class="kpi-sec-icon" style="background:#e4f7f0;">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#0a9160" stroke-width="1.8"><circle cx="8" cy="8" r="6"/><polyline points="5 8 7 10 11 6"/></svg>
+      </div>
+      Site Checks &amp; Automated Monitoring
+    </div>
+    <div class="kpi-row r7" id="kpi-checks"></div>
+  </div>
+
+  <!-- ROW 3: SYSTEM ALERTS -->
+  <div class="kpi-sec">
+    <div class="kpi-sec-lbl">
+      <div class="kpi-sec-icon" style="background:#fff7ed;">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#c2410c" stroke-width="1.8"><path d="M8 2L14 13H2L8 2z"/><line x1="8" y1="7" x2="8" y2="10"/><circle cx="8" cy="12" r=".5" fill="#c2410c"/></svg>
+      </div>
+      System Alerts &amp; JSM Integrations
+    </div>
+    <div class="kpi-row r6" id="kpi-alerts"></div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="sw">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/></svg>
+      <input class="si" id="search" type="text" placeholder="Search inventory…" oninput="render()"/>
+    </div>
+    <select class="fs" id="ft" onchange="render()"><option value="">All Types</option></select>
+    <select class="fs" id="fc" onchange="render()"><option value="">All Categories</option></select>
+    <select class="fs" id="fst" onchange="render()"><option value="">All Statuses</option></select>
+    <select class="fs" id="fo" onchange="render()"><option value="">All Owners</option></select>
+    <div class="tr">
+      <div class="vtog">
+        <button class="vb-btn on" id="vbc" onclick="sv('card')" title="Cards">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        </button>
+        <button class="vb-btn" id="vbt" onclick="sv('table')" title="Table">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="1" y1="4" x2="15" y2="4"/><line x1="1" y1="8" x2="15" y2="8"/><line x1="1" y1="12" x2="15" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content"></div>
+</main>
+
+<!-- MODAL -->
+<div class="backdrop" id="backdrop" onclick="bgClick(event)">
+  <div class="modal">
+    <div class="mhdr"><h2 id="modal-title">Add Entry</h2><button class="mcls" onclick="closeModal()">✕</button></div>
+    <div class="mbody">
+      <div class="fg">
+        <div class="field s2c"><label>Name *</label><input id="fn" placeholder="e.g. JSM Alert — Cybersource"/></div>
+        <div class="field s2c"><label>Description</label><textarea id="fd" placeholder="What does this do?"></textarea></div>
+        <div class="field">
+          <label>Type *</label>
+          <select id="fty">
+            <option value="">Select…</option>
+            <option>Tool</option><option>Check</option><option>Dashboard</option><option>Alert</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Category *</label>
+          <select id="fca">
+            <option value="">Select…</option>
+            <option>Monitoring</option><option>Testing</option><option>Performance</option>
+            <option>Alerting</option><option>Analytics</option><option>Commerce</option>
+            <option>Security</option><option>SEO</option><option>Observability</option>
+            <option>Operations</option><option>Integrations</option><option>Quality</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Status *</label>
+          <select id="fstat">
+            <option value="">Select…</option>
+            <option>Active</option><option>In Development</option>
+            <option>Under Review</option><option>Deprecated</option><option>Planned</option>
+          </select>
+        </div>
+        <div class="field"><label>Owner / Team</label><input id="fow" placeholder="e.g. Platform Team"/></div>
+        <div class="field">
+          <label>Automated?</label>
+          <select id="fau"><option value="Yes">Yes — runs automatically</option><option value="No">No — manual</option></select>
+        </div>
+        <div class="field"><label>Schedule / Trigger</label><input id="fsc" placeholder="e.g. Real-time event-driven"/></div>
+        <div class="field"><label>Platform / Integration</label><input id="fpl" placeholder="e.g. JSM + Cybersource"/></div>
+        <div class="field s2c"><label>URL / Link</label><input id="fur" type="url" placeholder="https://…"/></div>
+        <div class="field s2c">
+          <label>Checks / Alerts Performed</label>
+          <textarea id="fcp" placeholder="Payment API availability alert | Transaction failure rate alert…"></textarea>
+          <span class="fh">Pipe-separated list</span>
+        </div>
+        <div class="field s2c">
+          <label>Coverage Areas / Services</label>
+          <textarea id="fcv" placeholder="Cybersource payment gateway | Fraud scoring service…"></textarea>
+          <span class="fh">Pipe-separated list</span>
+        </div>
+        <div class="field s2c"><label>Tags</label><input id="ftg" placeholder="jsm | cybersource | payments"/><span class="fh">Pipe-separated</span></div>
+        <div class="field s2c"><label>Notes</label><textarea id="fno" placeholder="Escalation paths, Jira project, alert thresholds…"></textarea></div>
+      </div>
+    </div>
+    <div class="mftr">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-blue" onclick="saveItem()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="cbd" id="cbd">
+  <div class="cbox">
+    <h3>Remove Entry?</h3>
+    <p>This will permanently remove this item from the inventory.</p>
+    <div class="cbtns">
+      <button class="btn btn-outline" onclick="closeConfirm()">Cancel</button>
+      <button class="bdel" onclick="confirmDelete()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CSV_PATH  = "inventory.csv";
+const STORE_KEY = "brooks-dpo-inv-v3";
+
+// ── COLOUR MAPS ───────────────────────────────────────
+const TYPE_C = {
+  Tool:      {bg:"#e8f2fa", c:"#1A66A0", bd:"#b8d5ed", ac:"#1A66A0"},
+  Check:     {bg:"#e4f7f0", c:"#0a9160", bd:"#a8e4cc", ac:"#0a9160"},
+  Dashboard: {bg:"#f2effe", c:"#6d28d9", bd:"#d4c3f9", ac:"#6d28d9"},
+  Alert:     {bg:"#fff7ed", c:"#c2410c", bd:"#fdba74", ac:"#c2410c"},
+};
+const CAT_C = {
+  Monitoring:   {bg:"#e8f2fa",c:"#1A66A0",bd:"#b8d5ed"},
+  Testing:      {bg:"#e4f7f0",c:"#0a9160",bd:"#a8e4cc"},
+  Performance:  {bg:"#fff7e6",c:"#c96f00",bd:"#fcd99a"},
+  Alerting:     {bg:"#fdf0f0",c:"#c93030",bd:"#f5b8b8"},
+  Analytics:    {bg:"#f2effe",c:"#6d28d9",bd:"#d4c3f9"},
+  Commerce:     {bg:"#e0f8ff",c:"#0e7490",bd:"#7fe0f4"},
+  Security:     {bg:"#fdf2f8",c:"#be185d",bd:"#f9c6e3"},
+  SEO:          {bg:"#fff7e6",c:"#c96f00",bd:"#fcd99a"},
+  Observability:{bg:"#f1f5f9",c:"#475569",bd:"#cbd5e1"},
+  Operations:   {bg:"#e8f2fa",c:"#1A66A0",bd:"#b8d5ed"},
+  Integrations: {bg:"#fff7ed",c:"#c2410c",bd:"#fdba74"},
+  Quality:      {bg:"#e4f7f0",c:"#0a9160",bd:"#a8e4cc"},
+  Other:        {bg:"#f1f5f9",c:"#475569",bd:"#cbd5e1"},
+};
+const STAT_C = {
+  Active:           {bg:"#e4f7f0",c:"#0a9160",bd:"#a8e4cc"},
+  "In Development": {bg:"#e8f2fa",c:"#1A66A0",bd:"#b8d5ed"},
+  "Under Review":   {bg:"#fff7e6",c:"#c96f00",bd:"#fcd99a"},
+  Deprecated:       {bg:"#fdf0f0",c:"#c93030",bd:"#f5b8b8"},
+  Planned:          {bg:"#f2effe",c:"#6d28d9",bd:"#d4c3f9"},
+};
+
+function mkBadge(label, map) {
+  const c = map[label] || {bg:"#f1f5f9",c:"#475569",bd:"#cbd5e1"};
+  return `<span class="badge" style="background:${c.bg};color:${c.c};border:1px solid ${c.bd}">${label}</span>`;
+}
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function sp(s){ return (s||"").split("|").map(x=>x.trim()).filter(Boolean); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function tod(){ return new Date().toISOString().slice(0,10); }
+
+// ── STATE ─────────────────────────────────────────────
+let items=[], editId=null, deleteId=null, currentView="card";
+
+// ── LOAD ──────────────────────────────────────────────
+async function init() {
+  const stored = localStorage.getItem(STORE_KEY);
+  if (stored) { try { items=JSON.parse(stored); render(); return; } catch(e){} }
+  try {
+    const res = await fetch(CSV_PATH+"?t="+Date.now());
+    const text = await res.text();
+    items = parseCSV(text);
+    localStorage.setItem(STORE_KEY, JSON.stringify(items));
+  } catch(e) { items=[]; }
+  render();
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  const hdr = lines[0].split(",").map(h=>h.trim());
+  return lines.slice(1).map((line, idx) => {
+    const vals=[]; let cur="", inQ=false;
+    for (let i=0; i<line.length; i++) {
+      const ch=line[i];
+      if (ch==='"') { inQ=!inQ; }
+      else if (ch===',' && !inQ) { vals.push(cur); cur=""; }
+      else { cur+=ch; }
+    }
+    vals.push(cur);
+    const o={};
+    hdr.forEach((h,i) => { o[h]=(vals[i]||"").trim(); });
+    o.id = o.id||String(idx+1);
+    return o;
+  }).filter(r=>r.name);
+}
+
+// ── KPIs ──────────────────────────────────────────────
+function renderKPIs() {
+  const tools  = items.filter(i => i.type==="Tool" || i.type==="Dashboard");
+  const checks = items.filter(i => i.type==="Check");
+  const alerts = items.filter(i => i.type==="Alert");
+
+  // --- TOOLS ---
+  const ta = tools.filter(i=>i.status==="Active").length;
+  const tp = tools.length ? Math.round(ta/tools.length*100) : 0;
+  const tplat = new Set(tools.map(i=>i.platform).filter(Boolean)).size;
+  const town  = new Set(tools.map(i=>i.owner).filter(Boolean)).size;
+  const tcat  = new Set(tools.map(i=>i.category).filter(Boolean)).size;
+  const tau   = tools.filter(i=>i.automated==="Yes").length;
+  document.getElementById("kpi-tools").innerHTML = `
+    <div class="kpi kb"><div class="kpi-lbl">Total Tools</div><div class="kpi-val vb">${tools.length}</div><div class="kpi-sub">tools &amp; dashboards</div></div>
+    <div class="kpi kg"><div class="kpi-lbl">Active</div><div class="kpi-val vg">${ta}</div><div class="kpi-sub">${tp}% operational</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${tp}%;background:var(--green)"></div></div></div>
+    <div class="kpi kb"><div class="kpi-lbl">Automated</div><div class="kpi-val vb">${tau}</div><div class="kpi-sub">no manual trigger</div></div>
+    <div class="kpi kp"><div class="kpi-lbl">Platforms</div><div class="kpi-val vp">${tplat}</div><div class="kpi-sub">distinct stacks</div></div>
+    <div class="kpi kt"><div class="kpi-lbl">Categories</div><div class="kpi-val vt">${tcat}</div><div class="kpi-sub">areas covered</div></div>
+    <div class="kpi ks"><div class="kpi-lbl">Owning Teams</div><div class="kpi-val vs">${town}</div><div class="kpi-sub">teams responsible</div></div>`;
+
+  // --- SITE CHECKS ---
+  const ca   = checks.filter(i=>i.status==="Active").length;
+  const cau  = checks.filter(i=>i.automated==="Yes").length;
+  const cpct = checks.length ? Math.round(ca/checks.length*100) : 0;
+  const apct = checks.length ? Math.round(cau/checks.length*100) : 0;
+  const allCT = new Set(); checks.forEach(i=>sp(i.checks_performed).forEach(c=>allCT.add(c.toLowerCase())));
+  const allAr = new Set(); checks.forEach(i=>sp(i.coverage_areas).forEach(a=>allAr.add(a.toLowerCase())));
+  const pip  = checks.filter(i=>["In Development","Planned"].includes(i.status)).length;
+  const fm={};  checks.filter(i=>i.automated==="Yes").forEach(i=>{const s=i.schedule||"Unknown";fm[s]=(fm[s]||0)+1;});
+  const tf = Object.entries(fm).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById("kpi-checks").innerHTML = `
+    <div class="kpi kg"><div class="kpi-lbl">Total Checks</div><div class="kpi-val vg">${checks.length}</div><div class="kpi-sub">check types tracked</div></div>
+    <div class="kpi kg"><div class="kpi-lbl">Active Checks</div><div class="kpi-val vg">${ca}</div><div class="kpi-sub">${cpct}% running</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${cpct}%;background:var(--green)"></div></div></div>
+    <div class="kpi kb"><div class="kpi-lbl">Automated</div><div class="kpi-val vb">${cau}</div><div class="kpi-sub">${apct}% fully automated</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${apct}%;background:var(--blue)"></div></div></div>
+    <div class="kpi kt"><div class="kpi-lbl">Coverage Areas</div><div class="kpi-val vt">${allAr.size}</div><div class="kpi-sub">pages &amp; systems</div></div>
+    <div class="kpi kp"><div class="kpi-lbl">Check Types</div><div class="kpi-val vp">${allCT.size}</div><div class="kpi-sub">distinct assertions</div></div>
+    <div class="kpi ka"><div class="kpi-lbl">In Pipeline</div><div class="kpi-val va">${pip}</div><div class="kpi-sub">checks in dev</div></div>
+    <div class="kpi ks"><div class="kpi-lbl">Most Frequent</div><div class="kpi-val vs" style="font-size:15px;line-height:1.3">${tf?esc(tf[0]):"—"}</div><div class="kpi-sub">${tf?tf[1]+" checks":""}</div></div>`;
+
+  // --- SYSTEM ALERTS ---
+  const aa    = alerts.filter(i=>i.status==="Active").length;
+  const apct2 = alerts.length ? Math.round(aa/alerts.length*100) : 0;
+  const services = new Set(); alerts.forEach(i=>sp(i.coverage_areas).forEach(s=>services.add(s.toLowerCase())));
+  const alertTypes = new Set(); alerts.forEach(i=>sp(i.checks_performed).forEach(a=>alertTypes.add(a.toLowerCase())));
+  const platforms = new Set(alerts.map(i=>i.platform).filter(Boolean));
+  const jsmCount = alerts.filter(i=>(i.platform||"").toLowerCase().includes("jsm")).length;
+  document.getElementById("kpi-alerts").innerHTML = `
+    <div class="kpi ko"><div class="kpi-lbl">Total Alerts</div><div class="kpi-val vo">${alerts.length}</div><div class="kpi-sub">JSM integrations</div></div>
+    <div class="kpi kg"><div class="kpi-lbl">Active</div><div class="kpi-val vg">${aa}</div><div class="kpi-sub">${apct2}% live</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${apct2}%;background:var(--green)"></div></div></div>
+    <div class="kpi ko"><div class="kpi-lbl">JSM Connected</div><div class="kpi-val vo">${jsmCount}</div><div class="kpi-sub">Jira integrations</div></div>
+    <div class="kpi kt"><div class="kpi-lbl">Services Covered</div><div class="kpi-val vt">${services.size}</div><div class="kpi-sub">3rd-party systems</div></div>
+    <div class="kpi kp"><div class="kpi-lbl">Alert Types</div><div class="kpi-val vp">${alertTypes.size}</div><div class="kpi-sub">distinct alert rules</div></div>
+    <div class="kpi kb"><div class="kpi-lbl">Platforms</div><div class="kpi-val vb">${platforms.size}</div><div class="kpi-sub">integration platforms</div></div>`;
+}
+
+// ── FILTERS ───────────────────────────────────────────
+function popFilters() {
+  const types  = [...new Set(items.map(i=>i.type).filter(Boolean))].sort();
+  const cats   = [...new Set(items.map(i=>i.category).filter(Boolean))].sort();
+  const stats  = [...new Set(items.map(i=>i.status).filter(Boolean))].sort();
+  const owners = [...new Set(items.map(i=>i.owner).filter(Boolean))].sort();
+  function fill(id,vals,lbl) {
+    const el=document.getElementById(id); const cur=el.value;
+    el.innerHTML=`<option value="">All ${lbl}</option>`+vals.map(v=>`<option${v===cur?" selected":""}>${v}</option>`).join("");
+  }
+  fill("ft",types,"Types"); fill("fc",cats,"Categories"); fill("fst",stats,"Statuses"); fill("fo",owners,"Owners");
+}
+
+function getFiltered() {
+  const q    = document.getElementById("search").value.toLowerCase();
+  const type = document.getElementById("ft").value;
+  const cat  = document.getElementById("fc").value;
+  const stat = document.getElementById("fst").value;
+  const own  = document.getElementById("fo").value;
+  return items.filter(it => {
+    if (type && it.type!==type) return false;
+    if (cat  && it.category!==cat) return false;
+    if (stat && it.status!==stat) return false;
+    if (own  && it.owner!==own) return false;
+    if (q) {
+      const hay=[it.name,it.desc||"",it.category,it.type,it.owner,it.platform,...sp(it.tags),it.checks_performed,it.coverage_areas,it.notes].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+// ── RENDER ────────────────────────────────────────────
+function render() {
+  renderKPIs();
+  popFilters();
+  const f = getFiltered();
+  currentView==="card" ? renderCards(f) : renderTable(f);
+}
+
+// ── CARD VIEW ─────────────────────────────────────────
+function renderCards(f) {
+  if (!f.length) { renderEmpty(); return; }
+  // Sort order: Alert first, then Check, Tool, Dashboard
+  const typeOrder = ["Alert","Check","Tool","Dashboard"];
+  const groups = {};
+  f.forEach(it => {
+    const key = `${typeOrder.indexOf(it.type)||9}_${it.type}_${it.category}`;
+    (groups[key] = groups[key]||{lbl:`${it.type} · ${it.category}`, items:[]}).items.push(it);
+  });
+  let html = "";
+  Object.keys(groups).sort().forEach(k => {
+    const g=groups[k];
+    html += `<div class="gh"><span class="gl">${g.lbl}</span><span class="gcnt">${g.items.length}</span><div class="gline"></div></div>
+             <div class="cg">${g.items.map(cardHTML).join("")}</div>`;
+  });
+  document.getElementById("content").innerHTML = html;
+}
+
+function cardHTML(it) {
+  const tc = TYPE_C[it.type] || TYPE_C.Tool;
+  const isAlert = it.type === "Alert";
+  const checks = sp(it.checks_performed);
+  const coverage = sp(it.coverage_areas);
+  const tags = sp(it.tags);
+
+  const pillClass = isAlert ? "cpill-alert" : "cpill";
+  const checkPills = checks.length
+    ? `<div class="cpills"><div class="cplbl">${isAlert?"Alert Rules":"Checks Performed"}</div><div class="cpw">${checks.map(c=>`<span class="${pillClass}">${esc(c)}</span>`).join("")}</div></div>`
+    : "";
+
+  const covLabel = isAlert ? "Services Covered" : "Coverage";
+  const covEl = coverage.length
+    ? `<div class="cov"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tdim);font-family:var(--font-d);">${covLabel} · </span>${coverage.map(c=>esc(c)).join(" · ")}</div>`
+    : "";
+
+  const tagEl = tags.length
+    ? `<div class="ctags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>` : "";
+
+  const notesEl = it.notes
+    ? `<div class="cnotes">${esc(it.notes)}</div>` : "";
+
+  const schedEl = it.automated==="Yes" && it.schedule
+    ? `<span class="mc"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="6"/><polyline points="8 5 8 8 10 10"/></svg>${esc(it.schedule)}</span>` : "";
+
+  const platEl = it.platform
+    ? `<span class="mc"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="12" height="9" rx="1"/><line x1="5" y1="14" x2="11" y2="14"/></svg>${esc(it.platform)}</span>` : "";
+
+  const ownEl = it.owner
+    ? `<span class="mc"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="5" r="3"/><path d="M2 13c0-3 2.7-5 6-5s6 2 6 5"/></svg>${esc(it.owner)}</span>` : "";
+
+  // For alerts show P1 indicator if event-driven
+  const autoEl = isAlert
+    ? `<span class="ap yes"><span class="dot"></span>Real-time</span>`
+    : `<span class="ap ${it.automated==='Yes'?'yes':'no'}"><span class="dot"></span>${it.automated==='Yes'?'Automated':'Manual'}</span>`;
+
+  return `<div class="card">
+    <div class="ctbar" style="background:${tc.ac}"></div>
+    <div class="cbody">
+      <div class="chdr">
+        <div class="cbadges">
+          <span class="tchip" style="background:${tc.bg};color:${tc.c};border:1px solid ${tc.bd}">${esc(it.type)}</span>
+          ${mkBadge(it.category,CAT_C)}
+          ${mkBadge(it.status,STAT_C)}
+        </div>
+        <div class="cacts">
+          ${it.url?`<a class="ib" href="${esc(it.url)}" target="_blank" rel="noopener" title="Open"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V8"/><polyline points="9 1 13 1 13 5"/><line x1="13" y1="1" x2="6" y2="8"/></svg></a>`:""}
+          <button class="ib" onclick="openModal('${it.id}')" title="Edit"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 2l3 3L4 13H1v-3L9 2z"/></svg></button>
+          <button class="ib del" onclick="askDelete('${it.id}')" title="Remove"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="2 4 12 4"/><path d="M5 4V2h4v2M3 4l1 8h6l1-8"/></svg></button>
+        </div>
+      </div>
+      <div class="cname">${esc(it.name)}</div>
+      <div class="cdesc">${esc(it.desc||"")}</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">${autoEl}${schedEl}</div>
+      <div class="cmeta">${platEl}${ownEl}<span class="mc" style="margin-left:auto;font-size:10px;">${esc(it.last_updated||"")}</span></div>
+      ${checkPills}${covEl}${tagEl}${notesEl}
+    </div>
+  </div>`;
+}
+
+// ── TABLE VIEW ────────────────────────────────────────
+function renderTable(f) {
+  if (!f.length) { renderEmpty(); return; }
+  const rows = f.map(it => {
+    const tc = TYPE_C[it.type]||TYPE_C.Tool;
+    const isAlert = it.type==="Alert";
+    const tagCls = isAlert ? "ctag-alert" : "ctag";
+    const checks = sp(it.checks_performed).map(c=>`<span class="${tagCls}">${esc(c)}</span>`).join("");
+    return `<tr>
+      <td class="tdn">${esc(it.name)}</td>
+      <td><span class="tchip" style="background:${tc.bg};color:${tc.c};border:1px solid ${tc.bd}">${esc(it.type)}</span></td>
+      <td>${mkBadge(it.category,CAT_C)}</td>
+      <td>${mkBadge(it.status,STAT_C)}</td>
+      <td><span class="ap ${it.automated==='Yes'?'yes':'no'}" style="font-size:10px;padding:2px 7px;"><span class="dot"></span>${it.automated}</span></td>
+      <td style="font-size:11px;color:var(--tdim);white-space:nowrap">${esc(it.schedule||"—")}</td>
+      <td style="font-size:11px;color:var(--tdim)">${esc(it.platform||"—")}</td>
+      <td style="font-size:11px;color:var(--tdim)">${esc(it.owner||"—")}</td>
+      <td class="tdc">${checks||`<span style="color:var(--tdim)">—</span>`}</td>
+      <td>${it.url?`<a href="${esc(it.url)}" target="_blank" style="font-size:11px;color:var(--blue)">Open ↗</a>`:"—"}</td>
+      <td><div class="tda">
+        <button class="ib" onclick="openModal('${it.id}')" title="Edit"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 2l3 3L4 13H1v-3L9 2z"/></svg></button>
+        <button class="ib del" onclick="askDelete('${it.id}')" title="Remove"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="2 4 12 4"/><path d="M5 4V2h4v2M3 4l1 8h6l1-8"/></svg></button>
+      </div></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("content").innerHTML = `
+    <div class="tw"><table>
+      <thead><tr><th>Name</th><th>Type</th><th>Category</th><th>Status</th><th>Automated</th><th>Schedule</th><th>Platform</th><th>Owner</th><th>Checks / Alerts</th><th>Link</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+}
+
+function renderEmpty() {
+  document.getElementById("content").innerHTML=`<div class="empty"><div class="eico">📋</div><p>No entries match your filters.</p></div>`;
+}
+
+function sv(v) {
+  currentView=v;
+  document.getElementById("vbc").classList.toggle("on",v==="card");
+  document.getElementById("vbt").classList.toggle("on",v==="table");
+  render();
+}
+
+// ── MODAL ─────────────────────────────────────────────
+function openModal(id) {
+  editId=id||null;
+  document.getElementById("modal-title").textContent=id?"Edit Entry":"Add Entry";
+  ["fn","fd","fty","fca","fstat","fow","fau","fsc","fpl","fur","fcp","fcv","ftg","fno"].forEach(f=>{document.getElementById(f).value="";});
+  document.getElementById("fau").value="Yes";
+  if (id) {
+    const it=items.find(i=>i.id===id);
+    if (it) {
+      document.getElementById("fn").value   = it.name||"";
+      document.getElementById("fd").value   = it.desc||"";
+      document.getElementById("fty").value  = it.type||"";
+      document.getElementById("fca").value  = it.category||"";
+      document.getElementById("fstat").value= it.status||"";
+      document.getElementById("fow").value  = it.owner||"";
+      document.getElementById("fau").value  = it.automated||"No";
+      document.getElementById("fsc").value  = it.schedule||"";
+      document.getElementById("fpl").value  = it.platform||"";
+      document.getElementById("fur").value  = it.url||"";
+      document.getElementById("fcp").value  = it.checks_performed||"";
+      document.getElementById("fcv").value  = it.coverage_areas||"";
+      document.getElementById("ftg").value  = it.tags||"";
+      document.getElementById("fno").value  = it.notes||"";
+    }
+  }
+  document.getElementById("backdrop").classList.add("open");
+  setTimeout(()=>document.getElementById("fn").focus(),50);
+}
+function closeModal() { document.getElementById("backdrop").classList.remove("open"); editId=null; }
+function bgClick(e) { if(e.target===document.getElementById("backdrop")) closeModal(); }
+
+function saveItem() {
+  const name=document.getElementById("fn").value.trim();
+  const type=document.getElementById("fty").value;
+  const cat =document.getElementById("fca").value;
+  const stat=document.getElementById("fstat").value;
+  if (!name||!type||!cat||!stat) { alert("Name, Type, Category and Status are required."); return; }
+  const rec = {
+    id:               editId||uid(),
+    name,             desc:     document.getElementById("fd").value.trim(),
+    type,             category: cat,
+    status:           stat,     owner:    document.getElementById("fow").value.trim(),
+    automated:        document.getElementById("fau").value,
+    schedule:         document.getElementById("fsc").value.trim(),
+    platform:         document.getElementById("fpl").value.trim(),
+    url:              document.getElementById("fur").value.trim(),
+    checks_performed: document.getElementById("fcp").value.trim(),
+    coverage_areas:   document.getElementById("fcv").value.trim(),
+    tags:             document.getElementById("ftg").value.trim(),
+    notes:            document.getElementById("fno").value.trim(),
+    last_updated:     tod(),
+  };
+  items = editId ? items.map(i=>i.id===editId?rec:i) : [...items,rec];
+  localStorage.setItem(STORE_KEY,JSON.stringify(items));
+  closeModal(); render();
+}
+
+// ── DELETE ────────────────────────────────────────────
+function askDelete(id) { deleteId=id; document.getElementById("cbd").classList.add("open"); }
+function closeConfirm() { document.getElementById("cbd").classList.remove("open"); deleteId=null; }
+function confirmDelete() {
+  if (!deleteId) return;
+  items=items.filter(i=>i.id!==deleteId);
+  localStorage.setItem(STORE_KEY,JSON.stringify(items));
+  closeConfirm(); render();
+}
+
+// ── EXPORT CSV ────────────────────────────────────────
+function exportCSV() {
+  const hdr=["id","name","type","category","status","owner","automated","schedule","platform","url","tags","coverage_areas","checks_performed","notes","last_updated"];
+  const rows=items.map(it=>hdr.map(h=>{const v=String(it[h]||"").replace(/"/g,'""');return v.includes(",")||v.includes('"')||v.includes("\n")?`"${v}"`:v;}).join(","));
+  dl("brooks-dpo-inventory.csv",[hdr.join(","),...rows].join("\n"),"text/csv");
+}
+
+// ── DOWNLOAD HTML REPORT ──────────────────────────────
+
+
+// ── BLOB DOWNLOAD HELPER ──────────────────────────────
+function dl(name, content, mime) {
+  const b = new Blob([content], { type: mime });
+  const u = URL.createObjectURL(b);
+  const a = document.createElement("a");
+  a.href = u;
+  a.download = name;
+  document.body.appendChild(a); // Needed in some browsers
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(u);
+}
+
+// ── OTHER EXISTING SCRIPTS ────────────────────────────
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    closeModal();
+    closeConfirm();
+  }
+});
+
+// Initialize dashboard
+init();
+</script>
+</body>
+</html>
