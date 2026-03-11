@@ -122,7 +122,7 @@ def main():
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/ghost-17/120431.html?dwvar_120431_color=458&tid=PSOC%3AMeta%3ATest-Adora-Ghost17%3ATest-Adora-Ghost17_ConversionsSales_2025%3APerformance%3AUSA%3AMixed_PixelSiteVisitorsGhost+LAL_GN_Conve',
         'https://www.brooksrunning.com/en_us/mens/shoes/walking-shoes/',
         'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/revel-7/110435.html?dwvar_110435_color=014',
-        'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/launch-11/110450.html?dwvar_110450_color=135',
+#        'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/launch-11/110450.html?dwvar_110450_color=135',
         'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/glycerin-22/110445.html',
         'https://www.brooksrunning.com/en_us/sale/mens/shoes/',
         'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-max-2/110431.html',
