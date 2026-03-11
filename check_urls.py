@@ -114,7 +114,7 @@ def main():
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/glycerin-gts-22/120435.html',
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/glycerin-stealthfit-22/120437.html?dwvar_120437_color=135',
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/adrenaline-gts-24/120426.html?dwvar_120426_color=126',
-        'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/launch-11/120439.html?dwvar_120439_color=164',
+  #      'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/launch-11/120439.html?dwvar_120439_color=164',
         'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/ghost-17/110442.html',
         'https://www.brooksrunning.com/en_us/check-out/account-login/',
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/ghost-max-3/120457.html?tid=PSOC%3AMeta%3AGhostMax3%3AGhostMax3_ConversionsSales_2025%3APerformance%3AUSA%3AMixed_GM3ConsolidatedAudience_GN_ConversionNumber_Hone%3AImage_Static_GN_007%3A',
