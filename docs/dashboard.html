@@ -893,9 +893,8 @@ function openAddModal(bucket) {
   document.getElementById('f-remind').value = '';
   document.getElementById('f-notes').value = '';
   document.getElementById('f-tags').value = '';
-  document.getElementById('ai-prompt').value = '';
   document.getElementById('task-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('ai-prompt').focus(), 100);
+  setTimeout(()=>document.getElementById('f-title').focus(), 100);
 }
 
 function openEditModal(id) {
@@ -909,7 +908,6 @@ function openEditModal(id) {
   document.getElementById('f-remind').value = t.remind||'';
   document.getElementById('f-notes').value = t.notes||'';
   document.getElementById('f-tags').value = t.tags||'';
-  document.getElementById('ai-prompt').value = '';
   document.getElementById('task-modal').classList.add('open');
 }
 
@@ -953,7 +951,7 @@ function openGithubSetup() {
   document.getElementById('gh-token').value = localStorage.getItem('gh-token')||'';
   document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')||'';
   document.getElementById('gh-path').value = localStorage.getItem('gh-path')||'tasks.csv';
-  document.getElementById('gh-branch').value = localStorage.getItem('gh-branch')||'master';
+  document.getElementById('gh-branch').value = localStorage.getItem('gh-branch')||'main';
   document.getElementById('gh-modal').classList.add('open');
 }
 
