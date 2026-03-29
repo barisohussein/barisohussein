@@ -316,29 +316,6 @@
     cursor: pointer; font-size: 18px; padding: 4px;
   }
   .close-btn:hover { color: var(--text); }
-  .ai-row {
-    display: flex; gap: 8px; margin-bottom: 16px;
-  }
-  .ai-input { flex: 1; }
-  .ai-fill-btn {
-    background: linear-gradient(135deg, var(--accent), #a78bfa);
-    color: white; border: none;
-    padding: 9px 14px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    display: flex; align-items: center; gap: 6px;
-    transition: opacity 0.15s;
-  }
-  .ai-fill-btn:hover { opacity: 0.85; }
-  .ai-fill-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .ai-hint { font-size: 11px; color: var(--text3); margin-top: -10px; margin-bottom: 16px; }
-  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
   /* ── Email Modal ── */
   .email-section { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px; }
   .email-section h4 { font-size: 12px; color: var(--text2); margin-bottom: 8px; font-weight: 500; }
@@ -474,7 +451,8 @@
     </div>
 
     <div class="sidebar-bottom">
-      <button class="csv-btn" onclick="exportCSV()" data-tip="Download tasks as CSV">⬇ Export CSV</button>
+      <button class="csv-btn" onclick="openGithubSetup()" data-tip="Push CSV to your GitHub repo">⬆ Push to GitHub</button>
+      <button class="csv-btn" onclick="exportCSV()" data-tip="Download tasks as CSV">⬇ Download CSV</button>
       <button class="csv-btn" onclick="document.getElementById('csv-import').click()" data-tip="Import tasks from CSV">⬆ Import CSV</button>
       <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(event)">
       <button class="csv-btn" onclick="openEmailSetup()" data-tip="Email reminders setup">✉ Email Setup</button>
@@ -556,14 +534,6 @@
     <button class="close-btn" onclick="closeModal('task-modal')">✕</button>
     <div class="modal-title" id="modal-title">Add Task</div>
 
-    <div class="ai-row">
-      <input class="form-input ai-input" id="ai-prompt" placeholder="Describe your task in plain English and let AI fill the form…">
-      <button class="ai-fill-btn" id="ai-fill-btn" onclick="autoFill()">
-        <span id="ai-btn-text">✦ AI Fill</span>
-      </button>
-    </div>
-    <div class="ai-hint">e.g. "Submit tax return by April 15, high priority, finance bucket"</div>
-
     <div class="form-row">
       <label class="form-label">Task Title *</label>
       <input class="form-input" id="f-title" placeholder="What needs to be done?">
@@ -580,6 +550,10 @@
           <option value="Home">Home</option>
           <option value="Learning">Learning</option>
           <option value="Waiting">Waiting</option>
+          <option value="Rental">Rental</option>
+          <option value="Wife">Wife</option>
+          <option value="Parents">Parents</option>
+          <option value="AFH">AFH</option>
         </select>
       </div>
       <div class="form-row">
@@ -652,15 +626,52 @@
   </div>
 </div>
 
+<!-- GitHub Push Modal -->
+<div class="modal-overlay" id="gh-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('gh-modal')">✕</button>
+    <div class="modal-title">Push CSV to GitHub</div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:20px;line-height:1.6">
+      Saves your tasks as <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">tasks.csv</code> directly into your GitHub repo. Your token is stored only in your browser's localStorage — never sent anywhere except GitHub's API.
+    </p>
+
+    <div class="form-row">
+      <label class="form-label">GitHub Personal Access Token</label>
+      <input class="form-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Needs <strong>repo</strong> scope. Create at github.com → Settings → Developer settings → Personal access tokens.</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Repository (owner/repo)</label>
+      <input class="form-input" id="gh-repo" placeholder="yourusername/my-dashboard">
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">File path in repo</label>
+        <input class="form-input" id="gh-path" placeholder="tasks.csv">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Branch</label>
+        <input class="form-input" id="gh-branch" placeholder="main">
+      </div>
+    </div>
+    <div id="gh-status" style="font-size:12px;min-height:18px;margin-bottom:8px"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('gh-modal')">Cancel</button>
+      <button class="btn" id="gh-push-btn" onclick="pushCSVToGithub()">⬆ Push CSV to GitHub</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ───────────────────────────────────────────────
 // DATA
 // ───────────────────────────────────────────────
-const BUCKETS = ['Inbox','Work','Personal','Finance','Health','Home','Learning','Waiting'];
+const BUCKETS = ['Inbox','Work','Personal','Finance','Health','Home','Learning','Waiting','Rental','Wife','Parents','AFH'];
 const BUCKET_COLORS = {
   Inbox:'#7c6ff7', Work:'#5ab4f5', Personal:'#e87fa0',
   Finance:'#f0a840', Health:'#52c98a', Home:'#f06b6b',
-  Learning:'#a78bfa', Waiting:'#6b698a'
+  Learning:'#a78bfa', Waiting:'#6b698a',
+  Rental:'#3bbfcf', Wife:'#f472b6', Parents:'#fb923c', AFH:'#a3e635'
 };
 const P_LABELS = { p1:'Critical', p2:'High', p3:'Normal', p4:'Low' };
 
@@ -936,48 +947,63 @@ function deleteTask(id) {
 }
 
 // ───────────────────────────────────────────────
-// AI AUTOFILL
+// GITHUB CSV PUSH
 // ───────────────────────────────────────────────
-async function autoFill() {
-  const prompt = document.getElementById('ai-prompt').value.trim();
-  if (!prompt) return;
-  const btn = document.getElementById('ai-fill-btn');
-  const btnText = document.getElementById('ai-btn-text');
-  btn.disabled = true;
-  btnText.innerHTML = '<span class="spinner"></span> Thinking…';
+function openGithubSetup() {
+  document.getElementById('gh-token').value = localStorage.getItem('gh-token')||'';
+  document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')||'';
+  document.getElementById('gh-path').value = localStorage.getItem('gh-path')||'tasks.csv';
+  document.getElementById('gh-branch').value = localStorage.getItem('gh-branch')||'master';
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+async function pushCSVToGithub() {
+  const token = document.getElementById('gh-token').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const path = document.getElementById('gh-path').value.trim() || 'tasks.csv';
+  const branch = document.getElementById('gh-branch').value.trim() || 'main';
+  if (!token || !repo) { alert('Please enter your GitHub token and repo.'); return; }
+  localStorage.setItem('gh-token', token);
+  localStorage.setItem('gh-repo', repo);
+  localStorage.setItem('gh-path', path);
+  localStorage.setItem('gh-branch', branch);
+
+  const btn = document.getElementById('gh-push-btn');
+  btn.textContent = 'Pushing…'; btn.disabled = true;
+
+  const header = 'id,title,bucket,priority,due,remind,notes,tags,done,created';
+  const rows = tasks.map(t =>
+    [t.id, csvQ(t.title), csvQ(t.bucket), t.priority, t.due||'', t.remind||'', csvQ(t.notes||''), csvQ(t.tags||''), t.done?'true':'false', t.created].join(',')
+  );
+  const content = header + '\n' + rows.join('\n');
+  const encoded = btoa(unescape(encodeURIComponent(content)));
 
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        messages: [{
-          role: 'user',
-          content: `Today is ${today}. Extract task details from this description and respond ONLY with a valid JSON object (no markdown, no explanation):
-{"title":"...","bucket":"one of: Inbox,Work,Personal,Finance,Health,Home,Learning,Waiting","priority":"p1|p2|p3|p4 (p1=critical,p2=high,p3=normal,p4=low)","due":"YYYY-MM-DD or empty string","notes":"...","tags":"comma separated or empty"}
+    // Get current SHA if file exists
+    let sha = '';
+    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
 
-Description: "${prompt}"`
-        }]
+    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Update tasks.csv — ${new Date().toISOString().split('T')[0]}`,
+        content: encoded,
+        branch,
+        ...(sha ? { sha } : {})
       })
     });
-    const data = await res.json();
-    const raw = data.content?.[0]?.text || '{}';
-    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    if (parsed.title) document.getElementById('f-title').value = parsed.title;
-    if (parsed.bucket && BUCKETS.includes(parsed.bucket)) document.getElementById('f-bucket').value = parsed.bucket;
-    if (parsed.priority) document.getElementById('f-priority').value = parsed.priority;
-    if (parsed.due) document.getElementById('f-due').value = parsed.due;
-    if (parsed.notes) document.getElementById('f-notes').value = parsed.notes;
-    if (parsed.tags) document.getElementById('f-tags').value = parsed.tags;
+    if (!putRes.ok) { const err = await putRes.json(); throw new Error(err.message); }
+    document.getElementById('gh-status').textContent = '✓ Pushed successfully to ' + repo + '/' + path;
+    document.getElementById('gh-status').style.color = 'var(--green)';
   } catch(e) {
-    alert('AI fill failed. Check your connection and try again.');
-    console.error(e);
+    document.getElementById('gh-status').textContent = '✕ Error: ' + e.message;
+    document.getElementById('gh-status').style.color = 'var(--red)';
   }
-  btn.disabled = false;
-  btnText.innerHTML = '✦ AI Fill';
+  btn.textContent = '⬆ Push CSV to GitHub'; btn.disabled = false;
 }
 
 // ───────────────────────────────────────────────
@@ -1156,6 +1182,10 @@ if (!tasks.length) {
     {id:uid(),title:'Read "Deep Work" chapter 3',bucket:'Learning',priority:'p4',due:'',remind:'',notes:'',tags:'reading',done:false,created:Date.now()},
     {id:uid(),title:'Pay electricity bill',bucket:'Finance',priority:'p2',due:ds(5),remind:'3d',notes:'',tags:'bills',done:false,created:Date.now()},
     {id:uid(),title:'Weekly grocery run',bucket:'Personal',priority:'p3',due:ds(3),remind:'same',notes:'Milk, eggs, bread, fruit',tags:'shopping',done:false,created:Date.now()},
+    {id:uid(),title:'Rental — schedule plumber visit',bucket:'Rental',priority:'p2',due:ds(4),remind:'1d',notes:'Leaky faucet in unit 2B',tags:'maintenance',done:false,created:Date.now()},
+    {id:uid(),title:'Anniversary dinner reservation',bucket:'Wife',priority:'p1',due:ds(7),remind:'3d',notes:'Check OpenTable for downtown spots',tags:'date',done:false,created:Date.now()},
+    {id:uid(),title:'Call mom & dad this weekend',bucket:'Parents',priority:'p3',due:ds(5),remind:'same',notes:'',tags:'family',done:false,created:Date.now()},
+    {id:uid(),title:'AFH — submit monthly report',bucket:'AFH',priority:'p2',due:ds(6),remind:'3d',notes:'Include occupancy and incident log',tags:'report',done:false,created:Date.now()},
     {id:uid(),title:'Update resume',bucket:'Work',priority:'p3',due:'',remind:'',notes:'Add new projects from Q1',tags:'career',done:true,created:Date.now()-86400000*5},
   ];
   save();
