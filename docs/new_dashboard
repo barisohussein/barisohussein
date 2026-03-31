@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #17171d;
+    --surface2: #1e1e27;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0eff8;
+    --text2: #a09eb8;
+    --text3: #6b698a;
+    --accent: #7c6ff7;
+    --accent2: #a89cff;
+    --red: #f06b6b;
+    --amber: #f0a840;
+    --green: #52c98a;
+    --blue: #5ab4f5;
+    --pink: #e87fa0;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+  /* ── Layout ── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+  .sidebar { width: 220px; min-width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .topbar { padding: 20px 28px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* ── Sidebar ── */
+  .logo { padding: 0 20px 20px; font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .logo span { color: var(--accent2); }
+  .nav-section { padding: 8px 12px 4px; font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; color: var(--text2); transition: all 0.15s; font-size: 13.5px; margin: 1px 8px; border-radius: var(--radius-sm); }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(124,111,247,0.15); color: var(--accent2); }
+  .nav-item .icon { width: 16px; text-align: center; font-size: 14px; }
+  .nav-badge { margin-left: auto; background: var(--accent); color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
+  .nav-badge.red { background: var(--red); }
+  .sidebar-bottom { margin-top: auto; padding: 12px; }
+  .csv-btn { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); padding: 9px 12px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; font-family: inherit; display: flex; align-items: center; gap: 8px; transition: all 0.15s; margin-bottom: 6px; }
+  .csv-btn:hover { background: var(--surface); color: var(--text); border-color: var(--border2); }
+  .csv-btn.highlight { border-color: var(--accent); color: var(--accent2); background: rgba(124,111,247,0.1); }
+
+  /* ── Topbar ── */
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 22px; flex: 1; }
+  .topbar-title span { color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400; margin-left: 8px; }
+  .btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .btn:hover { background: #6a5ef0; transform: translateY(-1px); }
+  .btn.ghost { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .btn.ghost:hover { background: var(--surface); color: var(--text); }
+  .btn.sm { padding: 5px 11px; font-size: 12px; }
+  .btn.danger { background: rgba(240,107,107,0.15); color: var(--red); border: 1px solid rgba(240,107,107,0.3); }
+  .btn.danger:hover { background: rgba(240,107,107,0.25); }
+  .search-wrap { position: relative; }
+  .search { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px 8px 36px; border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; width: 220px; outline: none; transition: border-color 0.15s; }
+  .search:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; }
+
+  /* ── Unsaved indicator ── */
+  .unsaved-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); display: inline-block; margin-right: 4px; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  #file-status { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  #file-status.unsaved { color: var(--amber); }
+  #file-status.saved { color: var(--green); }
+
+  /* ── Load screen ── */
+  #load-screen { position: fixed; inset: 0; background: var(--bg); z-index: 200; display: flex; align-items: center; justify-content: center; }
+  .load-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 48px; text-align: center; max-width: 460px; width: 90%; }
+  .load-box .logo-big { font-family: 'DM Serif Display', serif; font-size: 48px; margin-bottom: 8px; }
+  .load-box .logo-big span { color: var(--accent2); }
+  .load-box p { color: var(--text2); font-size: 13px; line-height: 1.7; margin-bottom: 32px; }
+  .load-actions { display: flex; flex-direction: column; gap: 10px; }
+  .load-drop { border: 2px dashed var(--border2); border-radius: var(--radius); padding: 24px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; color: var(--text2); font-size: 13px; }
+  .load-drop:hover, .load-drop.drag-over { border-color: var(--accent); background: rgba(124,111,247,0.08); color: var(--accent2); }
+  .load-drop .drop-icon { font-size: 28px; margin-bottom: 8px; }
+
+  /* ── Stats Bar ── */
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .stat-card.c-purple::before { background: var(--accent); }
+  .stat-card.c-red::before { background: var(--red); }
+  .stat-card.c-amber::before { background: var(--amber); }
+  .stat-card.c-green::before { background: var(--green); }
+  .stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .stat-num { font-size: 28px; font-weight: 600; font-family: 'DM Serif Display', serif; }
+  .stat-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* ── Bucket Columns ── */
+  .buckets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .bucket { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .bucket-head { padding: 14px 16px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+  .bucket-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .bucket-name { font-weight: 500; font-size: 13px; flex: 1; }
+  .bucket-count { background: var(--surface2); color: var(--text3); font-size: 11px; padding: 2px 7px; border-radius: 10px; }
+  .bucket-body { padding: 10px; min-height: 120px; }
+  .task-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; position: relative; }
+  .task-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .task-card.done { opacity: 0.4; }
+  .task-card.done .task-title { text-decoration: line-through; }
+  .task-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; }
+  .task-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; }
+  .tag.p1 { background: rgba(240,107,107,0.18); color: var(--red); }
+  .tag.p2 { background: rgba(240,168,64,0.18); color: var(--amber); }
+  .tag.p3 { background: rgba(82,201,138,0.18); color: var(--green); }
+  .tag.p4 { background: rgba(160,158,184,0.12); color: var(--text3); }
+  .due-tag { font-size: 10px; color: var(--text3); }
+  .due-tag.overdue { color: var(--red); }
+  .due-tag.soon { color: var(--amber); }
+  .task-check { position: absolute; right: 10px; top: 10px; width: 16px; height: 16px; border: 1.5px solid var(--border2); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); transition: all 0.15s; cursor: pointer; }
+  .task-check:hover { border-color: var(--green); background: rgba(82,201,138,0.1); }
+  .task-card.done .task-check { background: rgba(82,201,138,0.15); border-color: var(--green); }
+
+  /* ── Views ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── Table View ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 14px; color: var(--text3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--border); font-weight: 500; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:hover td { background: var(--surface2); }
+  tr.done-row td { opacity: 0.4; }
+  tr.done-row .task-title-cell { text-decoration: line-through; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; width: 560px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 28px; position: relative; animation: popIn 0.2s ease; }
+  @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 20px; }
+  .form-row { margin-bottom: 16px; }
+  .form-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; display: block; }
+  .form-input, .form-select, .form-textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; outline: none; transition: border-color 0.15s; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-select option { background: var(--surface); }
+  .form-textarea { min-height: 80px; resize: vertical; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+  .close-btn { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text3); cursor: pointer; font-size: 18px; padding: 4px; }
+  .close-btn:hover { color: var(--text); }
+
+  /* ── Email Modal ── */
+  .email-section { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px; }
+  .email-section h4 { font-size: 12px; color: var(--text2); margin-bottom: 8px; font-weight: 500; }
+
+  /* ── Calendar View ── */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-header { text-align: center; font-size: 11px; color: var(--text3); padding: 8px 0; }
+  .cal-day { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); min-height: 80px; padding: 6px; font-size: 11px; }
+  .cal-day.today { border-color: var(--accent); }
+  .cal-day.other-month { opacity: 0.35; }
+  .cal-day-num { font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+  .cal-dot { font-size: 10px; background: var(--accent); color: white; border-radius: 4px; padding: 1px 5px; margin-bottom: 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal-dot.p1 { background: var(--red); }
+  .cal-dot.p2 { background: var(--amber); }
+  .cal-dot.p3 { background: var(--green); }
+
+  /* ── Filters ── */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .filter-chip:hover, .filter-chip.active { background: rgba(124,111,247,0.15); border-color: var(--accent); color: var(--accent2); }
+  .filter-chip.p1.active { background: rgba(240,107,107,0.15); border-color: var(--red); color: var(--red); }
+  .filter-chip.p2.active { background: rgba(240,168,64,0.15); border-color: var(--amber); color: var(--amber); }
+  .filter-chip.p3.active { background: rgba(82,201,138,0.15); border-color: var(--green); color: var(--green); }
+
+  /* ── Empty state ── */
+  .empty { text-align: center; padding: 32px 16px; color: var(--text3); font-size: 13px; }
+
+  /* ── Overdue banner ── */
+  .overdue-banner { background: rgba(240,107,107,0.1); border: 1px solid rgba(240,107,107,0.25); border-radius: var(--radius-sm); padding: 10px 16px; margin-bottom: 16px; font-size: 12px; color: var(--red); display: none; }
+  .overdue-banner.show { display: flex; align-items: center; gap: 8px; }
+
+  /* ── Sort ── */
+  .sort-select { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); padding: 5px 10px; border-radius: var(--radius-sm); font-family: inherit; font-size: 12px; outline: none; cursor: pointer; }
+
+  /* ── Tooltip ── */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #000; color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 5px; white-space: nowrap; z-index: 99; pointer-events: none; }
+
+  /* ── GitHub Push Modal ── */
+  #gh-status { font-size: 12px; min-height: 18px; margin-bottom: 8px; }
+
+  @media (max-width: 900px) { .sidebar { display: none; } .stats-bar { grid-template-columns: repeat(2, 1fr); } .buckets { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .buckets { grid-template-columns: 1fr; } .stats-bar { grid-template-columns: 1fr 1fr; } .form-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- Load Screen -->
+<div id="load-screen">
+  <div class="load-box">
+    <div class="logo-big">Flow<span>.</span></div>
+    <p>Your tasks live in a CSV file — you own the data.<br>Load from GitHub, open a local file, or start fresh.</p>
+    <button class="btn" id="gh-load-btn" onclick="loadFromGithub()" style="justify-content:center;margin-bottom:12px;width:100%;font-size:14px;padding:12px">
+      ⬇ Load from GitHub
+    </button>
+    <div id="gh-load-status" style="font-size:12px;text-align:center;min-height:18px;margin-bottom:12px"></div>
+    <div class="load-drop" id="load-drop" onclick="document.getElementById('csv-load-input').click()">
+      <div class="drop-icon">📂</div>
+      <div><strong>Click to open local CSV</strong> or drag &amp; drop</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">flow-tasks.csv · tasks.csv · any CSV exported from Flow</div>
+    </div>
+    <input type="file" id="csv-load-input" accept=".csv" style="display:none" onchange="loadCSVFile(event)">
+    <div class="load-actions">
+      <button class="btn ghost" onclick="loadDemoTasks()" style="justify-content:center">✦ Demo tasks</button>
+      <button class="btn ghost" onclick="startEmpty()" style="justify-content:center">Start empty</button>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">Flow<span>.</span></div>
+
+    <div class="nav-section">Views</div>
+    <div class="nav-item active" onclick="switchView('board')" id="nav-board"><span class="icon">▦</span> Board</div>
+    <div class="nav-item" onclick="switchView('list')" id="nav-list"><span class="icon">≡</span> List</div>
+    <div class="nav-item" onclick="switchView('calendar')" id="nav-calendar"><span class="icon">◫</span> Calendar</div>
+
+    <div class="nav-section" style="margin-top:12px;">Filters</div>
+    <div class="nav-item" onclick="filterSidebar('p1')" id="nav-p1"><span class="icon" style="color:var(--red)">●</span> Critical <span class="nav-badge red" id="badge-p1">0</span></div>
+    <div class="nav-item" onclick="filterSidebar('p2')" id="nav-p2"><span class="icon" style="color:var(--amber)">●</span> High <span class="nav-badge" style="background:var(--amber)" id="badge-p2">0</span></div>
+    <div class="nav-item" onclick="filterSidebar('p3')" id="nav-p3"><span class="icon" style="color:var(--green)">●</span> Normal <span class="nav-badge" style="background:var(--green)" id="badge-p3">0</span></div>
+    <div class="nav-item" onclick="filterSidebar('p4')" id="nav-p4"><span class="icon" style="color:var(--text3)">●</span> Low</div>
+    <div class="nav-item" onclick="filterSidebar('overdue')" id="nav-overdue"><span class="icon">⚠</span> Overdue <span class="nav-badge red" id="badge-overdue">0</span></div>
+    <div class="nav-item" onclick="filterSidebar('all')" id="nav-all"><span class="icon">✦</span> All Tasks</div>
+
+    <div class="sidebar-bottom">
+      <button class="csv-btn highlight" onclick="saveCSV()" id="save-csv-btn" data-tip="Save all changes to CSV">💾 Save CSV</button>
+      <button class="csv-btn" onclick="document.getElementById('csv-load-input2').click()" data-tip="Replace tasks by loading a new CSV">📂 Open CSV</button>
+      <input type="file" id="csv-load-input2" accept=".csv" style="display:none" onchange="loadCSVFile(event)">
+      <button class="csv-btn" onclick="syncGithub()" id="gh-sync-btn" data-tip="Push changes to GitHub">⬆ Push to GitHub</button>
+      <button class="csv-btn" onclick="openGithubSetup()" data-tip="GitHub connection settings">⚙ GitHub Settings</button>
+      <button class="csv-btn" onclick="openEmailSetup()" data-tip="Email reminders setup">✉ Email Reminders</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="view-title">Board <span id="view-date"></span></div>
+      <div id="file-status"></div>
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input class="search" placeholder="Search tasks…" oninput="renderAll()" id="search-input">
+      </div>
+      <button class="btn ghost sm" onclick="openEmailModal()" data-tip="Send due reminders by email">✉ Reminders</button>
+      <button class="btn" onclick="openAddModal()">+ Add Task</button>
+    </div>
+
+    <!-- Board view -->
+    <div class="view active content" id="view-board">
+      <div class="overdue-banner" id="overdue-banner">⚠ <span id="overdue-count"></span> overdue task(s) — <a href="#" style="color:inherit;text-decoration:underline" onclick="filterSidebar('overdue');return false">View all</a></div>
+      <div class="stats-bar" id="stats-bar"></div>
+      <div class="filter-bar" id="filter-bar-board"></div>
+      <div class="buckets" id="buckets"></div>
+    </div>
+
+    <!-- List view -->
+    <div class="view content" id="view-list">
+      <div class="filter-bar" id="filter-bar-list"></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;">
+        <span style="font-size:12px;color:var(--text3)">Sort by:</span>
+        <select class="sort-select" id="sort-select" onchange="renderAll()">
+          <option value="due">Due Date</option>
+          <option value="priority">Priority</option>
+          <option value="created">Created</option>
+          <option value="bucket">Bucket</option>
+        </select>
+        <label style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="show-done" onchange="renderAll()"> Show completed
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table id="task-table">
+          <thead>
+            <tr>
+              <th style="width:24px"></th>
+              <th>Task</th>
+              <th>Bucket</th>
+              <th>Priority</th>
+              <th>Due Date</th>
+              <th>Notes</th>
+              <th style="width:80px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="task-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Calendar view -->
+    <div class="view content" id="view-calendar">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <button class="btn ghost sm" onclick="calNav(-1)">‹</button>
+        <span style="font-weight:500;font-size:15px;" id="cal-month-label"></span>
+        <button class="btn ghost sm" onclick="calNav(1)">›</button>
+        <button class="btn ghost sm" onclick="calGoToday()">Today</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Task Modal -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('task-modal')">✕</button>
+    <div class="modal-title" id="modal-title">Add Task</div>
+    <div class="form-row">
+      <label class="form-label">Task Title *</label>
+      <input class="form-input" id="f-title" placeholder="What needs to be done?">
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Bucket</label>
+        <select class="form-select" id="f-bucket">
+          <option value="Inbox">Inbox</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Finance">Finance</option>
+          <option value="Health">Health</option>
+          <option value="Home">Home</option>
+          <option value="Learning">Learning</option>
+          <option value="Waiting">Waiting</option>
+          <option value="Rental">Rental</option>
+          <option value="Wife">Wife</option>
+          <option value="Parents">Parents</option>
+          <option value="AFH">AFH</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Priority</label>
+        <select class="form-select" id="f-priority">
+          <option value="p1">🔴 Critical</option>
+          <option value="p2">🟡 High</option>
+          <option value="p3" selected>🟢 Normal</option>
+          <option value="p4">⚪ Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Due Date</label>
+        <input class="form-input" type="date" id="f-due">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Remind Me</label>
+        <select class="form-select" id="f-remind">
+          <option value="">No reminder</option>
+          <option value="same">Day of</option>
+          <option value="1d">1 day before</option>
+          <option value="3d">3 days before</option>
+          <option value="1w">1 week before</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="f-notes" placeholder="Additional context, links, details…"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Tags (comma separated)</label>
+      <input class="form-input" id="f-tags" placeholder="e.g. urgent, client, review">
+    </div>
+    <div class="modal-actions">
+      <div style="margin-right:auto">
+        <button class="btn danger sm" id="delete-task-btn" onclick="deleteCurrentTask()" style="display:none">Delete Task</button>
+      </div>
+      <button class="btn ghost" onclick="closeModal('task-modal')">Cancel</button>
+      <button class="btn" onclick="saveTask()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Email Modal -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('email-modal')">✕</button>
+    <div class="modal-title">Email Reminders</div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:20px;line-height:1.6">Flow generates an email draft with your due & overdue tasks. Click "Open in Mail" to send it — no server needed.</p>
+    <div class="email-section">
+      <h4>Your email address</h4>
+      <input class="form-input" id="email-addr" placeholder="you@example.com" style="margin-bottom:0">
+    </div>
+    <div class="email-section" id="due-tasks-preview"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('email-modal')">Close</button>
+      <button class="btn" onclick="openMailto()">✉ Open in Mail</button>
+    </div>
+  </div>
+</div>
+
+<!-- GitHub Settings Modal -->
+<div class="modal-overlay" id="gh-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('gh-modal')">✕</button>
+    <div class="modal-title">GitHub Settings</div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:20px;line-height:1.6">
+      Connection config is baked into this file. Values shown masked — click <strong>Reveal</strong> to view or edit. Changes here override the built-in config for this session only.
+    </p>
+
+    <div class="form-row">
+      <label class="form-label">Personal Access Token</label>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1">
+        <button class="btn ghost sm" onclick="toggleReveal('gh-token')" id="gh-token-reveal-btn">Reveal</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Needs <strong>repo</strong> scope.</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Repository (owner/repo)</label>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="gh-repo" placeholder="owner/repo" style="flex:1">
+        <button class="btn ghost sm" onclick="toggleReveal('gh-repo')" id="gh-repo-reveal-btn">Reveal</button>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">File path</label>
+        <input class="form-input" id="gh-path" placeholder="tasks.csv">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Branch</label>
+        <input class="form-input" id="gh-branch" placeholder="main">
+      </div>
+    </div>
+    <div id="gh-status"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('gh-modal')">Cancel</button>
+      <button class="btn ghost" onclick="loadFromGithub();closeModal('gh-modal')">⬇ Pull from GitHub</button>
+      <button class="btn" id="gh-push-btn" onclick="pushCSVToGithub()">⬆ Push to GitHub</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ───────────────────────────────────────────────
+// CONSTANTS
+// ───────────────────────────────────────────────
+const BUCKETS = ['Inbox','Work','Personal','Finance','Health','Home','Learning','Waiting','Rental','Wife','Parents','AFH'];
+const BUCKET_COLORS = {
+  Inbox:'#7c6ff7', Work:'#5ab4f5', Personal:'#e87fa0',
+  Finance:'#f0a840', Health:'#52c98a', Home:'#f06b6b',
+  Learning:'#a78bfa', Waiting:'#6b698a',
+  Rental:'#3bbfcf', Wife:'#f472b6', Parents:'#fb923c', AFH:'#a3e635'
+};
+const P_LABELS = { p1:'Critical', p2:'High', p3:'Normal', p4:'Low' };
+const CSV_HEADER = 'id,title,bucket,priority,due,remind,notes,tags,done,created';
+
+// ───────────────────────────────────────────────
+// STATE — CSV is source of truth
+// ───────────────────────────────────────────────
+let tasks = [];
+let unsaved = false;         // tracks whether in-memory differs from last-saved CSV
+let currentFileName = 'flow-tasks.csv';
+let editingId = null;
+let currentView = 'board';
+let activeFilter = 'all';
+const now = new Date();
+let calYear = now.getFullYear(), calMonth = now.getMonth();
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+function markUnsaved() {
+  unsaved = true;
+  const el = document.getElementById('file-status');
+  el.className = 'unsaved';
+  el.innerHTML = `<span class="unsaved-dot"></span> Unsaved changes · ${currentFileName}`;
+  document.getElementById('save-csv-btn').style.borderColor = 'var(--amber)';
+  document.getElementById('save-csv-btn').style.color = 'var(--amber)';
+}
+
+function markSaved() {
+  unsaved = false;
+  const el = document.getElementById('file-status');
+  el.className = 'saved';
+  el.innerHTML = `✓ Saved · ${currentFileName}`;
+  document.getElementById('save-csv-btn').style.borderColor = '';
+  document.getElementById('save-csv-btn').style.color = '';
+  setTimeout(() => {
+    if (!unsaved) {
+      el.className = '';
+      el.innerHTML = `📄 ${currentFileName}`;
+    }
+  }, 2500);
+}
+
+// ───────────────────────────────────────────────
+// CSV PARSE / SERIALIZE
+// ───────────────────────────────────────────────
+function csvQ(s) { return '"' + String(s||'').replace(/"/g,'""') + '"'; }
+
+function parseCSVLine(line) {
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+    else cur += c;
+  }
+  result.push(cur);
+  return result;
+}
+
+function tasksToCSV() {
+  const rows = tasks.map(t =>
+    [t.id, csvQ(t.title), csvQ(t.bucket), t.priority,
+     t.due||'', t.remind||'', csvQ(t.notes||''), csvQ(t.tags||''),
+     t.done ? 'true' : 'false', t.created].join(',')
+  );
+  return CSV_HEADER + '\n' + rows.join('\n');
+}
+
+function csvToTasks(text) {
+  const lines = text.trim().split('\n').filter(Boolean);
+  if (lines.length < 1) return [];
+  const header = parseCSVLine(lines[0]).map(h => h.trim());
+  const result = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    const t = {};
+    header.forEach((h, j) => t[h] = (cols[j] || '').trim());
+    if (!t.title) continue;
+    if (!t.id) t.id = uid();
+    t.done = t.done === 'true';
+    t.created = parseInt(t.created) || Date.now();
+    result.push(t);
+  }
+  return result;
+}
+
+// ───────────────────────────────────────────────
+// LOAD SCREEN
+// ───────────────────────────────────────────────
+function loadCSVFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  currentFileName = file.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    tasks = csvToTasks(ev.target.result);
+    launchApp();
+    markSaved();
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function loadDemoTasks() {
+  const td = new Date(); td.setHours(0,0,0,0);
+  const ds = d => { const x = new Date(td); x.setDate(x.getDate()+d); return x.toISOString().split('T')[0]; };
+  tasks = [
+    {id:uid(),title:'Review Q2 budget report',bucket:'Finance',priority:'p1',due:ds(-1),remind:'1d',notes:'Check department spend vs forecast',tags:'finance,review',done:false,created:Date.now()-86400000*3},
+    {id:uid(),title:'Book dentist appointment',bucket:'Health',priority:'p2',due:ds(2),remind:'1d',notes:'',tags:'health',done:false,created:Date.now()-86400000*2},
+    {id:uid(),title:'Finish dashboard project proposal',bucket:'Work',priority:'p1',due:ds(1),remind:'same',notes:'Include timeline and resource breakdown',tags:'work,proposal',done:false,created:Date.now()-86400000},
+    {id:uid(),title:'Read "Deep Work" chapter 3',bucket:'Learning',priority:'p4',due:'',remind:'',notes:'',tags:'reading',done:false,created:Date.now()},
+    {id:uid(),title:'Pay electricity bill',bucket:'Finance',priority:'p2',due:ds(5),remind:'3d',notes:'',tags:'bills',done:false,created:Date.now()},
+    {id:uid(),title:'Weekly grocery run',bucket:'Personal',priority:'p3',due:ds(3),remind:'same',notes:'Milk, eggs, bread, fruit',tags:'shopping',done:false,created:Date.now()},
+    {id:uid(),title:'Rental — schedule plumber visit',bucket:'Rental',priority:'p2',due:ds(4),remind:'1d',notes:'Leaky faucet in unit 2B',tags:'maintenance',done:false,created:Date.now()},
+    {id:uid(),title:'Anniversary dinner reservation',bucket:'Wife',priority:'p1',due:ds(7),remind:'3d',notes:'Check OpenTable for downtown spots',tags:'date',done:false,created:Date.now()},
+    {id:uid(),title:'Call mom & dad this weekend',bucket:'Parents',priority:'p3',due:ds(5),remind:'same',notes:'',tags:'family',done:false,created:Date.now()},
+    {id:uid(),title:'AFH — submit monthly report',bucket:'AFH',priority:'p2',due:ds(6),remind:'3d',notes:'Include occupancy and incident log',tags:'report',done:false,created:Date.now()},
+    {id:uid(),title:'Update resume',bucket:'Work',priority:'p3',due:'',remind:'',notes:'Add new projects from Q1',tags:'career',done:true,created:Date.now()-86400000*5},
+  ];
+  currentFileName = 'flow-tasks.csv';
+  launchApp();
+  markUnsaved(); // demo data hasn't been saved yet
+}
+
+function startEmpty() {
+  tasks = [];
+  currentFileName = 'flow-tasks.csv';
+  launchApp();
+  markSaved();
+}
+
+function launchApp() {
+  document.getElementById('load-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('file-status').innerHTML = `📄 ${currentFileName}`;
+  renderAll();
+  // Warn before leaving if unsaved
+  window.addEventListener('beforeunload', e => {
+    if (unsaved) { e.preventDefault(); e.returnValue = ''; }
+  });
+}
+
+// ───────────────────────────────────────────────
+// SAVE CSV
+// ───────────────────────────────────────────────
+function saveCSV() {
+  const blob = new Blob([tasksToCSV()], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = currentFileName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  markSaved();
+}
+
+// ───────────────────────────────────────────────
+// TASK LOGIC
+// ───────────────────────────────────────────────
+function daysDue(due) {
+  if (!due) return null;
+  const d = new Date(due + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((d - today) / 86400000);
+}
+
+function dueLabel(due) {
+  if (!due) return '';
+  const d = daysDue(due);
+  if (d < 0) return { text: `${Math.abs(d)}d overdue`, cls: 'overdue' };
+  if (d === 0) return { text: 'Due today', cls: 'soon' };
+  if (d === 1) return { text: 'Tomorrow', cls: 'soon' };
+  if (d <= 3) return { text: `${d}d left`, cls: 'soon' };
+  return { text: new Date(due+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}), cls: '' };
+}
+
+function filteredTasks() {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const showDone = document.getElementById('show-done')?.checked;
+  return tasks.filter(t => {
+    if (!showDone && t.done) return false;
+    if (activeFilter === 'overdue' && (daysDue(t.due) >= 0 || !t.due)) return false;
+    if (['p1','p2','p3','p4'].includes(activeFilter) && t.priority !== activeFilter) return false;
+    if (q && !t.title.toLowerCase().includes(q) && !(t.notes||'').toLowerCase().includes(q) && !(t.tags||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+// ───────────────────────────────────────────────
+// RENDER
+// ───────────────────────────────────────────────
+function renderAll() {
+  updateBadges();
+  if (currentView === 'board') renderBoard();
+  if (currentView === 'list') renderList();
+  if (currentView === 'calendar') renderCalendar();
+}
+
+function updateBadges() {
+  const active = tasks.filter(t => !t.done);
+  document.getElementById('badge-p1').textContent = active.filter(t=>t.priority==='p1').length;
+  document.getElementById('badge-p2').textContent = active.filter(t=>t.priority==='p2').length;
+  document.getElementById('badge-p3').textContent = active.filter(t=>t.priority==='p3').length;
+  const ov = active.filter(t=>t.due && daysDue(t.due)<0).length;
+  document.getElementById('badge-overdue').textContent = ov;
+  const ob = document.getElementById('overdue-banner');
+  if (ov > 0) { ob.classList.add('show'); document.getElementById('overdue-count').textContent = ov; }
+  else ob.classList.remove('show');
+}
+
+function renderStats() {
+  const active = tasks.filter(t=>!t.done);
+  const done = tasks.filter(t=>t.done);
+  const ov = active.filter(t=>t.due && daysDue(t.due)<0).length;
+  const soon = active.filter(t=>t.due && daysDue(t.due)>=0 && daysDue(t.due)<=3).length;
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-card c-purple"><div class="stat-label">Total Active</div><div class="stat-num">${active.length}</div><div class="stat-sub">${tasks.length} total tasks</div></div>
+    <div class="stat-card c-red"><div class="stat-label">Overdue</div><div class="stat-num" style="color:var(--red)">${ov}</div><div class="stat-sub">Need attention</div></div>
+    <div class="stat-card c-amber"><div class="stat-label">Due Soon</div><div class="stat-num" style="color:var(--amber)">${soon}</div><div class="stat-sub">Within 3 days</div></div>
+    <div class="stat-card c-green"><div class="stat-label">Completed</div><div class="stat-num" style="color:var(--green)">${done.length}</div><div class="stat-sub">${tasks.length ? Math.round(done.length/tasks.length*100) : 0}% done</div></div>`;
+}
+
+function renderFilterBar(id) {
+  const chips = [
+    {v:'all',l:'All'},{v:'p1',l:'Critical',c:'p1'},{v:'p2',l:'High',c:'p2'},
+    {v:'p3',l:'Normal',c:'p3'},{v:'overdue',l:'Overdue'}
+  ];
+  document.getElementById(id).innerHTML = chips.map(c =>
+    `<span class="filter-chip ${c.c||''} ${activeFilter===c.v?'active':''}" onclick="setFilter('${c.v}')">${c.l}</span>`
+  ).join('');
+}
+
+function setFilter(f) { activeFilter = f; renderAll(); }
+function filterSidebar(f) { setFilter(f); if (currentView === 'calendar') return; switchView('board'); }
+
+function renderBoard() {
+  renderStats();
+  renderFilterBar('filter-bar-board');
+  const ft = filteredTasks();
+  document.getElementById('buckets').innerHTML = BUCKETS.map(b => {
+    const bt = ft.filter(t => t.bucket === b);
+    return `<div class="bucket">
+      <div class="bucket-head">
+        <div class="bucket-dot" style="background:${BUCKET_COLORS[b]}"></div>
+        <div class="bucket-name">${b}</div>
+        <span class="bucket-count">${bt.filter(t=>!t.done).length}</span>
+      </div>
+      <div class="bucket-body">
+        ${bt.length ? bt.map(taskCard).join('') : '<div class="empty">Empty</div>'}
+        <div style="text-align:center;margin-top:6px">
+          <button class="btn ghost sm" onclick="openAddModal('${b}')">+ Add</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function taskCard(t) {
+  const dl = dueLabel(t.due);
+  return `<div class="task-card ${t.done?'done':''}" onclick="openEditModal('${t.id}')">
+    <div class="task-check" onclick="event.stopPropagation();toggleDone('${t.id}')">${t.done?'✓':''}</div>
+    <div class="task-title" style="padding-right:22px">${esc(t.title)}</div>
+    <div class="task-meta">
+      <span class="tag ${t.priority}">${P_LABELS[t.priority]}</span>
+      ${dl ? `<span class="due-tag ${dl.cls}">${dl.text}</span>` : ''}
+      ${t.tags ? t.tags.split(',').slice(0,2).map(tg=>`<span class="tag p4">${esc(tg.trim())}</span>`).join('') : ''}
+    </div>
+  </div>`;
+}
+
+function renderList() {
+  renderFilterBar('filter-bar-list');
+  const sort = document.getElementById('sort-select')?.value || 'due';
+  const ft = filteredTasks().slice().sort((a,b) => {
+    if (sort === 'due') return (a.due||'9999') > (b.due||'9999') ? 1 : -1;
+    if (sort === 'priority') return a.priority > b.priority ? 1 : -1;
+    if (sort === 'bucket') return a.bucket > b.bucket ? 1 : -1;
+    return b.created - a.created;
+  });
+  const tbody = document.getElementById('task-tbody');
+  if (!ft.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No tasks found</td></tr>`; return; }
+  tbody.innerHTML = ft.map(t => {
+    const dl = dueLabel(t.due);
+    return `<tr class="${t.done?'done-row':''}">
+      <td><div class="task-check" onclick="toggleDone('${t.id}')" style="position:static">${t.done?'✓':''}</div></td>
+      <td class="task-title-cell" style="font-weight:500;cursor:pointer" onclick="openEditModal('${t.id}')">${esc(t.title)}</td>
+      <td><span style="font-size:11px;padding:2px 8px;border-radius:4px;background:${BUCKET_COLORS[t.bucket]}22;color:${BUCKET_COLORS[t.bucket]}">${t.bucket}</span></td>
+      <td><span class="tag ${t.priority}">${P_LABELS[t.priority]}</span></td>
+      <td>${dl ? `<span class="due-tag ${dl.cls}">${dl.text}</span>` : '<span style="color:var(--text3)">—</span>'}</td>
+      <td style="color:var(--text3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.notes||'')}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn ghost sm" onclick="openEditModal('${t.id}')">Edit</button>
+        <button class="btn ghost sm" style="color:var(--red)" onclick="deleteTask('${t.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCalendar() {
+  document.getElementById('cal-month-label').textContent =
+    new Date(calYear, calMonth).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const grid = document.getElementById('cal-grid');
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html = days.map(d=>`<div class="cal-header">${d}</div>`).join('');
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i=0; i<first; i++) html += `<div class="cal-day other-month"><div class="cal-day-num">${daysInPrev-first+1+i}</div></div>`;
+  for (let d=1; d<=daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayTasks = tasks.filter(t=>t.due===dateStr && !t.done);
+    const isToday = new Date(calYear,calMonth,d).getTime()===today.getTime();
+    html += `<div class="cal-day ${isToday?'today':''}">
+      <div class="cal-day-num" style="${isToday?'color:var(--accent2);font-weight:600':''}">${d}</div>
+      ${dayTasks.map(t=>`<div class="cal-dot ${t.priority}" onclick="openEditModal('${t.id}')" title="${esc(t.title)}">${esc(t.title)}</div>`).join('')}
+    </div>`;
+  }
+  const rem = (first + daysInMonth) % 7;
+  for (let i=0; rem && i<7-rem; i++) html += `<div class="cal-day other-month"><div class="cal-day-num">${i+1}</div></div>`;
+  grid.innerHTML = html;
+}
+
+function calNav(dir) { calMonth += dir; if (calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function calGoToday() { calYear=now.getFullYear(); calMonth=now.getMonth(); renderCalendar(); }
+
+// ───────────────────────────────────────────────
+// MODAL
+// ───────────────────────────────────────────────
+function openAddModal(bucket) {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Add Task';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-bucket').value = bucket || 'Inbox';
+  document.getElementById('f-priority').value = 'p3';
+  document.getElementById('f-due').value = '';
+  document.getElementById('f-remind').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-tags').value = '';
+  document.getElementById('delete-task-btn').style.display = 'none';
+  document.getElementById('task-modal').classList.add('open');
+  setTimeout(() => document.getElementById('f-title').focus(), 100);
+}
+
+function openEditModal(id) {
+  const t = tasks.find(x=>x.id===id); if (!t) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit Task';
+  document.getElementById('f-title').value = t.title;
+  document.getElementById('f-bucket').value = t.bucket;
+  document.getElementById('f-priority').value = t.priority;
+  document.getElementById('f-due').value = t.due||'';
+  document.getElementById('f-remind').value = t.remind||'';
+  document.getElementById('f-notes').value = t.notes||'';
+  document.getElementById('f-tags').value = t.tags||'';
+  document.getElementById('delete-task-btn').style.display = 'flex';
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function saveTask() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').style.borderColor='var(--red)'; return; }
+  document.getElementById('f-title').style.borderColor = '';
+  const t = {
+    id: editingId || uid(),
+    title,
+    bucket: document.getElementById('f-bucket').value,
+    priority: document.getElementById('f-priority').value,
+    due: document.getElementById('f-due').value,
+    remind: document.getElementById('f-remind').value,
+    notes: document.getElementById('f-notes').value.trim(),
+    tags: document.getElementById('f-tags').value.trim(),
+    done: editingId ? (tasks.find(x=>x.id===editingId)?.done||false) : false,
+    created: editingId ? (tasks.find(x=>x.id===editingId)?.created||Date.now()) : Date.now()
+  };
+  if (editingId) { const i = tasks.findIndex(x=>x.id===editingId); tasks[i] = t; }
+  else tasks.unshift(t);
+  markUnsaved();
+  renderAll();
+  closeModal('task-modal');
+}
+
+function toggleDone(id) {
+  const t = tasks.find(x=>x.id===id); if (!t) return;
+  t.done = !t.done;
+  markUnsaved();
+  renderAll();
+}
+
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  tasks = tasks.filter(x=>x.id!==id);
+  markUnsaved();
+  renderAll();
+}
+
+function deleteCurrentTask() {
+  if (!editingId) return;
+  closeModal('task-modal');
+  deleteTask(editingId);
+}
+
+// ───────────────────────────────────────────────
+// GITHUB CONFIG — baked in, masked in UI
+// Edit GH_CONFIG values directly in this file.
+// ───────────────────────────────────────────────
+const GH_CONFIG = {
+  token:  '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',           // paste your token here: 'ghp_xxxxxxxxxxxxxxxxxxxx'
+  repo:   'barisohussein/kiyya',           // e.g. 'yourusername/my-tasks'
+  path:   'tasks.csv',
+  branch: 'master'
+};
+
+// Session-level overrides (set via GitHub Settings modal)
+let _ghSession = {};
+
+// Returns active config: session overrides > baked-in > localStorage fallback
+function getGHConfig() {
+  return {
+    token:  _ghSession.token  || GH_CONFIG.token  || localStorage.getItem('gh-token')  || '',
+    repo:   _ghSession.repo   || GH_CONFIG.repo   || localStorage.getItem('gh-repo')   || '',
+    path:   _ghSession.path   || GH_CONFIG.path   || localStorage.getItem('gh-path')   || 'tasks.csv',
+    branch: _ghSession.branch || GH_CONFIG.branch || localStorage.getItem('gh-branch') || 'main',
+  };
+}
+
+function maskValue(v) {
+  if (!v) return '';
+  if (v.length <= 4) return '•'.repeat(v.length);
+  return v.slice(0,3) + '•'.repeat(Math.min(v.length - 4, 18)) + v.slice(-1);
+}
+
+function toggleReveal(fieldId) {
+  const el  = document.getElementById(fieldId);
+  const btn = document.getElementById(fieldId + '-reveal-btn');
+  const cfg = getGHConfig();
+  if (el.dataset.masked === 'true') {
+    // Reveal: fill real value, make editable
+    el.dataset.masked = 'false';
+    el.readOnly = false;
+    if (fieldId === 'gh-token') { el.type = 'text'; el.value = cfg.token; }
+    else el.value = cfg.repo;
+    btn.textContent = 'Hide';
+    el.focus();
+  } else {
+    // Hide: re-mask
+    el.dataset.masked = 'true';
+    el.readOnly = true;
+    if (fieldId === 'gh-token') { el.type = 'password'; el.value = cfg.token; }
+    else el.value = maskValue(cfg.repo);
+    btn.textContent = 'Reveal';
+  }
+}
+
+function openGithubSetup() {
+  const cfg = getGHConfig();
+  // Token — use password field (browser masks it natively)
+  const tokenEl = document.getElementById('gh-token');
+  tokenEl.type = 'password';
+  tokenEl.value = cfg.token;
+  tokenEl.readOnly = true;
+  tokenEl.dataset.masked = 'true';
+  tokenEl.placeholder = cfg.token ? '(token configured)' : 'ghp_xxxxxxxxxxxxxxxxxxxx';
+  document.getElementById('gh-token-reveal-btn').textContent = 'Reveal';
+
+  // Repo — show masked text
+  const repoEl = document.getElementById('gh-repo');
+  repoEl.type = 'text';
+  repoEl.value = maskValue(cfg.repo);
+  repoEl.readOnly = true;
+  repoEl.dataset.masked = 'true';
+  document.getElementById('gh-repo-reveal-btn').textContent = 'Reveal';
+
+  document.getElementById('gh-path').value   = cfg.path;
+  document.getElementById('gh-branch').value = cfg.branch;
+  document.getElementById('gh-status').textContent = '';
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function saveGHSessionOverrides() {
+  const tokenEl = document.getElementById('gh-token');
+  const repoEl  = document.getElementById('gh-repo');
+  // Only save if the field was revealed and edited (not masked)
+  if (tokenEl.dataset.masked !== 'true') {
+    const t = tokenEl.value.trim();
+    if (t) { _ghSession.token = t; localStorage.setItem('gh-token', t); }
+  }
+  if (repoEl.dataset.masked !== 'true') {
+    const r = repoEl.value.trim();
+    if (r && !r.includes('•')) { _ghSession.repo = r; localStorage.setItem('gh-repo', r); }
+  }
+  const p = document.getElementById('gh-path').value.trim()   || 'tasks.csv';
+  const b = document.getElementById('gh-branch').value.trim() || 'main';
+  _ghSession.path = p; _ghSession.branch = b;
+  localStorage.setItem('gh-path', p); localStorage.setItem('gh-branch', b);
+}
+
+// ── Load from GitHub ──
+async function loadFromGithub() {
+  const cfg = getGHConfig();
+  const statusEl = document.getElementById('gh-load-status');
+  const btn = document.getElementById('gh-load-btn');
+
+  if (!cfg.token || !cfg.repo) {
+    if (statusEl) { statusEl.style.color='var(--red)'; statusEl.textContent='⚠ No config — edit GH_CONFIG in the HTML source or use ⚙ GitHub Settings after loading.'; }
+    return;
+  }
+
+  if (btn) { btn.textContent = 'Fetching…'; btn.disabled = true; }
+  if (statusEl) { statusEl.style.color = 'var(--text2)'; statusEl.textContent = `Fetching from ${cfg.repo}…`; }
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`,
+      { headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
+    const json = await res.json();
+    const text = decodeURIComponent(escape(atob(json.content.replace(/\n/g,''))));
+    tasks = csvToTasks(text);
+    currentFileName = cfg.path.split('/').pop();
+    if (statusEl) { statusEl.style.color = 'var(--green)'; statusEl.textContent = `✓ Loaded ${tasks.length} tasks`; }
+    setTimeout(() => { launchApp(); markSaved(); }, 500);
+  } catch(e) {
+    if (statusEl) { statusEl.style.color = 'var(--red)'; statusEl.textContent = '✕ ' + e.message; }
+  }
+  if (btn) { btn.textContent = '⬇ Load from GitHub'; btn.disabled = false; }
+}
+
+// ── Quick push from sidebar ──
+async function syncGithub() {
+  const btn = document.getElementById('gh-sync-btn');
+  btn.textContent = 'Pushing…'; btn.disabled = true;
+  await _doPush(true);
+  btn.textContent = '⬆ Push to GitHub'; btn.disabled = false;
+}
+
+async function pushCSVToGithub() {
+  saveGHSessionOverrides();
+  const pushBtn = document.getElementById('gh-push-btn');
+  if (pushBtn) { pushBtn.textContent = 'Pushing…'; pushBtn.disabled = true; }
+  await _doPush(false);
+  if (pushBtn) { pushBtn.textContent = '⬆ Push to GitHub'; pushBtn.disabled = false; }
+}
+
+async function _doPush(silent) {
+  const cfg = getGHConfig();
+  if (!cfg.token || !cfg.repo) {
+    alert('No GitHub config. Edit GH_CONFIG in the HTML source or open ⚙ GitHub Settings.');
+    return;
+  }
+  const encoded = btoa(unescape(encodeURIComponent(tasksToCSV())));
+  try {
+    let sha = '';
+    const getRes = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`,
+      { headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github.v3+json' } });
+    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
+    const putRes = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Update ${cfg.path} — ${new Date().toISOString().split('T')[0]}`,
+        content: encoded, branch: cfg.branch, ...(sha ? { sha } : {})
+      })
+    });
+    if (!putRes.ok) { const err = await putRes.json(); throw new Error(err.message); }
+    const statusEl = document.getElementById('gh-status');
+    if (statusEl) { statusEl.style.color = 'var(--green)'; statusEl.textContent = `✓ Pushed to ${cfg.repo}/${cfg.path}`; }
+    markSaved();
+    if (!silent) setTimeout(() => closeModal('gh-modal'), 1200);
+  } catch(e) {
+    const statusEl = document.getElementById('gh-status');
+    if (statusEl) { statusEl.style.color = 'var(--red)'; statusEl.textContent = '✕ ' + e.message; }
+    else alert('Push failed: ' + e.message);
+  }
+}
+
+// ───────────────────────────────────────────────
+// EMAIL
+// ───────────────────────────────────────────────
+function openEmailModal() { openEmailSetup(); }
+function openEmailSetup() {
+  document.getElementById('email-addr').value = localStorage.getItem('flow-email') || '';
+  buildEmailPreview();
+  document.getElementById('email-modal').classList.add('open');
+}
+
+function buildEmailPreview() {
+  const overdue = tasks.filter(t=>!t.done && t.due && daysDue(t.due)<0);
+  const soon = tasks.filter(t=>!t.done && t.due && daysDue(t.due)>=0 && daysDue(t.due)<=3);
+  let html = '<h4>Tasks in this reminder</h4>';
+  if (!overdue.length && !soon.length) {
+    html += '<div style="color:var(--text3);font-size:12px">No overdue or upcoming tasks 🎉</div>';
+  } else {
+    if (overdue.length) {
+      html += `<div style="color:var(--red);font-size:12px;margin-bottom:6px">Overdue (${overdue.length}):</div>`;
+      html += overdue.map(t=>`<div style="font-size:12px;margin-bottom:3px;padding-left:8px;border-left:2px solid var(--red);color:var(--text)">• ${esc(t.title)} <span style="color:var(--text3)">(${t.due})</span></div>`).join('');
+    }
+    if (soon.length) {
+      html += `<div style="color:var(--amber);font-size:12px;margin:8px 0 6px">Due soon (${soon.length}):</div>`;
+      html += soon.map(t=>`<div style="font-size:12px;margin-bottom:3px;padding-left:8px;border-left:2px solid var(--amber);color:var(--text)">• ${esc(t.title)} <span style="color:var(--text3)">(${t.due})</span></div>`).join('');
+    }
+  }
+  document.getElementById('due-tasks-preview').innerHTML = html;
+}
+
+function openMailto() {
+  const addr = document.getElementById('email-addr').value.trim();
+  localStorage.setItem('flow-email', addr);
+  const overdue = tasks.filter(t=>!t.done && t.due && daysDue(t.due)<0);
+  const soon = tasks.filter(t=>!t.done && t.due && daysDue(t.due)>=0 && daysDue(t.due)<=3);
+  const today = new Date().toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'});
+  let body = `Flow Dashboard Reminder — ${today}\n\n`;
+  if (overdue.length) { body += `OVERDUE (${overdue.length}):\n`; overdue.forEach(t=>{ body += `  • [${P_LABELS[t.priority]}] ${t.title} — was due ${t.due}\n`; }); body += '\n'; }
+  if (soon.length) { body += `DUE SOON (${soon.length}):\n`; soon.forEach(t=>{ body += `  • [${P_LABELS[t.priority]}] ${t.title} — due ${t.due}\n`; }); body += '\n'; }
+  if (!overdue.length && !soon.length) body += 'No overdue or upcoming tasks. Great work!\n';
+  window.location.href = `mailto:${addr}?subject=${encodeURIComponent(`Flow Reminder — ${overdue.length} overdue, ${soon.length} due soon`)}&body=${encodeURIComponent(body)}`;
+}
+
+// ───────────────────────────────────────────────
+// NAV
+// ───────────────────────────────────────────────
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.getElementById('nav-'+v).classList.add('active');
+  const titles = {board:'Board',list:'All Tasks',calendar:'Calendar'};
+  document.getElementById('view-title').innerHTML = titles[v] + ' <span>' + new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}) + '</span>';
+  renderAll();
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ───────────────────────────────────────────────
+// DRAG & DROP on load screen
+// ───────────────────────────────────────────────
+const drop = document.getElementById('load-drop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.name.endsWith('.csv')) { alert('Please drop a .csv file.'); return; }
+  currentFileName = file.name;
+  const reader = new FileReader();
+  reader.onload = ev => { tasks = csvToTasks(ev.target.result); launchApp(); markSaved(); };
+  reader.readAsText(file);
+});
+
+// Init date display
+document.getElementById('view-date').textContent =
+  new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+// Auto-load from GitHub on startup if config is baked in
+(function() {
+  const cfg = getGHConfig();
+  if (cfg.token && cfg.repo) {
+    const statusEl = document.getElementById('gh-load-status');
+    if (statusEl) { statusEl.style.color = 'var(--text3)'; statusEl.textContent = 'GitHub config detected — loading…'; }
+    setTimeout(() => loadFromGithub(), 300);
+  }
+})();
+</script>
+</body>
+</html>
