@@ -1,0 +1,40 @@
+name: Update Tasks CSV
+
+on:
+  workflow_dispatch:   # manual trigger
+
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Debug files
+        run: ls -la
+
+      - name: Print tasks.csv (if exists)
+        run: |
+          if [ -f tasks.csv ]; then
+            cat tasks.csv
+          else
+            echo "No tasks.csv yet"
+          fi
+
+      # Example: modify or process CSV
+      - name: Update CSV timestamp
+        run: |
+          echo "last_run,$(date)" >> tasks.csv
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add tasks.csv
+          git commit -m "Auto update tasks.csv" || echo "No changes"
+
+      - name: Push changes
+        run: |
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
