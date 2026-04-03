@@ -453,8 +453,7 @@
     <div class="sidebar-bottom">
       <button class="csv-btn" onclick="openGithubSetup()" data-tip="Push CSV to your GitHub repo">⬆ Push to GitHub</button>
       <button class="csv-btn" onclick="exportCSV()" data-tip="Download tasks as CSV">⬇ Download CSV</button>
-      <button class="csv-btn" onclick="document.getElementById('csv-import').click()" data-tip="Import tasks from CSV">⬆ Import CSV</button>
-      <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(event)">
+      <button class="csv-btn" onclick="importCSVFromGithub()" data-tip="Import tasks from GitHub repo">⬇ Import from GitHub</button>
       <button class="csv-btn" onclick="openEmailSetup()" data-tip="Email reminders setup">✉ Email Setup</button>
     </div>
   </div>
@@ -1107,31 +1106,54 @@ function exportCSV() {
 
 function csvQ(s) { return '"' + String(s||'').replace(/"/g,'""') + '"'; }
 
-function importCSV(e) {
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    const lines = ev.target.result.split('\n').filter(Boolean);
+// ───────────────────────────────────────────────
+// CSV IMPORT FROM GITHUB
+// ───────────────────────────────────────────────
+async function importCSVFromGithub() {
+  const token = localStorage.getItem('gh-token') || '';
+  const repo = localStorage.getItem('gh-repo') || '';
+  const path = localStorage.getItem('gh-path') || 'tasks.csv';
+  const branch = localStorage.getItem('gh-branch') || 'main';
+
+  if (!token || !repo) {
+    alert('No GitHub config found. Please push to GitHub first to save your settings.');
+    return;
+  }
+
+  const btn = [...document.querySelectorAll('.csv-btn')].find(b => b.textContent.includes('Import'));
+  if (btn) { btn.textContent = '⏳ Fetching…'; btn.disabled = true; }
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
+    const json = await res.json();
+    const text = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+
+    const lines = text.split('\n').filter(Boolean);
     const header = lines[0].split(',');
     const imported = [];
-    for (let i=1; i<lines.length; i++) {
+    for (let i = 1; i < lines.length; i++) {
       const cols = parseCSVLine(lines[i]);
       if (cols.length < 5) continue;
       const t = {};
-      header.forEach((h,j) => t[h.trim()] = (cols[j]||'').trim());
+      header.forEach((h, j) => t[h.trim()] = (cols[j] || '').trim());
       if (!t.id) t.id = uid();
       t.done = t.done === 'true';
       t.created = parseInt(t.created) || Date.now();
       imported.push(t);
     }
-    if (confirm(`Import ${imported.length} tasks? This will merge with existing tasks.`)) {
-      const existingIds = new Set(tasks.map(t=>t.id));
+    if (confirm(`Import ${imported.length} tasks from ${repo}/${path}? This will merge with existing tasks.`)) {
+      const existingIds = new Set(tasks.map(t => t.id));
       imported.forEach(t => { if (!existingIds.has(t.id)) tasks.push(t); });
       save(); renderAll();
     }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
+  } catch(e) {
+    alert('Import failed: ' + e.message);
+  }
+
+  if (btn) { btn.textContent = '⬇ Import from GitHub'; btn.disabled = false; }
 }
 
 function parseCSVLine(line) {
