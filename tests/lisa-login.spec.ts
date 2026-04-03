@@ -47,7 +47,8 @@ test('Login and check Claim A Shift links in headed mode', async () => {
   let code: string;
   try {
     // Resolve the Python script path relative to this TS file
-    const pythonScriptPath = '/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/get_gmail_code.py'
+    const pythonScriptPath = path.resolve(__dirname, 'get_gmail_code.py');
+//const pythonScriptPath = '/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/get_gmail_code.py'
 
     // Use python3 (macOS/Linux) to run the script
     const output = execSync(`python3 "${pythonScriptPath}"`, { stdio: 'pipe' })
