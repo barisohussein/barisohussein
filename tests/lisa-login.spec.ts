@@ -14,7 +14,7 @@ test('Login and check Claim A Shift links in headed mode', async () => {
     test.setTimeout(2000000); // 120 seconds
 
   const browser = await chromium.launch({
-    headless: false, // show browser window
+    headless: true, // show browser window
     slowMo: 1000,   // 1 second delay between actions for visibility
   });
   const context = await browser.newContext();
