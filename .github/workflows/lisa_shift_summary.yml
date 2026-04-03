@@ -3,7 +3,7 @@ name: LISA Shift Summary
 # Run every hour
 on:
   schedule:
-    - cron: '0 * * * *'  # At minute 0 past every hour
+   cron: '0 */1 * * *' # At minute 0 past every hour
   workflow_dispatch:      # Optional: allows manual triggering
 
 jobs:
