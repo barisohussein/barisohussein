@@ -1,0 +1,40 @@
+{"version":8,"type":"context-options","origin":"testRunner","browserName":"","playwrightVersion":"1.59.1","options":{},"platform":"darwin","wallTime":1775183614485,"monotonicTime":6543.82,"sdkLanguage":"javascript"}
+{"type":"before","callId":"hook@1","stepId":"hook@1","startTime":6546.517,"class":"Test","method":"hook","title":"Before Hooks","params":{},"stack":[]}
+{"type":"after","callId":"hook@1","endTime":6551.851,"annotations":[]}
+{"type":"before","callId":"pw:api@29","stepId":"pw:api@29","startTime":6553.536,"class":"Test","method":"pw:api","title":"Launch browser","params":{"handleSIGINT":"false","tracesDir":"/Users/barisohussein/Desktop/barisohussein/barisohussein/test-results/.playwright-artifacts-0/traces","artifactsDir":"/Users/barisohussein/Desktop/barisohussein/barisohussein/test-results/.playwright-artifacts-0","headless":"false","slowMo":"1000","ignoreDefaultArgs":"undefined","ignoreAllDefaultArgs":"false","env":"undefined","timeout":"180000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":11,"column":34}]}
+{"type":"after","callId":"pw:api@29","endTime":6852.329,"annotations":[]}
+{"type":"before","callId":"pw:api@30","stepId":"pw:api@30","startTime":6853.82,"class":"Test","method":"pw:api","title":"Create context","params":{"selectorEngines":"[]","testIdAttributeName":"data-testid","acceptDownloads":"accept","bypassCSP":"false","colorScheme":"light","hasTouch":"false","ignoreHTTPSErrors":"false","isMobile":"false","javaScriptEnabled":"true","locale":"en-US","offline":"false","viewport":"Object","serviceWorkers":"allow","noDefaultViewport":"false","extraHTTPHeaders":"undefined","storageState":"undefined","reducedMotion":"undefined","forcedColors":"undefined","contrast":"undefined","clientCertificates":"undefined"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":15,"column":19}]}
+{"type":"after","callId":"pw:api@30","endTime":6861.759,"annotations":[]}
+{"type":"before","callId":"pw:api@31","stepId":"pw:api@31","startTime":6865.178,"class":"Test","method":"pw:api","title":"Create page","params":{},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":16,"column":30}]}
+{"type":"after","callId":"pw:api@31","endTime":7180.901,"annotations":[]}
+{"type":"before","callId":"pw:api@32","stepId":"pw:api@32","startTime":7184.019,"class":"Test","method":"pw:api","title":"Navigate to \"/\"","params":{"url":"https://lisa.aus.com/","waitUntil":"load","timeout":"0"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":19,"column":14}]}
+{"type":"after","callId":"pw:api@32","endTime":10214.668,"annotations":[]}
+{"type":"before","callId":"pw:api@33","stepId":"pw:api@33","startTime":10218.967,"class":"Test","method":"pw:api","title":"Fill \"barisohussein3@gmail.com\" getByRole('textbox', { name: 'Email' })","params":{"selector":"internal:role=textbox[name=\"Email\"i]","value":"barisohussein3@gmail.com","strict":"true","timeout":"30000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":22,"column":54}]}
+{"type":"after","callId":"pw:api@33","endTime":11270.575,"annotations":[]}
+{"type":"before","callId":"pw:api@34","stepId":"pw:api@34","startTime":11274.197,"class":"Test","method":"pw:api","title":"Fill \"Warko@23\" getByRole('textbox', { name: 'Password' })","params":{"selector":"internal:role=textbox[name=\"Password\"i]","value":"Warko@23","strict":"true","timeout":"30000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":25,"column":57}]}
+{"type":"after","callId":"pw:api@34","endTime":12359.222,"annotations":[]}
+{"type":"stdout","timestamp":12360.202,"text":"Pass entetred\n"}
+{"type":"before","callId":"pw:api@35","stepId":"pw:api@35","startTime":12361.953,"class":"Test","method":"pw:api","title":"Click getByRole('button', { name: 'Sign In' })","params":{"selector":"internal:role=button[name=\"Sign In\"i]","strict":"true","timeout":"30000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":30,"column":51}]}
+{"type":"after","callId":"pw:api@35","endTime":13452.665,"annotations":[]}
+{"type":"stdout","timestamp":13452.855,"text":"Sign in done\n"}
+{"type":"before","callId":"pw:api@36","stepId":"pw:api@36","startTime":13454.882,"class":"Test","method":"pw:api","title":"Wait for timeout","params":{"waitTimeout":"20000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":37,"column":16}]}
+{"type":"after","callId":"pw:api@36","endTime":33474.624,"annotations":[]}
+{"type":"stdout","timestamp":33474.839,"text":"Wait done\n"}
+{"type":"stdout","timestamp":34873.19,"text":"✅ Retrieved code from Gmail: 597422\n"}
+{"type":"before","callId":"pw:api@37","stepId":"pw:api@37","startTime":34877.173,"class":"Test","method":"pw:api","title":"Fill \"597422\" locator('input').first()","params":{"selector":"input >> nth=0","value":"597422","strict":"true","timeout":"30000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":63,"column":39}]}
+{"type":"after","callId":"pw:api@37","endTime":35914.986,"annotations":[]}
+{"type":"stdout","timestamp":35915.208,"text":"Code filled in\n"}
+{"type":"stdout","timestamp":35915.267,"text":"597422\n"}
+{"type":"stdout","timestamp":35915.302,"text":"Code add done\n"}
+{"type":"before","callId":"pw:api@38","stepId":"pw:api@38","startTime":35918.202,"class":"Test","method":"pw:api","title":"Click getByRole('button', { name: 'Submit' })","params":{"selector":"internal:role=button[name=\"Submit\"i]","strict":"true","timeout":"30000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":70,"column":52}]}
+{"type":"after","callId":"pw:api@38","endTime":36980.414,"annotations":[]}
+{"type":"before","callId":"pw:api@39","stepId":"pw:api@39","startTime":36981.904,"class":"Test","method":"pw:api","title":"Wait for timeout","params":{"waitTimeout":"12000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":74,"column":16}]}
+{"type":"after","callId":"pw:api@39","endTime":48993.379,"annotations":[]}
+{"type":"stdout","timestamp":48993.534,"text":"Wait done\n"}
+{"type":"before","callId":"pw:api@40","stepId":"pw:api@40","startTime":48998.628,"class":"Test","method":"pw:api","title":"Wait for selector locator('text=My Shift Offers')","params":{"selector":"text=My Shift Offers","timeout":"30000"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":89,"column":13}]}
+{"type":"after","callId":"pw:api@40","endTime":49004.905,"annotations":[]}
+{"type":"before","callId":"pw:api@41","stepId":"pw:api@41","startTime":49005.817,"class":"Test","method":"pw:api","title":"Evaluate locator('.MuiTableRow-root')","params":{"selector":".MuiTableRow-root","expression":"(ee) => ee.map((e) => e.textContent || \"\")","isFunction":"true","arg":"Object"},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":92,"column":60}]}
+{"type":"after","callId":"pw:api@41","endTime":49009.128,"annotations":[]}
+{"type":"stdout","timestamp":49009.268,"text":"✅ Shift summary scraped:\n \n"}
+{"type":"stdout","timestamp":50363.9,"text":"✅ Test shift email sent successfully!\n"}
+{"type":"before","callId":"pw:api@42","stepId":"pw:api@42","startTime":50369.49,"class":"Test","method":"pw:api","title":"Pause","params":{},"stack":[{"file":"/Users/barisohussein/Desktop/barisohussein/barisohussein/tests/lisa-login.spec.ts","line":111,"column":14}]}

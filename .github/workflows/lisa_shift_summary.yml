@@ -1,0 +1,47 @@
+name: LISA Shift Summary
+
+# Run every hour
+on:
+  schedule:
+    - cron: '0 * * * *'  # At minute 0 past every hour
+  workflow_dispatch:      # Optional: allows manual triggering
+
+jobs:
+  run-playwright:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # 3️⃣ Install dependencies
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      # 4️⃣ Setup Python (for Gmail code script if needed)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 5️⃣ Install Python dependencies (imaplib, email comes built-in, so maybe just for others)
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade wheel
+
+      # 6️⃣ Run Playwright test
+      - name: Run Playwright test
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          LISA_EMAIL: ${{ secrets.LISA_EMAIL }}
+          LISA_PASSWORD: ${{ secrets.LISA_PASSWORD }}
+        run: npx playwright test tests/get_shifts.spec.ts --headed

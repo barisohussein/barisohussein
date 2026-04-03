@@ -240,12 +240,14 @@
     <div class="nav-item" onclick="filterSidebar('all')" id="nav-all"><span class="icon">✦</span> All Tasks</div>
 
     <div class="sidebar-bottom">
-      <button class="csv-btn highlight" onclick="saveCSV()" id="save-csv-btn" data-tip="Save all changes to CSV">💾 Save CSV</button>
-      <button class="csv-btn" onclick="document.getElementById('csv-load-input2').click()" data-tip="Replace tasks by loading a new CSV">📂 Open CSV</button>
-      <input type="file" id="csv-load-input2" accept=".csv" style="display:none" onchange="loadCSVFile(event)">
-      <button class="csv-btn" onclick="syncGithub()" id="gh-sync-btn" data-tip="Push changes to GitHub">⬆ Push to GitHub</button>
-      <button class="csv-btn" onclick="openGithubSetup()" data-tip="GitHub connection settings">⚙ GitHub Settings</button>
-      <button class="csv-btn" onclick="openEmailSetup()" data-tip="Email reminders setup">✉ Email Reminders</button>
+      <button class="csv-btn" onclick="openGithubSetup()">⬆ Push to GitHub</button>
+      
+      <!-- ✅ ADD THIS BUTTON HERE -->
+      <button class="csv-btn" onclick="triggerGitHubAction()">⚡ Run Automation</button>
+    
+      <button class="csv-btn" onclick="exportCSV()">⬇ Download CSV</button>
+      <button class="csv-btn" onclick="document.getElementById('csv-import').click()">⬆ Import CSV</button>
+      <button class="csv-btn" onclick="openEmailSetup()">✉ Email Setup</button>
     </div>
   </div>
 
@@ -754,6 +756,42 @@ function renderList() {
   }).join('');
 }
 
+async function triggerGitHubAction() {
+  const token = document.getElementById('gh-token').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const branch = document.getElementById('gh-branch').value.trim() || 'main';
+
+  if (!token || !repo) {
+    alert('Enter token and repo');
+    return;
+  }
+
+  const url = `https://api.github.com/repos/${repo}/actions/workflows/update-tasks.yml/dispatches`;
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ref: branch
+      })
+    });
+
+    if (res.status === 204) {
+      alert("✅ Workflow triggered successfully!");
+    } else {
+      const text = await res.text();
+      throw new Error(text);
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
+}
+
 function renderCalendar() {
   document.getElementById('cal-month-label').textContent =
     new Date(calYear, calMonth).toLocaleDateString('en-US',{month:'long',year:'numeric'});
@@ -865,7 +903,7 @@ function deleteCurrentTask() {
 // Edit GH_CONFIG values directly in this file.
 // ───────────────────────────────────────────────
 const GH_CONFIG = {
-  token:  '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',           // paste your token here: 'ghp_xxxxxxxxxxxxxxxxxxxx'
+  token:  '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',           // paste your token here: 'ghp_xxxxxxxxxxxxxxxxxxxx'
   repo:   'barisohussein/kiyya',           // e.g. 'yourusername/my-tasks'
   path:   'tasks.csv',
   branch: 'master'
@@ -995,12 +1033,51 @@ async function syncGithub() {
   btn.textContent = '⬆ Push to GitHub'; btn.disabled = false;
 }
 
+
 async function pushCSVToGithub() {
   saveGHSessionOverrides();
   const pushBtn = document.getElementById('gh-push-btn');
   if (pushBtn) { pushBtn.textContent = 'Pushing…'; pushBtn.disabled = true; }
   await _doPush(false);
   if (pushBtn) { pushBtn.textContent = '⬆ Push to GitHub'; pushBtn.disabled = false; }
+}
+// ───────────────────────────────────────────────
+// GITHUB ACTION TRIGGER
+// ───────────────────────────────────────────────
+async function triggerGitHubAction() {
+  const token = document.getElementById('gh-token').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const branch = document.getElementById('gh-branch').value.trim() || 'main';
+
+  if (!token || !repo) {
+    alert('Enter token and repo');
+    return;
+  }
+
+  const url = `https://api.github.com/repos/${repo}/actions/workflows/update-tasks.yml/dispatches`;
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ref: branch
+      })
+    });
+
+    if (res.status === 204) {
+      alert("✅ Workflow triggered!");
+    } else {
+      const text = await res.text();
+      throw new Error(text);
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
 }
 
 async function _doPush(silent) {
