@@ -1,10 +1,9 @@
 name: LISA Shift Summary
 
-# Run every hour
 on:
   schedule:
-    - cron: "30 * * * *"
-  workflow_dispatch:      # Optional: allows manual triggering
+    - cron: "*/5 * * * *"  # Every 5 minutes
+  workflow_dispatch:       # Optional: allows manual triggering
 
 jobs:
   run-playwright:
