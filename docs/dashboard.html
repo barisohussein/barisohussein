@@ -47,7 +47,7 @@
     padding: 20px 0;
   }
   .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-  <button class="menu-btn btn ghost sm" onclick="toggleSidebar()" style="display:none">☰</button>
+  .menu-btn { display: none; }
   .topbar {
     padding: 20px 28px 16px;
     border-bottom: 1px solid var(--border);
@@ -481,11 +481,8 @@
 
     <!-- Topbar -->
     <div class="topbar">
+      <button class="menu-btn btn ghost sm" onclick="toggleSidebar()">☰</button>
       <div class="topbar-title" id="view-title">Board <span id="view-date"></span></div>
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input class="search" placeholder="Search tasks…" oninput="renderAll()" id="search-input">
-      </div>
       <button class="btn ghost sm" onclick="openEmailModal()" data-tip="Send due reminders by email">✉ Reminders</button>
       <button class="btn" onclick="openAddModal()">+ Add Task</button>
     </div>
