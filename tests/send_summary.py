@@ -6,7 +6,7 @@ import os
 
 
 EMAIL_USER = "barisobrooks@gmail.com"
-EMAIL_APP_PASSWORD = "wtmc fofd lptd hepp"
+EMAIL_PASS = os.environ["EMAIL_APP_PASSWORD"]
 # Recipient
 TO_EMAIL = "barisohussein3@gmail.com"
 
