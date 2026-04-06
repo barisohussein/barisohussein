@@ -78,10 +78,13 @@ await page.getByRole('button', { name: 'Submit' }).click();
 // 8️⃣ Wait a bit to ensure shifts load
 await page.waitForTimeout(5000);
 
+
 // 9️⃣ Look for "Claim A Shift" buttons or text
 const claimButtons = await page.locator('text=Claim A Shift').count();
 
 console.log(`🔍 Found ${claimButtons} "Claim A Shift" items`);
+
+
 
 if (claimButtons > 0) {
   console.log('✅ Shifts available! Sending email...');
@@ -112,5 +115,9 @@ if (claimButtons > 0) {
 }
 }
 
+  // 8️⃣ Keep browser open to see result (optional)
+  await page.pause(); // allows you to interact manually if needed
+
   await browser.close();
 });
+
