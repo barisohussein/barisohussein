@@ -75,39 +75,41 @@ console.log('Code add done');
 // Click Submit
 await page.getByRole('button', { name: 'Submit' }).click();
 
-// 7️⃣ Wait for "My Shift Offers" page
-await page.waitForSelector('text=My Shift Offers');
+// 8️⃣ Wait a bit to ensure shifts load
+await page.waitForTimeout(5000);
 
-// 8️⃣ Scrape shift summary
-const shiftRows = await page.locator('.MuiTableRow-root').allTextContents();
-const shiftSummary = shiftRows.join('\n').trim();
-console.log('✅ Shift summary scraped:\n', shiftSummary);
+// 9️⃣ Look for "Claim A Shift" buttons or text
+const claimButtons = await page.locator('text=Claim A Shift').count();
 
-// 9️⃣ Send email only if there is a shift summary
-if (shiftSummary) {
+console.log(`🔍 Found ${claimButtons} "Claim A Shift" items`);
+
+if (claimButtons > 0) {
+  console.log('✅ Shifts available! Sending email...');
+
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'barisobrooks@gmail.com',
-        pass: emailPass, // Gmail app password
+        pass: emailPass,
       },
     });
 
     const mailOptions = {
       from: 'barisobrooks@gmail.com',
       to: 'barisohussein3@gmail.com',
-      subject: 'Your LISA Shift Summary',
-      text: shiftSummary,
+      subject: '🚨 LISA Shifts Available!',
+      text: `There are ${claimButtons} shifts available. Log in to claim them.`,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('✅ Shift summary email sent!');
+    console.log('✅ Email sent!');
   } catch (err) {
     console.error('❌ Failed to send email:', err);
   }
 } else {
-  console.log('⚠️ No shifts found — email not sent.');
+  console.log('⚠️ No shifts available.');
+}
 }
 
   // 8️⃣ Keep browser open to see result (optional)
