@@ -112,8 +112,5 @@ if (claimButtons > 0) {
 }
 }
 
-  // 8️⃣ Keep browser open to see result (optional)
-  await page.pause(); // allows you to interact manually if needed
-
   await browser.close();
 });
