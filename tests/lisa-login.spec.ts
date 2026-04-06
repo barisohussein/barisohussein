@@ -75,18 +75,24 @@ console.log('Code add done');
 // Click Submit
 await page.getByRole('button', { name: 'Submit' }).click();
 
-// 8️⃣ Wait a bit to ensure shifts load
+
 await page.waitForTimeout(5000);
 
 
-// 9️⃣ Look for "Claim A Shift" buttons or text
-const claimButtons = await page.locator('text=Claim A Shift').count();
+await page.goto('https://lisa.aus.com/my-shift-offers');
+// Wait for page to fully load
+await page.waitForTimeout(5000);
 
-console.log(`🔍 Found ${claimButtons} "Claim A Shift" items`);
+// Check for "no shifts" message
+const noShiftsMessage = await page
+  .locator('text=There are no remaining shift offers.')
+  .count();
 
+    console.log('Text:' , noShiftsMessage);
 
-
-if (claimButtons > 0) {
+if (noShiftsMessage > 0) {
+  console.log('❌ No shifts available.');
+} else {
   console.log('✅ Shifts available! Sending email...');
 
   try {
@@ -102,7 +108,7 @@ if (claimButtons > 0) {
       from: 'barisobrooks@gmail.com',
       to: 'barisohussein3@gmail.com',
       subject: '🚨 LISA Shifts Available!',
-      text: `There are ${claimButtons} shifts available. Log in to claim them.`,
+      text: 'Shifts are available! Go claim them now.',
     };
 
     await transporter.sendMail(mailOptions);
@@ -110,14 +116,12 @@ if (claimButtons > 0) {
   } catch (err) {
     console.error('❌ Failed to send email:', err);
   }
-} else {
-  console.log('⚠️ No shifts available.');
-}
 }
 
   // 8️⃣ Keep browser open to see result (optional)
   await page.pause(); // allows you to interact manually if needed
 
   await browser.close();
+
 });
 
