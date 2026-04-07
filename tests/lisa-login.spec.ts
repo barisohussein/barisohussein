@@ -83,45 +83,62 @@ await page.goto('https://lisa.aus.com/my-shift-offers');
 // Wait for page to fully load
 await page.waitForTimeout(5000);
 
-// Check for "no shifts" message
+
+// 7️⃣ Check if no shifts
 const noShiftsMessage = await page
   .locator('text=There are no remaining shift offers.')
   .count();
 
-    console.log('Text:' , noShiftsMessage);
-
 if (noShiftsMessage > 0) {
   console.log('❌ No shifts available.');
-} else {
-  console.log('✅ Shifts available! Sending email...');
+  await browser.close();
+  return;
+}
 
+console.log('✅ Shifts found — scraping...');
+
+// 8️⃣ SCRAPE SHIFTS (FIXED LOCATION)
+const shiftCards = await page.locator('div.css-1uds2e').all();
+
+let shifts: string[] = [];
+
+for (const card of shiftCards) {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'barisobrooks@gmail.com',
-        pass: emailPass,
-      },
-    });
+    const location = await card.locator('p').nth(0).innerText();
+    const time = await card.locator('p').nth(1).innerText();
+    const date = await card.locator('p').nth(2).innerText();
 
-    const mailOptions = {
-      from: 'barisobrooks@gmail.com',
-      to: 'barisohussein3@gmail.com',
-      subject: '🚨 LISA Shifts Available!',
-      text: 'Shifts are available! Go claim them now.',
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent!');
+    shifts.push(`${location} | ${date} | ${time}`);
   } catch (err) {
-    console.error('❌ Failed to send email:', err);
+    console.log('⚠️ Failed parsing shift:', err);
   }
 }
 
-  // 8️⃣ Keep browser open to see result (optional)
-  await page.pause(); // allows you to interact manually if needed
+const shiftSummary = shifts.join('\n');
 
-  await browser.close();
+console.log('✅ Shift Summary:\n', shiftSummary);
 
+// 9️⃣ Send email WITH details
+try {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'barisobrooks@gmail.com',
+      pass: emailPass,
+    },
+  });
+
+  await transporter.sendMail({
+    from: 'barisobrooks@gmail.com',
+    to: 'barisohussein3@gmail.com',
+    subject: '🚨 LISA Shifts Available!',
+    text: `Shifts found:\n\n${shiftSummary}`,
+  });
+
+  console.log('✅ Email sent!');
+} catch (err) {
+  console.error('❌ Email failed:', err);
+}
+
+await browser.close();
 });
-
