@@ -379,6 +379,18 @@
   }
   .overdue-banner.show { display: flex; align-items: center; gap: 8px; }
 
+  /* ── GitHub required banner ── */
+  .gh-required-banner {
+    background: rgba(124,111,247,0.1);
+    border: 1px solid rgba(124,111,247,0.3);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    margin: 24px 0;
+  }
+  .gh-required-banner h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; color: var(--accent2); }
+  .gh-required-banner p { color: var(--text2); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+
   /* ── Tooltip ── */
   [data-tip] { position: relative; }
   [data-tip]:hover::after {
@@ -470,12 +482,13 @@
 
     <div class="sidebar-bottom">
       <button class="csv-btn" onclick="openGithubSetup()" data-tip="Push CSV to your GitHub repo">⬆ Push to GitHub</button>
+      <button class="csv-btn" onclick="pullFromGithub()" data-tip="Pull tasks from GitHub repo" id="pull-btn">⬇ Pull from GitHub</button>
       <button class="csv-btn" onclick="exportCSV()" data-tip="Download tasks as CSV">⬇ Download CSV</button>
-      <button class="csv-btn" onclick="importCSVFromGithub()" data-tip="Import tasks from GitHub repo">⬇ Import from GitHub</button>
       <button class="csv-btn" onclick="openEmailSetup()" data-tip="Email reminders setup">✉ Email Setup</button>
     </div>
   </div>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
   <!-- Main -->
   <div class="main">
 
@@ -644,9 +657,9 @@
 <div class="modal-overlay" id="gh-modal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('gh-modal')">✕</button>
-    <div class="modal-title">Push CSV to GitHub</div>
+    <div class="modal-title">GitHub Settings</div>
     <p style="color:var(--text2);font-size:13px;margin-bottom:20px;line-height:1.6">
-      Saves your tasks as <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">tasks.csv</code> directly into your GitHub repo. Your token is stored only in your browser's localStorage — never sent anywhere except GitHub's API.
+      Tasks are saved as <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">tasks.csv</code> in your GitHub repo. Your token is stored only in your browser's localStorage — never sent anywhere except GitHub's API. Tasks themselves are <strong>not</strong> stored in the browser.
     </p>
 
     <div class="form-row">
@@ -671,14 +684,27 @@
     <div id="gh-status" style="font-size:12px;min-height:18px;margin-bottom:8px"></div>
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal('gh-modal')">Cancel</button>
-      <button class="btn" id="gh-push-btn" onclick="pushCSVToGithub()">⬆ Push CSV to GitHub</button>
+      <button class="btn ghost" id="gh-pull-btn" onclick="pullFromGithubModal()">⬇ Pull from GitHub</button>
+      <button class="btn" id="gh-push-btn" onclick="pushCSVToGithub()">⬆ Push to GitHub</button>
     </div>
+  </div>
+</div>
+
+<!-- No GitHub config prompt -->
+<div class="modal-overlay" id="no-gh-modal">
+  <div class="modal" style="text-align:center;padding:36px">
+    <div class="modal-title" style="margin-bottom:12px">GitHub Required</div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:24px;line-height:1.6">
+      Tasks are stored exclusively in your GitHub repo — no browser storage is used for task data. Configure your GitHub settings to get started.
+    </p>
+    <button class="btn" onclick="closeModal('no-gh-modal');openGithubSetup()">⚙ Configure GitHub</button>
   </div>
 </div>
 
 <script>
 // ───────────────────────────────────────────────
-// DATA
+// DATA — tasks live only in GitHub, NOT localStorage
+// GitHub credentials/settings stored in localStorage
 // ───────────────────────────────────────────────
 const BUCKETS = ['Inbox','Work','Personal','Finance','Health','Home','Learning','Waiting','Rental','Wife','Parents','AFH'];
 const BUCKET_COLORS = {
@@ -689,7 +715,7 @@ const BUCKET_COLORS = {
 };
 const P_LABELS = { p1:'Critical', p2:'High', p3:'Normal', p4:'Low' };
 
-  function toggleSidebar() {
+function toggleSidebar() {
   document.querySelector('.sidebar').classList.toggle('open');
   document.getElementById('sidebar-overlay').classList.toggle('open');
 }
@@ -697,7 +723,9 @@ function closeSidebar() {
   document.querySelector('.sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('open');
 }
-let tasks = JSON.parse(localStorage.getItem('flow-tasks') || '[]');
+
+// In-memory only — cleared on page reload
+let tasks = [];
 let editingId = null;
 let currentView = 'board';
 let activeFilter = 'all';
@@ -706,7 +734,20 @@ const now = new Date();
 calYear = now.getFullYear();
 calMonth = now.getMonth();
 
-function save() { localStorage.setItem('flow-tasks', JSON.stringify(tasks)); }
+// GitHub settings — stored in localStorage
+function getGHConfig() {
+  return {
+    token: localStorage.getItem('gh-token') || '',
+    repo: localStorage.getItem('gh-repo') || '',
+    path: localStorage.getItem('gh-path') || 'tasks.csv',
+    branch: localStorage.getItem('gh-branch') || 'main'
+  };
+}
+function hasGHConfig() {
+  const c = getGHConfig();
+  return !!(c.token && c.repo);
+}
+
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
 // ───────────────────────────────────────────────
@@ -807,6 +848,30 @@ function filterSidebar(f) { setFilter(f); switchView(currentView==='calendar'?'c
 function renderBoard() {
   renderStats();
   renderFilterBar('filter-bar-board');
+
+  if (!tasks.length && !hasGHConfig()) {
+    document.getElementById('buckets').innerHTML = `
+      <div class="gh-required-banner" style="grid-column:1/-1">
+        <h2>Connect GitHub to get started</h2>
+        <p>Tasks are stored exclusively in your GitHub repository — nothing is saved in the browser.<br>Configure your repo once, then push and pull to sync your tasks.</p>
+        <button class="btn" onclick="openGithubSetup()">⚙ Configure GitHub</button>
+      </div>`;
+    return;
+  }
+
+  if (!tasks.length && hasGHConfig()) {
+    document.getElementById('buckets').innerHTML = `
+      <div class="gh-required-banner" style="grid-column:1/-1">
+        <h2>No tasks loaded</h2>
+        <p>Pull from GitHub to load your tasks, or add a new task to get started.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn ghost" onclick="pullFromGithub()">⬇ Pull from GitHub</button>
+          <button class="btn" onclick="openAddModal()">+ Add Task</button>
+        </div>
+      </div>`;
+    return;
+  }
+
   const ft = filteredTasks();
   const cols = document.getElementById('buckets');
   cols.innerHTML = BUCKETS.map(b => {
@@ -849,7 +914,6 @@ function renderList() {
     if (sort === 'bucket') return a.bucket > b.bucket ? 1 : -1;
     return b.created - a.created;
   });
-  const showDone = document.getElementById('show-done')?.checked;
   const tbody = document.getElementById('task-tbody');
   if (!ft.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No tasks found</td></tr>`; return; }
   tbody.innerHTML = ft.map(t => {
@@ -891,7 +955,6 @@ function renderCalendar() {
     html += `<div class="cal-day ${isToday?'today':''}">
       <div class="cal-day-num" style="${isToday?'color:var(--accent2);font-weight:600':''}">${d}</div>
       ${dayTasks.map(t=>`<div class="cal-dot ${t.priority}" onclick="openEditModal('${t.id}')" title="${esc(t.title)}">${esc(t.title)}</div>`).join('')}
-      ${dayTasks.length===0?'':''}
     </div>`;
   }
   const rem = (first + daysInMonth) % 7;
@@ -953,53 +1016,87 @@ function saveTask() {
   };
   if (editingId) { const i = tasks.findIndex(x=>x.id===editingId); tasks[i] = t; }
   else tasks.unshift(t);
-  save(); renderAll(); closeModal('task-modal');
+  // Note: tasks are in-memory only until pushed to GitHub
+  renderAll();
+  closeModal('task-modal');
+  showUnsavedBanner();
 }
 
 function toggleDone(id) {
   const t = tasks.find(x=>x.id===id); if(!t) return;
-  t.done = !t.done; save(); renderAll();
+  t.done = !t.done;
+  renderAll();
+  showUnsavedBanner();
 }
 
 function deleteTask(id) {
   if (!confirm('Delete this task?')) return;
-  tasks = tasks.filter(x=>x.id!==id); save(); renderAll();
+  tasks = tasks.filter(x=>x.id!==id);
+  renderAll();
+  showUnsavedBanner();
 }
 
 // ───────────────────────────────────────────────
-// GITHUB CSV PUSH
+// UNSAVED CHANGES BANNER
+// ───────────────────────────────────────────────
+let unsavedBannerEl = null;
+function showUnsavedBanner() {
+  if (unsavedBannerEl) return;
+  unsavedBannerEl = document.createElement('div');
+  unsavedBannerEl.style.cssText = `
+    position:fixed; bottom:20px; right:20px;
+    background:var(--surface); border:1px solid var(--accent);
+    border-radius:var(--radius-sm); padding:12px 16px;
+    font-size:12px; color:var(--text2); z-index:50;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 4px 24px rgba(0,0,0,0.4);
+    animation: popIn 0.2s ease;
+  `;
+  unsavedBannerEl.innerHTML = `
+    <span style="color:var(--amber)">⚠</span>
+    <span>Unsaved changes — push to GitHub to save</span>
+    <button class="btn sm" onclick="pushCSVToGithubAuto()" style="white-space:nowrap">⬆ Push Now</button>
+    <button onclick="dismissUnsaved()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 2px">✕</button>
+  `;
+  document.body.appendChild(unsavedBannerEl);
+}
+function dismissUnsaved() {
+  if (unsavedBannerEl) { unsavedBannerEl.remove(); unsavedBannerEl = null; }
+}
+
+// ───────────────────────────────────────────────
+// GITHUB PUSH / PULL
 // ───────────────────────────────────────────────
 function openGithubSetup() {
-  document.getElementById('gh-token').value = localStorage.getItem('gh-token')||'';
-  document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')||'';
-  document.getElementById('gh-path').value = localStorage.getItem('gh-path')||'tasks.csv';
-  document.getElementById('gh-branch').value = localStorage.getItem('gh-branch')||'main';
+  const c = getGHConfig();
+  document.getElementById('gh-token').value = c.token;
+  document.getElementById('gh-repo').value = c.repo;
+  document.getElementById('gh-path').value = c.path;
+  document.getElementById('gh-branch').value = c.branch;
+  document.getElementById('gh-status').textContent = '';
   document.getElementById('gh-modal').classList.add('open');
 }
 
-async function pushCSVToGithub() {
-  const token = document.getElementById('gh-token').value.trim();
-  const repo = document.getElementById('gh-repo').value.trim();
-  const path = document.getElementById('gh-path').value.trim() || 'tasks.csv';
-  const branch = document.getElementById('gh-branch').value.trim() || 'main';
-  if (!token || !repo) { alert('Please enter your GitHub token and repo.'); return; }
-  localStorage.setItem('gh-token', token);
-  localStorage.setItem('gh-repo', repo);
-  localStorage.setItem('gh-path', path);
-  localStorage.setItem('gh-branch', branch);
+function saveGHConfig() {
+  localStorage.setItem('gh-token', document.getElementById('gh-token').value.trim());
+  localStorage.setItem('gh-repo', document.getElementById('gh-repo').value.trim());
+  localStorage.setItem('gh-path', document.getElementById('gh-path').value.trim() || 'tasks.csv');
+  localStorage.setItem('gh-branch', document.getElementById('gh-branch').value.trim() || 'main');
+}
 
-  const btn = document.getElementById('gh-push-btn');
-  btn.textContent = 'Pushing…'; btn.disabled = true;
-
+function tasksToCSV() {
   const header = 'id,title,bucket,priority,due,remind,notes,tags,done,created';
   const rows = tasks.map(t =>
     [t.id, csvQ(t.title), csvQ(t.bucket), t.priority, t.due||'', t.remind||'', csvQ(t.notes||''), csvQ(t.tags||''), t.done?'true':'false', t.created].join(',')
   );
-  const content = header + '\n' + rows.join('\n');
+  return header + '\n' + rows.join('\n');
+}
+
+async function ghPush(token, repo, path, branch, statusEl, btnEl) {
+  const content = tasksToCSV();
   const encoded = btoa(unescape(encodeURIComponent(content)));
 
   try {
-    // Get current SHA if file exists
     let sha = '';
     const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
@@ -1017,13 +1114,99 @@ async function pushCSVToGithub() {
       })
     });
     if (!putRes.ok) { const err = await putRes.json(); throw new Error(err.message); }
-    document.getElementById('gh-status').textContent = '✓ Pushed successfully to ' + repo + '/' + path;
-    document.getElementById('gh-status').style.color = 'var(--green)';
+    if (statusEl) { statusEl.textContent = '✓ Pushed successfully to ' + repo + '/' + path; statusEl.style.color = 'var(--green)'; }
+    dismissUnsaved();
+    return true;
   } catch(e) {
-    document.getElementById('gh-status').textContent = '✕ Error: ' + e.message;
-    document.getElementById('gh-status').style.color = 'var(--red)';
+    if (statusEl) { statusEl.textContent = '✕ Error: ' + e.message; statusEl.style.color = 'var(--red)'; }
+    return false;
+  } finally {
+    if (btnEl) { btnEl.disabled = false; }
   }
-  btn.textContent = '⬆ Push CSV to GitHub'; btn.disabled = false;
+}
+
+async function pushCSVToGithub() {
+  saveGHConfig();
+  const c = getGHConfig();
+  if (!c.token || !c.repo) { alert('Please enter your GitHub token and repo.'); return; }
+  const btn = document.getElementById('gh-push-btn');
+  const status = document.getElementById('gh-status');
+  btn.textContent = 'Pushing…'; btn.disabled = true;
+  await ghPush(c.token, c.repo, c.path, c.branch, status, btn);
+  btn.textContent = '⬆ Push to GitHub';
+}
+
+async function pushCSVToGithubAuto() {
+  if (!hasGHConfig()) { openGithubSetup(); return; }
+  const c = getGHConfig();
+  const origText = unsavedBannerEl ? unsavedBannerEl.querySelector('.btn').textContent : '';
+  if (unsavedBannerEl) unsavedBannerEl.querySelector('.btn').textContent = 'Pushing…';
+  await ghPush(c.token, c.repo, c.path, c.branch, null, null);
+}
+
+async function ghPull(token, repo, path, branch) {
+  const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
+  const json = await res.json();
+  const text = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+  return parseCSV(text);
+}
+
+async function pullFromGithub() {
+  if (!hasGHConfig()) { openGithubSetup(); return; }
+  const c = getGHConfig();
+  const btn = document.getElementById('pull-btn');
+  if (btn) { btn.textContent = '⏳ Pulling…'; btn.disabled = true; }
+  try {
+    const imported = await ghPull(c.token, c.repo, c.path, c.branch);
+    tasks = imported;
+    renderAll();
+    dismissUnsaved();
+  } catch(e) {
+    alert('Pull failed: ' + e.message);
+  }
+  if (btn) { btn.textContent = '⬇ Pull from GitHub'; btn.disabled = false; }
+}
+
+async function pullFromGithubModal() {
+  saveGHConfig();
+  const c = getGHConfig();
+  if (!c.token || !c.repo) { alert('Please enter your GitHub token and repo.'); return; }
+  const btn = document.getElementById('gh-pull-btn');
+  const status = document.getElementById('gh-status');
+  btn.textContent = 'Pulling…'; btn.disabled = true;
+  try {
+    const imported = await ghPull(c.token, c.repo, c.path, c.branch);
+    tasks = imported;
+    renderAll();
+    dismissUnsaved();
+    status.textContent = `✓ Loaded ${tasks.length} tasks from ${c.repo}/${c.path}`;
+    status.style.color = 'var(--green)';
+  } catch(e) {
+    status.textContent = '✕ Error: ' + e.message;
+    status.style.color = 'var(--red)';
+  }
+  btn.textContent = '⬇ Pull from GitHub'; btn.disabled = false;
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n').filter(Boolean);
+  if (lines.length < 2) return [];
+  const header = lines[0].split(',');
+  const result = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    if (cols.length < 5) continue;
+    const t = {};
+    header.forEach((h, j) => t[h.trim()] = (cols[j] || '').trim());
+    if (!t.id) t.id = uid();
+    t.done = t.done === 'true';
+    t.created = parseInt(t.created) || Date.now();
+    result.push(t);
+  }
+  return result;
 }
 
 // ───────────────────────────────────────────────
@@ -1114,70 +1297,16 @@ function copyGHActions() {
 }
 
 // ───────────────────────────────────────────────
-// CSV
+// CSV EXPORT (download only)
 // ───────────────────────────────────────────────
 function exportCSV() {
-  const header = 'id,title,bucket,priority,due,remind,notes,tags,done,created';
-  const rows = tasks.map(t =>
-    [t.id, csvQ(t.title), csvQ(t.bucket), t.priority, t.due||'', t.remind||'', csvQ(t.notes||''), csvQ(t.tags||''), t.done?'true':'false', t.created].join(',')
-  );
-  const blob = new Blob([header+'\n'+rows.join('\n')], {type:'text/csv'});
+  const blob = new Blob([tasksToCSV()], {type:'text/csv'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   a.download = `flow-tasks-${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
 }
 
 function csvQ(s) { return '"' + String(s||'').replace(/"/g,'""') + '"'; }
-
-// ───────────────────────────────────────────────
-// CSV IMPORT FROM GITHUB
-// ───────────────────────────────────────────────
-async function importCSVFromGithub() {
-  const token = localStorage.getItem('gh-token') || '';
-  const repo = localStorage.getItem('gh-repo') || '';
-  const path = localStorage.getItem('gh-path') || 'tasks.csv';
-  const branch = localStorage.getItem('gh-branch') || 'main';
-
-  if (!token || !repo) {
-    alert('No GitHub config found. Please push to GitHub first to save your settings.');
-    return;
-  }
-
-  const btn = [...document.querySelectorAll('.csv-btn')].find(b => b.textContent.includes('Import'));
-  if (btn) { btn.textContent = '⏳ Fetching…'; btn.disabled = true; }
-
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
-    const json = await res.json();
-    const text = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
-
-    const lines = text.split('\n').filter(Boolean);
-    const header = lines[0].split(',');
-    const imported = [];
-    for (let i = 1; i < lines.length; i++) {
-      const cols = parseCSVLine(lines[i]);
-      if (cols.length < 5) continue;
-      const t = {};
-      header.forEach((h, j) => t[h.trim()] = (cols[j] || '').trim());
-      if (!t.id) t.id = uid();
-      t.done = t.done === 'true';
-      t.created = parseInt(t.created) || Date.now();
-      imported.push(t);
-    }
-    if (confirm(`Import ${imported.length} tasks from ${repo}/${path}? This will merge with existing tasks.`)) {
-      const existingIds = new Set(tasks.map(t => t.id));
-      imported.forEach(t => { if (!existingIds.has(t.id)) tasks.push(t); });
-      save(); renderAll();
-    }
-  } catch(e) {
-    alert('Import failed: ' + e.message);
-  }
-
-  if (btn) { btn.textContent = '⬇ Import from GitHub'; btn.disabled = false; }
-}
 
 function parseCSVLine(line) {
   const result = []; let cur = ''; let inQ = false;
@@ -1214,27 +1343,21 @@ function esc(s) {
 document.getElementById('view-date').textContent =
   new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 
-// Seed demo tasks if empty
-if (!tasks.length) {
-  const td = new Date(); td.setHours(0,0,0,0);
-  const ds = d => { const x=new Date(td); x.setDate(x.getDate()+d); return x.toISOString().split('T')[0]; };
-  tasks = [
-    {id:uid(),title:'Review Q2 budget report',bucket:'Finance',priority:'p1',due:ds(-1),remind:'1d',notes:'Check department spend vs forecast',tags:'finance,review',done:false,created:Date.now()-86400000*3},
-    {id:uid(),title:'Book dentist appointment',bucket:'Health',priority:'p2',due:ds(2),remind:'1d',notes:'',tags:'health',done:false,created:Date.now()-86400000*2},
-    {id:uid(),title:'Finish dashboard project proposal',bucket:'Work',priority:'p1',due:ds(1),remind:'same',notes:'Include timeline and resource breakdown',tags:'work,proposal',done:false,created:Date.now()-86400000},
-    {id:uid(),title:'Read "Deep Work" chapter 3',bucket:'Learning',priority:'p4',due:'',remind:'',notes:'',tags:'reading',done:false,created:Date.now()},
-    {id:uid(),title:'Pay electricity bill',bucket:'Finance',priority:'p2',due:ds(5),remind:'3d',notes:'',tags:'bills',done:false,created:Date.now()},
-    {id:uid(),title:'Weekly grocery run',bucket:'Personal',priority:'p3',due:ds(3),remind:'same',notes:'Milk, eggs, bread, fruit',tags:'shopping',done:false,created:Date.now()},
-    {id:uid(),title:'Rental — schedule plumber visit',bucket:'Rental',priority:'p2',due:ds(4),remind:'1d',notes:'Leaky faucet in unit 2B',tags:'maintenance',done:false,created:Date.now()},
-    {id:uid(),title:'Anniversary dinner reservation',bucket:'Wife',priority:'p1',due:ds(7),remind:'3d',notes:'Check OpenTable for downtown spots',tags:'date',done:false,created:Date.now()},
-    {id:uid(),title:'Call mom & dad this weekend',bucket:'Parents',priority:'p3',due:ds(5),remind:'same',notes:'',tags:'family',done:false,created:Date.now()},
-    {id:uid(),title:'AFH — submit monthly report',bucket:'AFH',priority:'p2',due:ds(6),remind:'3d',notes:'Include occupancy and incident log',tags:'report',done:false,created:Date.now()},
-    {id:uid(),title:'Update resume',bucket:'Work',priority:'p3',due:'',remind:'',notes:'Add new projects from Q1',tags:'career',done:true,created:Date.now()-86400000*5},
-  ];
-  save();
-}
-
-renderAll();
+// Auto-pull from GitHub on load if config exists
+(async () => {
+  if (hasGHConfig()) {
+    const c = getGHConfig();
+    const btn = document.getElementById('pull-btn');
+    if (btn) { btn.textContent = '⏳ Loading…'; btn.disabled = true; }
+    try {
+      tasks = await ghPull(c.token, c.repo, c.path, c.branch);
+    } catch(e) {
+      // silently fail on load — user can manually pull
+    }
+    if (btn) { btn.textContent = '⬇ Pull from GitHub'; btn.disabled = false; }
+  }
+  renderAll();
+})();
 </script>
 </body>
 </html>
