@@ -89,6 +89,8 @@ const noShiftsMessage = await page
   .locator('text=There are no remaining shift offers.')
   .count();
 
+await page.waitForTimeout(2500);
+
 if (noShiftsMessage > 0) {
   console.log('❌ No shifts available.');
   await browser.close();
