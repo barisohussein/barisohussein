@@ -2,7 +2,7 @@ name: LISA Shift Summary
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/60 * * * *'
   workflow_dispatch: # allows manual trigger
   
 jobs:
