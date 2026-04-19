@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFH Launch Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080e18;
+    --surface: #0d1520;
+    --surface2: #111c28;
+    --surface3: #1a2535;
+    --border: #1e2a35;
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8f0fe;
+    --text2: #9ab0c0;
+    --text3: #6a8a9a;
+    --blue: #4f9cf9;
+    --green: #34c77b;
+    --amber: #f9a825;
+    --purple: #e06bdd;
+    --orange: #ff7043;
+    --cyan: #26c6da;
+    --violet: #a78bfa;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --mono: 'DM Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+  .app { display: flex; height: 100vh; overflow: hidden; flex-direction: column; }
+  .header { padding: 16px 24px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #0d1520 0%, var(--bg) 100%); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; flex-wrap: wrap; gap: 12px; }
+  .body { display: flex; flex: 1; overflow: hidden; }
+  .sidebar { width: 240px; min-width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 12px; overflow-y: auto; gap: 5px; }
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+  .header-title { display: flex; align-items: center; gap: 10px; }
+  .header-title h1 { font-family: 'DM Serif Display', serif; font-size: 22px; background: linear-gradient(135deg, var(--blue), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header-sub { color: var(--text3); font-size: 11px; font-family: var(--mono); margin-top: 2px; }
+  .progress-display { text-align: right; }
+  .progress-num { font-family: var(--mono); font-size: 28px; font-weight: 700; }
+  .progress-label { color: var(--text3); font-size: 11px; font-family: var(--mono); }
+  .progress-track { height: 6px; width: 140px; background: var(--surface3); border-radius: 99px; margin-top: 6px; margin-left: auto; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--blue), var(--green)); transition: width 0.6s ease; }
+
+  .phase-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 14px; cursor: pointer; text-align: left; width: 100%; transition: all 0.2s; }
+  .phase-card:hover { border-color: var(--border2); }
+  .phase-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .phase-card-label { color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 1.3; }
+  .phase-prog-track { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 4px; }
+  .phase-prog-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+  .phase-step-count { font-size: 11px; font-family: var(--mono); }
+  .sidebar-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); font-size: 11px; font-family: var(--mono); color: #3a5060; line-height: 1.7; }
+
+  .panel-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 4px; }
+  .panel-sub { color: var(--text3); font-size: 12px; font-family: var(--mono); margin-bottom: 20px; line-height: 1.6; }
+  .section-lbl { color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px; margin: 20px 0 8px; }
+
+  .form-row { margin-bottom: 12px; }
+  .form-label { display: block; color: var(--text3); font-size: 10px; font-family: var(--mono); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .form-input, .form-select, .form-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: var(--radius-sm); font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.15s; box-sizing: border-box; color-scheme: dark; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--blue); }
+  .form-select option { background: var(--surface); }
+  .form-textarea { min-height: 72px; resize: vertical; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .check-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(30,42,53,0.8); cursor: pointer; }
+  .chk { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; cursor: pointer; border: 2px solid #2a3a4a; background: transparent; }
+  .chk.on { border-color: var(--green); background: var(--green); }
+  .chk-mark { color: #000; font-size: 12px; font-weight: 700; }
+  .chk-label { color: var(--text2); font-size: 13px; font-family: var(--mono); line-height: 1.5; }
+  .chk-label.done { color: #7ec8a0; text-decoration: line-through; }
+  .req-star { color: var(--orange); margin-left: 4px; }
+
+  .info-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; font-size: 12px; font-family: var(--mono); color: var(--text3); margin-top: 16px; line-height: 1.7; }
+  .hl-box { border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px; font-family: var(--mono); font-size: 12px; }
+
+  .spec-btn { padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-family: var(--mono); transition: all 0.15s; background: var(--surface); border: 1px solid var(--border); color: var(--text3); }
+  .spec-btn.on { background: rgba(38,198,218,0.12); border-color: var(--cyan); color: var(--cyan); }
+  .spec-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+
+  #save-toast { position: fixed; bottom: 24px; right: 24px; background: #1a3a2a; border: 1px solid var(--green); color: var(--green); padding: 10px 20px; border-radius: 8px; font-size: 13px; font-family: var(--mono); z-index: 999; box-shadow: 0 4px 20px rgba(52,199,123,0.25); display: none; }
+
+  @media (max-width: 800px) {
+    .body { flex-direction: column; }
+    .sidebar { width: 100%; min-width: 0; max-height: 200px; flex-direction: row; flex-wrap: wrap; padding: 8px; border-right: none; border-bottom: 1px solid var(--border); overflow-x: auto; overflow-y: hidden; }
+    .phase-card { width: calc(50% - 3px); flex-shrink: 0; }
+    .sidebar-footer { display: none; }
+    .form-grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-title">
+      <span style="font-size:26px">🏡</span>
+      <div>
+        <h1>AFH Launch Dashboard</h1>
+        <div class="header-sub">Washington State Adult Family Home — Start to License</div>
+      </div>
+    </div>
+    <div class="progress-display">
+      <div class="progress-num" id="pnum" style="color:var(--blue)">0%</div>
+      <div class="progress-label">Overall Progress</div>
+      <div class="progress-track"><div class="progress-fill" id="pfill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main" id="main"></div>
+  </div>
+</div>
+<div id="save-toast">✓ Progress saved</div>
+
+<script>
+const KEY = 'afh-v1';
+const SPECIALTIES = ['Dementia / Memory Care','Developmental Disabilities (DD)','Mental Illness','Traumatic Brain Injury','Bariatric Care','Behavioral Support (SBS)','Expanded Community Services (ECS)'];
+
+let S = {
+  training: { name:'',phone:'',email:'',city:'',caregivingHours:'',notes:'',hca75Done:false,adminClassDone:false,adminClassDate:'',backgroundCheckDone:false,tbTestDone:false,financialSolvencyDone:false,liabilityInsurance:false,successionPlan:false },
+  property: { searchStatus:'searching',address:'',city:'',type:'buy',budget:'',bedrooms:'',beds:'',agentName:'',agentPhone:'',hoaAllowed:false,zoningChecked:false,septicChecked:false,notes:'' },
+  inspections: { localBuildingDone:false,localBuildingDate:'',permitNeeded:false,permitObtained:false,permitDate:'',floorPlanDone:false,dshsBuildingDone:false,dshsBuildingDate:'',notes:'' },
+  application: { dsOnlineSubmitted:false,dsSubmitDate:'',fingerprints:false,householdBgChecks:false,disasterPlan:false,admissionAgreement:false,careplanTemplate:false,residencyAgreement:false,nurseDelegation:false,specialtyTraining:'',applicationStatus:'not_started',licensorContact:'',notes:'' },
+  financial: { beds:'',startupBudget:'',monthlyRent:'',insurance:'',utilities:'',supplyBudget:'',marketingBudget:'',expectedRatePerResident:'',medicaidContract:false,privatePayTarget:false,notes:'' },
+  residents: { targetCapacity:'',currentCount:'',firstResidentDate:'',specialties:[],notes:'' },
+  contacts: { licensorName:'',licensorPhone:'',licensorEmail:'',insuranceAgent:'',insurancePhone:'',contractor:'',contractorPhone:'',realtor:'',realtorPhone:'',notes:'' },
+};
+
+let tab = 'training';
+let saveTimer = null;
+
+// ── Load / Save ──────────────────────────────────
+try { const v=localStorage.getItem(KEY); if(v){ const d=JSON.parse(v); for(const k of Object.keys(S)) if(d[k]) S[k]={...S[k],...d[k]}; } } catch {}
+
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {}
+  const t=document.getElementById('save-toast'); t.style.display='block';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2000);
+}
+function autosave() { clearTimeout(saveTimer); saveTimer=setTimeout(()=>{persist();drawProgress();},300); }
+
+// ── Progress ─────────────────────────────────────
+const REQUIRED=[
+  s=>s.training.hca75Done,s=>s.training.adminClassDone,s=>s.training.backgroundCheckDone,
+  s=>s.training.tbTestDone,s=>s.training.financialSolvencyDone,s=>s.training.liabilityInsurance,
+  s=>s.training.successionPlan,s=>s.property.zoningChecked,s=>s.inspections.floorPlanDone,
+  s=>s.inspections.localBuildingDone,s=>s.inspections.dshsBuildingDone,
+  s=>s.application.disasterPlan,s=>s.application.admissionAgreement,s=>s.application.residencyAgreement,
+  s=>s.application.careplanTemplate,s=>s.application.householdBgChecks,s=>s.application.fingerprints,s=>s.application.dsOnlineSubmitted,
+];
+const PHASE_CHECKS = {
+  training:[s=>s.training.hca75Done,s=>s.training.adminClassDone,s=>s.training.backgroundCheckDone,s=>s.training.tbTestDone,s=>s.training.financialSolvencyDone,s=>s.training.liabilityInsurance,s=>s.training.successionPlan],
+  property:[s=>s.property.zoningChecked,s=>s.property.hoaAllowed,s=>s.property.septicChecked],
+  inspections:[s=>s.inspections.floorPlanDone,s=>s.inspections.permitObtained||!s.inspections.permitNeeded,s=>s.inspections.localBuildingDone,s=>s.inspections.dshsBuildingDone],
+  application:[s=>s.application.householdBgChecks,s=>s.application.fingerprints,s=>s.application.disasterPlan,s=>s.application.admissionAgreement,s=>s.application.residencyAgreement,s=>s.application.careplanTemplate,s=>s.application.nurseDelegation,s=>s.application.dsOnlineSubmitted],
+  financial:[s=>s.financial.medicaidContract,s=>s.financial.privatePayTarget],
+};
+const PHASE_COLORS = {training:'var(--blue)',property:'var(--green)',inspections:'var(--amber)',application:'var(--purple)',financial:'var(--orange)',residents:'var(--cyan)',contacts:'var(--violet)'};
+
+function drawProgress() {
+  const done=REQUIRED.filter(f=>f(S)).length, pct=Math.round(done/REQUIRED.length*100);
+  const col=pct===100?'var(--green)':'var(--blue)';
+  document.getElementById('pnum').textContent=pct+'%'; document.getElementById('pnum').style.color=col;
+  document.getElementById('pfill').style.width=pct+'%';
+  for(const [id,checks] of Object.entries(PHASE_CHECKS)){
+    const d=checks.filter(f=>f(S)).length,tot=checks.length,p=tot?Math.round(d/tot*100):0;
+    const pf=document.getElementById('pf-'+id); if(pf) pf.style.width=p+'%';
+    const sc=document.getElementById('sc-'+id); if(sc) sc.textContent=d+'/'+tot+' steps';
+  }
+  // Sidebar active styles
+  document.querySelectorAll('.phase-card').forEach(el=>{ el.style.borderColor=''; el.style.background=''; });
+  const ac=document.getElementById('tab-'+tab);
+  if(ac){ const c=PHASE_COLORS[tab]||'var(--blue)'; ac.style.borderColor=c; ac.style.background=c.replace('var(--','').replace(')','')+'18'; }
+}
+
+// ── Helpers ──────────────────────────────────────
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function fi(label,sec,key,type,ph){
+  return `<div class="form-row"><label class="form-label">${label}</label>
+    <input class="form-input" type="${type||'text'}" value="${esc(S[sec][key])}" placeholder="${esc(ph||'')}"
+      data-sec="${sec}" data-key="${key}"></div>`;
+}
+function ta(label,sec,key){
+  return `<div class="form-row"><label class="form-label">${label}</label>
+    <textarea class="form-textarea" data-sec="${sec}" data-key="${key}">${esc(S[sec][key])}</textarea></div>`;
+}
+function sel(label,sec,key,opts){
+  const v=S[sec][key];
+  return `<div class="form-row"><label class="form-label">${label}</label>
+    <select class="form-select" data-sec="${sec}" data-key="${key}" onchange="S[this.dataset.sec][this.dataset.key]=this.value;autosave();render()">
+      ${opts.map(o=>`<option value="${esc(o.v)}"${v===o.v?' selected':''}>${esc(o.l)}</option>`).join('')}
+    </select></div>`;
+}
+function chk(label,sec,key,req,extra){
+  const on=!!S[sec][key];
+  return `<div class="check-row" onclick="S['${sec}']['${key}']=!S['${sec}']['${key}'];autosave();render()">
+    <div class="chk ${on?'on':''}"><span class="chk-mark">${on?'✓':''}</span></div>
+    <span class="chk-label ${on?'done':''}">${label}${req&&!on?'<span class="req-star">*</span>':''}</span>
+  </div>${extra||''}`;
+}
+function info(html){return `<div class="info-box">${html}</div>`;}
+function hl(html,bc,bg){return `<div class="hl-box" style="background:${bg};border:1px solid ${bc}">${html}</div>`;}
+function slbl(t){return `<div class="section-lbl">${t}</div>`;}
+function g2(...parts){return `<div class="form-grid-2">${parts.join('')}</div>`;}
+
+// ── Panel HTML ────────────────────────────────────
+function panelTraining(){
+  const t=S.training;
+  return `
+<div class="panel-title" style="color:var(--blue)">🎓 Training &amp; Qualifications</div>
+<div class="panel-sub">Washington State DSHS requirements before you can apply for a license.</div>
+${fi('Your Name','training','name','text','Full legal name')}
+${g2(fi('Phone','training','phone','text','(206) 555-0000'),fi('Email','training','email','text','you@email.com'))}
+${fi('City / County','training','city','text','e.g. Seattle, King County')}
+${fi('1,000 Caregiving Hours (within last 60 months)','training','caregivingHours','text','e.g. 1,200 hrs at Sunrise Care Home')}
+${slbl('Required Checklist')}
+${chk('75-Hour HCA Training completed &amp; certification exam passed','training','hca75Done',true)}
+${chk('48-Hour AFH Administration &amp; Business Planning class completed (RCW 70.128.120)','training','adminClassDone',true,t.adminClassDone?fi('Admin Class Completion Date','training','adminClassDate','date'):'')}
+${chk('Background check submitted (all household members age 11+)','training','backgroundCheckDone',true)}
+${chk('TB Test completed (must be within 3 days of licensing)','training','tbTestDone',true)}
+${chk('Proof of Financial Solvency prepared','training','financialSolvencyDone',true)}
+${chk('Liability Insurance obtained (WAC 388-76-10191)','training','liabilityInsurance',true)}
+${chk('Written Succession Plan documented (WAC 388-76-10201 — 2025 requirement)','training','successionPlan',true)}
+${ta('Notes','training','notes')}
+${info('📞 <strong style="color:var(--blue)">DSHS Resource Development:</strong> resourcedevelopment@dshs.wa.gov<br>📋 <strong style="color:var(--blue)">Application Questions:</strong> baau@dshs.wa.gov')}`;
+}
+
+function panelProperty(){
+  const p=S.property, beds=parseInt(p.beds)||0, fee=beds*450;
+  return `
+<div class="panel-title" style="color:var(--green)">🏠 Property Search &amp; Acquisition</div>
+<div class="panel-sub">An AFH must be a single-family residence or duplex unit. Max 6 residents (up to 8 with expanded capacity approval).</div>
+${sel('Buying or Renting?','property','type',[{v:'buy',l:'Buying'},{v:'rent',l:'Renting'}])}
+${sel('Property Search Status','property','searchStatus',[{v:'searching',l:'Still Searching'},{v:'under_contract',l:'Under Contract / Offer Made'},{v:'owned',l:'Property Owned / Purchased'},{v:'rented',l:'Lease Signed'}])}
+${fi('Property Address (once identified)','property','address','text','123 Care Lane, Seattle WA')}
+${g2(fi('City','property','city','text','City'),fi('Budget','property','budget','text',p.type==='buy'?'$550,000':'$3,200/mo'))}
+${g2(fi('# of Bedrooms','property','bedrooms','text','4'),fi('# of Resident Beds Planned','property','beds','text','4'))}
+${beds>0?hl(`💡 Annual DSHS Licensing Fee: <strong style="color:var(--green)">$${fee.toLocaleString()}</strong> <span style="color:var(--text3)">(${beds} beds × $450/bed — effective July 1, 2025)</span>`,'rgba(52,199,123,0.3)','rgba(13,31,16,0.85)'):''}
+${fi('Real Estate Agent Name','property','agentName')}
+${fi('Agent Phone','property','agentPhone')}
+${slbl('Due Diligence Checklist')}
+${chk('Zoning confirmed allows Adult Family Home','property','zoningChecked',true)}
+${chk('HOA reviewed — AFH use permitted (if HOA exists)','property','hoaAllowed',false)}
+${chk('Septic system inspected by county (if on septic)','property','septicChecked',false)}
+${ta('Notes / Property Candidates','property','notes')}
+${info('⚠️ <strong style="color:var(--amber)">Tip:</strong> Check the <strong style="color:var(--green)">AFH Locator on DSHS</strong> if buying an existing AFH — verify no active limits, enforcements, or outstanding issues.')}`;
+}
+
+function panelInspections(){
+  const p=S.inspections;
+  return `
+<div class="panel-title" style="color:var(--amber)">🔍 Building Inspections &amp; Permits</div>
+<div class="panel-sub">Two separate inspections required: your local jurisdiction AND DSHS. Local permit must be finaled BEFORE the AFH inspection.</div>
+${slbl('Preparation')}
+${chk('Floor plan drawn for each level — label all bedrooms A–F, emergency exits, smoke/CO detectors, ramps, lifts','inspections','floorPlanDone',true)}
+${chk('Determined if building permit is needed (modifications, grab bars, ramps, windows, etc.)','inspections','permitNeeded',false,
+  p.permitNeeded?chk('Local Building Permit obtained','inspections','permitObtained',true,
+    p.permitObtained?fi('Permit Obtained Date','inspections','permitDate','date'):''
+  ):'')}
+${slbl('Local Jurisdiction Inspection')}
+${chk('Local Building Code (Minimum Code) Inspection — PASSED','inspections','localBuildingDone',true,
+  p.localBuildingDone?fi('Local Inspection Pass Date','inspections','localBuildingDate','date'):'')}
+${slbl('DSHS Inspection')}
+${chk('DSHS AFH Building Inspection — PASSED','inspections','dshsBuildingDone',true,
+  p.dshsBuildingDone?fi('DSHS Inspection Pass Date','inspections','dshsBuildingDate','date'):'')}
+${ta('Notes / Inspector Contacts','inspections','notes')}
+${info('📋 Common modifications: grab bars, ramp access, window egress, smoke/CO alarms, hallway widths.<br>🔗 WA Residential Code for AFH: <span style="color:var(--amber)">WAC 51-51</span>')}`;
+}
+
+function panelApplication(){
+  const p=S.application;
+  return `
+<div class="panel-title" style="color:var(--purple)">📋 DSHS License Application</div>
+<div class="panel-sub">Apply online via DSHS. Avoid &amp;, =, +, # symbols in your application — use words instead.</div>
+${sel('Application Status','application','applicationStatus',[{v:'not_started',l:'Not Started'},{v:'in_progress',l:'In Progress — Gathering Documents'},{v:'submitted',l:'Submitted — Awaiting Review'},{v:'approved',l:'✅ APPROVED — Licensed!'}])}
+${p.applicationStatus==='submitted'||p.applicationStatus==='approved'?fi('Submission Date','application','dsSubmitDate','date'):''}
+${fi('DSHS Licensor Contact Name','application','licensorContact')}
+${slbl('Required Documents Checklist')}
+${chk('Background check forms — all providers, household members, anyone w/ unsupervised access','application','householdBgChecks',true)}
+${chk('Fingerprints submitted','application','fingerprints',true)}
+${chk('Disaster / Emergency Plan written (include provider name + AFH name)','application','disasterPlan',true)}
+${chk('AFH Admission Agreement template prepared','application','admissionAgreement',true)}
+${chk('Residency Agreement (Medicaid — DSHS Form 16-302, required Jan 1, 2026)','application','residencyAgreement',true)}
+${chk('Resident Care Plan template ready','application','careplanTemplate',true)}
+${chk('Nurse Delegation Certificate (if planning delegated nursing tasks)','application','nurseDelegation',false)}
+${chk('DSHS Online Application Submitted','application','dsOnlineSubmitted',true,
+  p.dsOnlineSubmitted?fi('Submission Date','application','dsSubmitDate','date'):'')}
+${fi('Specialty Training (if applicable)','application','specialtyTraining','text','e.g. Dementia, DD, Mental Illness')}
+${ta('Notes','application','notes')}
+${info('⚠️ Specialty contracts (ECS, SBS, Meaningful Day) are <strong style="color:var(--purple)">NOT transferable</strong> with change of ownership — must re-apply.')}`;
+}
+
+function panelFinancial(){
+  const p=S.financial, propBeds=S.property.beds||'';
+  const beds=parseInt(p.beds||propBeds)||0, fee=beds*450;
+  const rate=parseFloat(p.expectedRatePerResident)||0, rev=rate*beds;
+  return `
+<div class="panel-title" style="color:var(--orange)">💰 Financial Planning</div>
+<div class="panel-sub">Plan your startup costs, monthly operating expenses, and revenue projections.</div>
+${slbl('Startup Costs')}
+${g2(fi('Total Startup Budget','financial','startupBudget','text','$75,000'),fi('Resident Beds','financial','beds','text','4'))}
+${g2(fi('Supply / Equipment Budget','financial','supplyBudget','text','$8,000'),fi('Marketing Budget','financial','marketingBudget','text','$2,000'))}
+${fee>0?hl(`📋 Annual DSHS License Fee: <strong style="color:var(--orange)">$${fee.toLocaleString()}</strong> <span style="color:var(--text3)">(${beds} beds × $450)</span>`,'rgba(255,112,67,0.3)','rgba(26,15,10,0.85)'):''}
+${slbl('Monthly Operating Expenses')}
+${g2(fi('Rent / Mortgage','financial','monthlyRent','text','$3,200'),fi('Liability Insurance','financial','insurance','text','$400'))}
+${g2(fi('Utilities','financial','utilities','text','$350'),fi('Expected Rate / Resident / Month','financial','expectedRatePerResident','text','$4,500'))}
+${rev>0?hl(`Projected Monthly Revenue (full occupancy): <strong style="color:var(--green)">$${rev.toLocaleString()}</strong>`,'rgba(52,199,123,0.25)','rgba(13,31,16,0.7)'):''}
+${slbl('Revenue Sources')}
+${chk('Applied for Medicaid Provider Contract','financial','medicaidContract',false)}
+${chk('Private Pay rate structure established','financial','privatePayTarget',false)}
+${ta('Notes','financial','notes')}`;
+}
+
+function panelResidents(){
+  const p=S.residents, specs=p.specialties||[];
+  return `
+<div class="panel-title" style="color:var(--cyan)">❤️ Opening &amp; Resident Planning</div>
+<div class="panel-sub">Plan your resident population, specialties, and opening timeline.</div>
+${g2(fi('Target Capacity (residents)','residents','targetCapacity','text','4'),fi('Current Resident Count','residents','currentCount','number','0'))}
+${fi('Goal Opening Date (first resident)','residents','firstResidentDate','date')}
+${slbl('Specialty Care Areas (select all that apply)')}
+<div class="spec-wrap">${SPECIALTIES.map(s=>`<button class="spec-btn ${specs.includes(s)?'on':''}" onclick="toggleSpec('${s.replace(/'/g,"&#39;")}');autosave();render()">${s}</button>`).join('')}</div>
+${info('💡 <strong style="color:var(--cyan)">Staffing reminder:</strong> At least one caregiver on duty at all times. Awake caregiver required at night if residents need nighttime assistance.<br><br>⚠️ <strong style="color:var(--amber)">Expanded Capacity:</strong> Qualified 6-bed homes with clean compliance history can apply for 7–8 beds (RCW 70.128.066).')}
+${ta('Notes / Marketing / Referral Sources','residents','notes')}`;
+}
+
+function panelContacts(){
+  return `
+<div class="panel-title" style="color:var(--violet)">📇 Key Contacts</div>
+<div class="panel-sub">Keep all your important contacts in one place.</div>
+${info('📧 Resource Development: <strong style="color:var(--blue)">resourcedevelopment@dshs.wa.gov</strong><br>📧 Application Questions: <strong style="color:var(--blue)">baau@dshs.wa.gov</strong>')}
+${slbl('DSHS Licensor')}
+${g2(fi('Licensor Name','contacts','licensorName'),fi('Licensor Phone','contacts','licensorPhone'))}
+${fi('Licensor Email','contacts','licensorEmail')}
+${slbl('Insurance')}
+${g2(fi('Insurance Agent','contacts','insuranceAgent'),fi('Agent Phone','contacts','insurancePhone'))}
+${slbl('Contractor / Builder')}
+${g2(fi('Contractor Name','contacts','contractor'),fi('Contractor Phone','contacts','contractorPhone'))}
+${slbl('Real Estate Agent')}
+${g2(fi('Realtor Name','contacts','realtor'),fi('Realtor Phone','contacts','realtorPhone'))}
+${ta('Notes','contacts','notes')}`;
+}
+
+const PANELS = {training:panelTraining,property:panelProperty,inspections:panelInspections,application:panelApplication,financial:panelFinancial,residents:panelResidents,contacts:panelContacts};
+
+// ── Sidebar ───────────────────────────────────────
+const TABS = [
+  {id:'training',icon:'🎓',label:'Training & Qualifications',color:'var(--blue)',prog:true},
+  {id:'property',icon:'🏠',label:'Property Search & Acquisition',color:'var(--green)',prog:true},
+  {id:'inspections',icon:'🔍',label:'Building Inspections & Permits',color:'var(--amber)',prog:true},
+  {id:'application',icon:'📋',label:'DSHS License Application',color:'var(--purple)',prog:true},
+  {id:'financial',icon:'💰',label:'Financial Planning',color:'var(--orange)',prog:true},
+  {id:'residents',icon:'❤️',label:'Opening & Residents',color:'var(--cyan)',prog:false},
+  {id:'contacts',icon:'📇',label:'Key Contacts',color:'var(--violet)',prog:false},
+];
+
+function buildSidebar() {
+  const sb=document.getElementById('sidebar');
+  const counts={training:7,property:3,inspections:4,application:8,financial:2};
+  sb.innerHTML=TABS.map(t=>`
+    <button class="phase-card" id="tab-${t.id}" onclick="switchTab('${t.id}')">
+      <div class="phase-card-head"><span style="font-size:19px">${t.icon}</span><span class="phase-card-label">${t.label}</span></div>
+      ${t.prog?`<div class="phase-prog-track"><div class="phase-prog-fill" id="pf-${t.id}" style="width:0%;background:${t.color}"></div></div>
+      <span class="phase-step-count" id="sc-${t.id}" style="color:${t.color}">0/${counts[t.id]} steps</span>`:''}
+    </button>`).join('')+
+    `<div class="sidebar-footer">💾 Auto-saves on every change<br>⭐ Data persists between sessions</div>`;
+}
+
+// ── Toggle specialty ──────────────────────────────
+function toggleSpec(spec) {
+  const list=S.residents.specialties||[];
+  S.residents.specialties=list.includes(spec)?list.filter(s=>s!==spec):[...list,spec];
+}
+
+// ── Delegate input events ─────────────────────────
+function bindInputs() {
+  document.getElementById('main').addEventListener('input', e=>{
+    const el=e.target;
+    if((el.tagName==='INPUT'||el.tagName==='TEXTAREA')&&el.dataset.sec&&el.dataset.key){
+      S[el.dataset.sec][el.dataset.key]=el.value;
+      autosave();
+    }
+  });
+}
+
+// ── Render ────────────────────────────────────────
+function render() {
+  document.getElementById('main').innerHTML=PANELS[tab]();
+  drawProgress();
+}
+
+function switchTab(t) { tab=t; render(); }
+
+// ── Init ─────────────────────────────────────────
+buildSidebar();
+bindInputs();
+render();
+</script>
+</body>
+</html>
