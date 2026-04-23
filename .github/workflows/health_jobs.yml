@@ -5,6 +5,9 @@ on:
     - cron: '0 */8 * * *'   # every 2 hours
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   run-playwright:
     runs-on: ubuntu-latest
@@ -14,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -29,7 +32,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       # 5️⃣ Run UW scraper
-      - name: Run UW jobs scraper
+      - name: Run UW scraper
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
@@ -49,14 +52,21 @@ jobs:
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
         run: npx playwright test tests/find_jobs_childrens.spec.ts --reporter=list
 
-      # 8️⃣ Commit CSV updates
+      # 8️⃣ Debug (VERIFY CSV FILES EXIST)
+      - name: Debug file output
+        run: ls -lah
+
+      # 9️⃣ Commit CSV updates
       - name: Commit CSV updates
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+
           git add *.csv
 
-          git diff --cached --quiet && echo "No changes" || \
-          git commit -m "update healthcare jobs"
+          git status
 
-          git push
+          git diff --cached --quiet && echo "No changes" || (
+            git commit -m "update healthcare jobs"
+            git push
+          )
