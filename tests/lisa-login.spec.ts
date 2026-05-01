@@ -114,13 +114,12 @@ if (Number(noShiftsMessage) === 0) {
 
     await transporter.sendMail(mailOptions);
     console.log('✅ Email sent!');
-  } catch (err) {
+    } catch (err) {
     console.error('❌ Failed to send email:', err);
   }
-}
 
   // 8️⃣ Keep browser open to see result (optional)
-  await page.pause(); // allows you to interact manually if needed
+  await page.pause();
 
   await browser.close();
 
