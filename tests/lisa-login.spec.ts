@@ -90,10 +90,11 @@ const noShiftsMessage = await page
 
     console.log('Text:' , noShiftsMessage);
 
-if (noShiftsMessage > 0) {
+if (Number(noShiftsMessage) === 0) {
   console.log('❌ No shifts available.');
 } else {
   console.log('✅ Shifts available! Sending email...');
+}
 
   try {
     const transporter = nodemailer.createTransport({
