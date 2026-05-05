@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sunrise Comfort Adult Care Home | Bellevue, WA | (425) 867-3920</title>
+  <meta name="description" content="Sunrise Comfort Adult Care Home in Bellevue, WA offers personalized, compassionate adult family care in a warm and welcoming home environment." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #faf6f0;
+      --warm:     #f3ead8;
+      --gold:     #c8963e;
+      --gold-lt:  #e8b96a;
+      --rust:     #8b4a2b;
+      --sage:     #6b8f6e;
+      --sage-lt:  #e8f0e9;
+      --charcoal: #2c2c2c;
+      --mid:      #5a5a5a;
+      --light:    #888;
+      --border:   rgba(200,150,62,.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      overflow-x: hidden;
+    }
+
+    /* ── DECORATIVE SUNRAYS ── */
+    .sunray-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .sunray-bg::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200%;
+      height: 120%;
+      background: conic-gradient(from 270deg at 50% 0%,
+        rgba(200,150,62,.07) 0deg, transparent 10deg,
+        rgba(200,150,62,.07) 20deg, transparent 30deg,
+        rgba(200,150,62,.07) 40deg, transparent 50deg,
+        rgba(200,150,62,.07) 60deg, transparent 70deg,
+        rgba(200,150,62,.07) 80deg, transparent 90deg
+      );
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(250,246,240,.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow .3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.07); }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--gold), var(--rust));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .nav-logo-text { line-height: 1.1; }
+    .nav-logo-text strong {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--rust);
+      display: block;
+    }
+    .nav-logo-text span {
+      font-size: .7rem;
+      color: var(--mid);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: .82rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--gold);
+      color: #fff !important;
+      padding: .5rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 500;
+    }
+    .nav-cta:hover { background: var(--rust) !important; color: #fff !important; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 6rem 2rem 4rem;
+      background: linear-gradient(160deg, #fdf8f0 0%, #f6ead5 50%, #efe4d0 100%);
+    }
+    .hero .sunray-bg::before {
+      opacity: .8;
+    }
+
+    /* Golden arc at top */
+    .hero-arc {
+      position: absolute;
+      top: -1px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 300px;
+      border-radius: 0 0 300px 300px;
+      background: linear-gradient(180deg, rgba(200,150,62,.18) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: .75rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: .35rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 1.8rem;
+      animation: fadeUp .6s ease both;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--rust);
+      animation: fadeUp .7s .1s ease both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--mid);
+      font-weight: 300;
+      max-width: 540px;
+      margin: 1.5rem auto 2.5rem;
+      line-height: 1.7;
+      animation: fadeUp .7s .2s ease both;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp .7s .3s ease both;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: #fff;
+      padding: .9rem 2.2rem;
+      border-radius: 3rem;
+      font-size: .9rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: .05em;
+      transition: background .2s, transform .2s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--rust); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--rust);
+      padding: .9rem 2.2rem;
+      border-radius: 3rem;
+      font-size: .9rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: .05em;
+      border: 1.5px solid var(--rust);
+      transition: all .2s;
+    }
+    .btn-outline:hover { background: var(--rust); color: #fff; }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      font-size: .72rem;
+      letter-spacing: .15em;
+      color: var(--light);
+      text-transform: uppercase;
+      animation: fadeUp .7s .6s ease both;
+    }
+    .hero-scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: grow 1.5s 1s ease infinite alternate;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .75rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--rust);
+    }
+    .section-body {
+      font-size: .97rem;
+      color: var(--mid);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 680px;
+    }
+
+    /* ── ABOUT ── */
+    .about {
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .about::before {
+      content: '';
+      position: absolute;
+      right: -100px; top: -100px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,150,62,.06) 0%, transparent 70%);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-frame {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: linear-gradient(135deg, var(--warm) 0%, var(--sage-lt) 100%);
+      border-radius: 2rem 2rem 6rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-img-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(200,150,62,.1), transparent);
+    }
+    .about-badge-float {
+      position: absolute;
+      bottom: -1.5rem; right: -1.5rem;
+      background: var(--gold);
+      color: #fff;
+      padding: 1.2rem 1.5rem;
+      border-radius: 1.5rem;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(200,150,62,.3);
+    }
+    .about-badge-float strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .about-badge-float span {
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .9;
+    }
+
+    .about-text { display: flex; flex-direction: column; gap: 1.5rem; }
+    .about-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: .5rem;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat strong {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--gold);
+      display: block;
+    }
+    .stat span {
+      font-size: .75rem;
+      letter-spacing: .07em;
+      color: var(--mid);
+      text-transform: uppercase;
+    }
+
+    /* ── SERVICES ── */
+    .services { background: var(--sage-lt); }
+    .services-header { text-align: center; margin-bottom: 3.5rem; }
+    .services-header .section-body { margin: 1rem auto 0; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .service-card {
+      background: #fff;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      transition: transform .25s, box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--gold), var(--rust));
+      transform: scaleX(0);
+      transition: transform .3s;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,.08); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .service-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--rust);
+      margin-bottom: .6rem;
+    }
+    .service-card p {
+      font-size: .88rem;
+      color: var(--mid);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── CARE LIST ── */
+    .care-list-section { background: #fff; }
+    .care-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .care-col h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--rust);
+      margin-bottom: 1.5rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .care-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .care-col ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: .7rem;
+      font-size: .9rem;
+      color: var(--mid);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    .care-col ul li::before {
+      content: '☀';
+      color: var(--gold);
+      font-size: .7rem;
+      margin-top: .2rem;
+      flex-shrink: 0;
+    }
+
+    /* ── STAFF ── */
+    .staff { background: linear-gradient(135deg, var(--rust) 0%, #6b3020 100%); color: #fff; position: relative; overflow: hidden; }
+    .staff::before {
+      content: '';
+      position: absolute;
+      right: -200px; bottom: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.04);
+    }
+    .staff .section-label { color: var(--gold-lt); }
+    .staff .section-title { color: #fff; }
+    .staff .section-body { color: rgba(255,255,255,.75); }
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .staff-card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      transition: background .25s;
+    }
+    .staff-card:hover { background: rgba(255,255,255,.14); }
+    .staff-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+    }
+    .staff-card h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: .3rem;
+    }
+    .staff-card .role {
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold-lt);
+      margin-bottom: .75rem;
+    }
+    .staff-card p { font-size: .83rem; color: rgba(255,255,255,.7); line-height: 1.6; font-weight: 300; }
+
+    /* ── SPECIALTIES ── */
+    .specialties { background: var(--warm); }
+    .spec-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; margin-bottom: 3rem; flex-wrap: wrap; }
+    .spec-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+    .spec-tag {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 2rem;
+      padding: .55rem 1.2rem;
+      font-size: .82rem;
+      color: var(--charcoal);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .spec-tag span { font-size: 1rem; }
+
+    /* ── MEALS ── */
+    .meals { background: #fff; }
+    .meals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .meal-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .meal-card {
+      border-radius: 1.2rem;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--warm), #e8dcc8);
+      border: 1px solid var(--border);
+      transition: transform .2s;
+    }
+    .meal-card:hover { transform: scale(1.03); }
+    .meal-card p { font-size: .75rem; color: var(--mid); font-weight: 400; letter-spacing: .04em; }
+
+    /* ── FAQ ── */
+    .faq { background: var(--sage-lt); }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .faq-items { display: flex; flex-direction: column; gap: 1rem; }
+    .faq-item {
+      background: #fff;
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      padding: 1.2rem 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .95rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      color: var(--charcoal);
+      text-align: left;
+      gap: 1rem;
+    }
+    .faq-q:hover { color: var(--gold); }
+    .faq-q .icon {
+      font-size: 1.2rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      transition: transform .3s;
+    }
+    .faq-item.open .faq-q .icon { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s ease, padding .4s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a p {
+      padding: 0 1.5rem 1.2rem;
+      font-size: .88rem;
+      color: var(--mid);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    /* ── CONTACT ── */
+    .contact {
+      background: linear-gradient(135deg, #fdf8f0 0%, var(--warm) 100%);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 2rem; }
+    .contact-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .contact-item-icon {
+      width: 44px; height: 44px;
+      background: var(--gold);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .contact-item h4 {
+      font-size: .75rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .3rem;
+    }
+    .contact-item p, .contact-item a {
+      font-size: .95rem;
+      color: var(--charcoal);
+      text-decoration: none;
+      font-weight: 300;
+    }
+    .contact-item a:hover { color: var(--gold); }
+
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+    .form-field label {
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .form-field input, .form-field textarea, .form-field select {
+      border: 1.5px solid var(--border);
+      border-radius: .75rem;
+      padding: .85rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .92rem;
+      color: var(--charcoal);
+      background: #fff;
+      transition: border-color .2s;
+      outline: none;
+    }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus {
+      border-color: var(--gold);
+    }
+    .form-field textarea { resize: vertical; min-height: 110px; }
+    .form-success {
+      background: var(--sage-lt);
+      border: 1px solid var(--sage);
+      border-radius: .75rem;
+      padding: 1rem 1.2rem;
+      color: var(--sage);
+      font-size: .9rem;
+      display: none;
+    }
+    .form-success.show { display: block; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--charcoal);
+      color: rgba(255,255,255,.7);
+      padding: 3.5rem 2rem 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer-logo strong {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: .5rem;
+    }
+    .footer-logo p { font-size: .85rem; line-height: 1.7; max-width: 280px; }
+    .footer-col h4 {
+      font-size: .72rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .footer-col ul li a {
+      font-size: .85rem;
+      color: rgba(255,255,255,.6);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-col ul li a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: .8rem;
+    }
+
+    /* ── FLOATING CTA ── */
+    .floating-phone {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      z-index: 90;
+      background: var(--gold);
+      color: #fff;
+      padding: .85rem 1.5rem;
+      border-radius: 3rem;
+      font-size: .85rem;
+      font-weight: 500;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(200,150,62,.4);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: background .2s, transform .2s;
+    }
+    .floating-phone:hover { background: var(--rust); transform: translateY(-2px); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes grow {
+      from { transform: scaleY(.6); }
+      to   { transform: scaleY(1); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .about-grid, .care-grid, .meals-grid, .faq-grid, .contact-grid, .footer-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .about-img-frame { aspect-ratio: 3/2; font-size: 4rem; }
+      .about-badge-float { right: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">☀</div>
+    <div class="nav-logo-text">
+      <strong>Sunrise Comfort</strong>
+      <span>Adult Care Home</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#care">Care Plans</a></li>
+    <li><a href="#faq">FAQs</a></li>
+    <li><a href="#contact" class="nav-cta">Contact Us</a></li>
+  </ul>
+</nav>
+
+<!-- FLOATING PHONE -->
+<a href="tel:4257841930" class="floating-phone">📞 (425) 784-1930</a>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="sunray-bg"></div>
+  <div class="hero-arc"></div>
+  <div class="hero-content">
+    <div class="hero-badge">☀ Bellevue, WA · Licensed Adult Family Home</div>
+    <h1>Comfort, Care &amp;<br><em>Compassion</em><br>Every Day</h1>
+    <p>At Sunrise Comfort, we believe that outstanding care begins with feeling truly at home. Personalized attention, warm meals, and genuine connection await your loved one.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Schedule a Tour</a>
+      <a href="#services" class="btn-outline">Explore Our Services</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    Discover More
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <div class="about-img-frame">🌅</div>
+        <div class="about-badge-float">
+          <strong>12+</strong>
+          <span>Years of Care</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <p class="section-label">About Us</p>
+        <h2 class="section-title">A Home Filled With Warmth &amp; Purpose</h2>
+        <p class="section-body">Founded in 2013 by Marisol Aguilar, RN, Sunrise Comfort Adult Care Home was built on a single conviction: every senior deserves to thrive, not just survive. Nestled in a quiet neighborhood in Bellevue, our home provides a nurturing setting where residents are treated like family.</p>
+        <p class="section-body">Our team of licensed caregivers and nursing professionals craft individualized care plans, ensuring that the unique story, preferences, and health needs of each resident are honored every single day.</p>
+        <div class="about-stats">
+          <div class="stat"><strong>6</strong><span>Residents Max</span></div>
+          <div class="stat"><strong>24/7</strong><span>Awake Staff</span></div>
+          <div class="stat"><strong>100%</strong><span>State Certified</span></div>
+        </div>
+        <a href="#contact" class="btn-primary" style="width:fit-content">Get in Touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="services-header">
+      <p class="section-label">What We Offer</p>
+      <h2 class="section-title">Exceptional Care Tailored to Every Resident</h2>
+      <p class="section-body">From around-the-clock nursing support to joyful daily activities, our services are designed to nurture the whole person—body, mind, and spirit.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🏠</span>
+        <h3>Private Rooms</h3>
+        <p>Cozy, furnished private and semi-private rooms with cable TV, Wi-Fi, and phone connections. Residents personalize their space to feel truly at home.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💊</span>
+        <h3>Medication Management</h3>
+        <p>Our licensed nurses handle all medication schedules, coordination with physicians, and monitoring to ensure safety and proper dosing every day.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🍽️</span>
+        <h3>Home-Cooked Meals</h3>
+        <p>Three nutritious, home-cooked meals and snacks daily, tailored to dietary restrictions, cultural preferences, and physician recommendations.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🌿</span>
+        <h3>Personal Hygiene &amp; Grooming</h3>
+        <p>Compassionate assistance with bathing, dressing, grooming, and incontinence care—always delivered with dignity and respect.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🎵</span>
+        <h3>Enriching Activities</h3>
+        <p>Daily activities including music therapy, light exercise, gardening, movie nights, birthday celebrations, and seasonal community events.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🩺</span>
+        <h3>Home Doctor Visits</h3>
+        <p>We coordinate visits from physicians, podiatrists, occupational therapists, physical therapists, and other on-call professionals directly to our home.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARE LIST -->
+<section class="care-list-section" id="care">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <p class="section-label">Comprehensive Care</p>
+      <h2 class="section-title">Everything Your Loved One Needs</h2>
+    </div>
+    <div class="care-grid">
+      <div class="care-col">
+        <h3>☀ Compassionate Services</h3>
+        <ul>
+          <li>24-Hour Awake Nursing Care</li>
+          <li>Nutritious Home-Cooked Meals &amp; Snacks</li>
+          <li>Medication Management &amp; Administration</li>
+          <li>Personal Care and Hygiene Assistance</li>
+          <li>Companionship and Meaningful Conversation</li>
+          <li>Activities Geared to Ability Level</li>
+          <li>Housekeeping and Laundry Services</li>
+          <li>Private Phone Hookup Available</li>
+          <li>Flexible Wake-Up and Bedtime Schedules</li>
+          <li>Full Incontinence Care</li>
+          <li>Family and Resident Celebrations</li>
+          <li>Exercise and Music Therapy</li>
+          <li>Electronic Call Buttons in Every Room</li>
+          <li>Wheelchair Accessible Throughout</li>
+          <li>Private and Couple's Rooms Available</li>
+          <li>Cable TV and Wi-Fi in Each Room</li>
+        </ul>
+      </div>
+      <div class="care-col">
+        <h3>🎉 Activities &amp; Community</h3>
+        <ul>
+          <li>Board Games and Puzzles</li>
+          <li>Birthday Parties for Every Resident</li>
+          <li>Holiday &amp; Seasonal Celebrations</li>
+          <li>Live Music Entertainment</li>
+          <li>Gentle Exercise Classes</li>
+          <li>Gardening and Outdoor Time</li>
+          <li>Ice Cream Socials</li>
+          <li>Annual Summer Luau Barbecue</li>
+          <li>Movie Nights</li>
+          <li>Arts and Crafts Sessions</li>
+          <li>Book Club and Reading Hours</li>
+          <li>Virtual Family Visits (Video Chat Setup)</li>
+        </ul>
+
+        <h3 style="margin-top:2rem;">🩻 Specialist Conditions We Support</h3>
+        <ul>
+          <li>Dementia &amp; Alzheimer's Disease</li>
+          <li>Diabetes Management</li>
+          <li>Post-Stroke Recovery</li>
+          <li>Parkinson's Disease</li>
+          <li>Post-Injury Rehabilitation</li>
+          <li>Mental Health Support</li>
+          <li>Hospice &amp; Palliative Care</li>
+          <li>Long-Term &amp; Short-Term Stays</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAFF -->
+<section class="staff" id="staff">
+  <div class="container">
+    <p class="section-label">Our Team</p>
+    <h2 class="section-title">Caring Professionals, Every Step of the Way</h2>
+    <p class="section-body" style="margin-top:.75rem;">Our dedicated team combines professional credentials with genuine compassion, working around the clock so residents and families enjoy complete peace of mind.</p>
+    <div class="staff-grid">
+      <div class="staff-card">
+        <div class="staff-avatar">👩‍⚕️</div>
+        <h4>Marisol Aguilar</h4>
+        <p class="role">Owner &amp; Administrator, RN</p>
+        <p>Marisol holds a Registered Nurse license with 18 years of geriatric care experience. She is available to families 24/7 and personally oversees all care plans.</p>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar">👨‍⚕️</div>
+        <h4>James Reyes, CNA</h4>
+        <p class="role">Lead Caregiver</p>
+        <p>Certified Nursing Assistant with 9 years of adult family home experience. James specializes in dementia care and leads our daytime care team.</p>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar">👩‍⚕️</div>
+        <h4>Daria Novak, NAR</h4>
+        <p class="role">Night Shift Caregiver</p>
+        <p>Registered Nursing Assistant ensuring attentive overnight care. Daria completes annual continuing education and specializes in post-stroke support.</p>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar">🧑‍⚕️</div>
+        <h4>Dr. Elena Torres</h4>
+        <p class="role">Consulting Physician</p>
+        <p>Board-certified geriatrician who conducts regular home visits, collaborates on resident care plans, and is reachable for urgent consultations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIALTIES -->
+<section class="specialties">
+  <div class="container">
+    <div class="spec-header">
+      <div>
+        <p class="section-label">On-Call Professionals</p>
+        <h2 class="section-title">A Full Circle of Care</h2>
+      </div>
+      <a href="#contact" class="btn-primary">Ask a Question</a>
+    </div>
+    <div class="spec-tags">
+      <div class="spec-tag"><span>🩺</span> Home Physician</div>
+      <div class="spec-tag"><span>🦴</span> Physical Therapist</div>
+      <div class="spec-tag"><span>🗣️</span> Speech Therapist</div>
+      <div class="spec-tag"><span>🦶</span> Podiatrist</div>
+      <div class="spec-tag"><span>🥗</span> Nutritionist</div>
+      <div class="spec-tag"><span>🏋️</span> Occupational Therapist</div>
+      <div class="spec-tag"><span>💉</span> Visiting Nurse</div>
+      <div class="spec-tag"><span>🫀</span> Hospice Specialist</div>
+    </div>
+  </div>
+</section>
+
+<!-- MEALS -->
+<section class="meals" id="meals">
+  <div class="container">
+    <div class="meals-grid">
+      <div>
+        <p class="section-label">Nourishing Meals</p>
+        <h2 class="section-title">Home-Cooked with Love, Every Day</h2>
+        <p class="section-body" style="margin-top:1rem; margin-bottom:1.5rem;">Our kitchen is the heart of Sunrise Comfort. Every meal is prepared fresh using wholesome ingredients, with menus crafted around individual dietary needs, cultural favorites, and physician guidelines.</p>
+        <p class="section-body" style="margin-bottom:2rem;">From hearty breakfasts and warming soups to light, nutritious dinners—each dish is made to nourish and bring joy. Special occasion meals and holiday feasts are a cherished tradition here.</p>
+        <a href="#contact" class="btn-primary">Request Our Sample Menu</a>
+      </div>
+      <div class="meal-cards">
+        <div class="meal-card">🥣<p>Breakfast</p></div>
+        <div class="meal-card">🥗<p>Lunch</p></div>
+        <div class="meal-card">🍲<p>Dinner</p></div>
+        <div class="meal-card">🍎<p>Snacks</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-grid">
+      <div>
+        <p class="section-label">FAQs</p>
+        <h2 class="section-title">Questions We Hear Most</h2>
+        <p class="section-body" style="margin-top:.75rem;">Can't find your answer? Reach out — we're always happy to talk.</p>
+        <a href="#contact" class="btn-primary" style="margin-top:1.5rem;display:inline-block;">Contact Us</a>
+      </div>
+      <div class="faq-items">
+        <div class="faq-item">
+          <button class="faq-q">Why choose Sunrise Comfort Adult Care Home? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Sunrise Comfort offers a true home setting with a maximum of six residents, ensuring highly personalized attention from our certified nursing staff. Our owner, Marisol Aguilar RN, is available around the clock, and every care plan is created and overseen by our house Registered Nurse. Families consistently tell us the warmth, consistency, and genuine relationships formed here set us apart from larger facilities.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What is included in the monthly care fee? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Our all-inclusive rate covers room and board, three home-cooked meals and snacks daily, 24-hour awake staff, medication management, personal hygiene assistance, housekeeping and laundry, activities, and coordination of on-call specialist visits. We believe in transparent, straightforward pricing with no surprise add-ons. Contact us for current rates.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do you accept Medicaid or Medicare? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Yes, we are licensed to accept Medicaid (DSHS-funded) residents, as well as private pay arrangements. We do not directly bill Medicare for room and board, but Medicare may cover eligible skilled nursing visits, therapy, and physician services provided in our home. Our staff are happy to help you navigate insurance and funding options.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How do I begin the admissions process? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Simply call us or fill out the contact form below to schedule a complimentary tour. During the visit you'll meet our staff, see the home, and we'll complete an informal needs assessment. If Sunrise Comfort is the right fit, we'll walk you through evaluation paperwork and coordinate a smooth transition with your loved one's current care team.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Can family members visit anytime? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Family is always welcome at Sunrise Comfort. We encourage regular visits and family participation in activities and celebrations. We kindly ask that visits after 9 pm be arranged in advance out of consideration for sleeping residents, but there are no strict limitations. We also offer video call setup for families who live farther away.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <p class="section-label">Reach Out</p>
+      <h2 class="section-title">Let's Start the Conversation</h2>
+      <p class="section-body" style="margin: .75rem auto 0;">We'd love to meet you and your family. Schedule a tour or ask any questions—we're here to help.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div>
+            <h4>Phone</h4>
+            <a href="tel:4257841930">(425) 784-1930</a><br>
+            <a href="tel:4254921847">(425) 492-1847 — Fax</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div>
+            <h4>Email</h4>
+            <a href="mailto:care@sunrisecomforthome.com">care@sunrisecomforthome.com</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div>
+            <h4>Address</h4>
+            <p>14728 SE Newport Way<br>Bellevue, WA 98006</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">🕐</div>
+          <div>
+            <h4>Office Hours</h4>
+            <p>Mon–Fri: 8:00 am – 6:00 pm<br>Sat–Sun: 10:00 am – 4:00 pm<br><em style="font-size:.82rem;color:var(--mid)">Care staff on site 24/7</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label>First Name</label>
+              <input type="text" placeholder="Jane" />
+            </div>
+            <div class="form-field">
+              <label>Last Name</label>
+              <input type="text" placeholder="Smith" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Phone</label>
+              <input type="tel" placeholder="(425) 555-0100" />
+            </div>
+            <div class="form-field">
+              <label>Email</label>
+              <input type="email" placeholder="jane@email.com" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label>I'm inquiring about</label>
+            <select>
+              <option>Scheduling a Tour</option>
+              <option>Admissions Information</option>
+              <option>Pricing &amp; Insurance</option>
+              <option>Care Services</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Message (Optional)</label>
+            <textarea placeholder="Tell us a little about your loved one and how we can help…"></textarea>
+          </div>
+          <div class="form-success" id="formSuccess">✅ Thank you! We'll be in touch within one business day.</div>
+          <button class="btn-primary" onclick="submitForm()" style="font-size:.95rem;">Send Message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-logo">
+      <strong>☀ Sunrise Comfort Adult Care Home</strong>
+      <p>A licensed adult family home in Bellevue, WA, providing compassionate, personalized care for seniors in a warm and nurturing home environment since 2013.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#services">Our Services</a></li>
+        <li><a href="#care">Care Plans</a></li>
+        <li><a href="#meals">Meals</a></li>
+        <li><a href="#faq">FAQs</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Senior Care</a></li>
+        <li><a href="#services">Dementia Care</a></li>
+        <li><a href="#services">Hospice Support</a></li>
+        <li><a href="#services">Respite Care</a></li>
+        <li><a href="#services">Medication Mgmt</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:4257841930">(425) 784-1930</a></li>
+        <li><a href="mailto:care@sunrisecomforthome.com">care@sunrisecomforthome.com</a></li>
+        <li><a href="#">14728 SE Newport Way<br>Bellevue, WA 98006</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Sunrise Comfort Adult Care Home. All Rights Reserved.</span>
+    <span>Washington State Licensed Adult Family Home</span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  // Form submit
+  function submitForm() {
+    document.getElementById('formSuccess').classList.add('show');
+    setTimeout(() => document.getElementById('formSuccess').classList.remove('show'), 5000);
+  }
+</script>
+
+</body>
+</html>
