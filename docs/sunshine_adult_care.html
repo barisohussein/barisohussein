@@ -1138,43 +1138,7 @@
       </div>
 
       <div>
-        <div class="contact-form">
-          <div class="form-row">
-            <div class="form-field">
-              <label>First Name</label>
-              <input type="text" placeholder="Jane" />
-            </div>
-            <div class="form-field">
-              <label>Last Name</label>
-              <input type="text" placeholder="Smith" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label>Phone</label>
-              <input type="tel" placeholder="(425) 555-0100" />
-            </div>
-            <div class="form-field">
-              <label>Email</label>
-              <input type="email" placeholder="jane@email.com" />
-            </div>
-          </div>
-          <div class="form-field">
-            <label>I'm inquiring about</label>
-            <select>
-              <option>Scheduling a Tour</option>
-              <option>Admissions Information</option>
-              <option>Pricing &amp; Insurance</option>
-              <option>Care Services</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label>Message (Optional)</label>
-            <textarea placeholder="Tell us a little about your loved one and how we can help…"></textarea>
-          </div>
-          <div class="form-success" id="formSuccess">✅ Thank you! We'll be in touch within one business day.</div>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -1238,6 +1202,27 @@
     });
   });
 
+const form = document.querySelector('.contact-form');
+const success = document.getElementById('formSuccess');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const data = new FormData(form);
+
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  });
+
+  if (response.ok) {
+    form.reset();
+    success.classList.add('show');
+  } else {
+    alert("Something went wrong. Please try again.");
+  }
+});
 
 </script>
 
