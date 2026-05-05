@@ -634,7 +634,49 @@
     }
     .contact-item a:hover { color: var(--gold); }
 
-    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    <form action="https://formspree.io/f/mjglwznw" method="POST" class="contact-form">
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>First Name</label>
+      <input type="text" name="firstName" placeholder="Jane" required />
+    </div>
+    <div class="form-field">
+      <label>Last Name</label>
+      <input type="text" name="lastName" placeholder="Smith" required />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>Phone</label>
+      <input type="tel" name="phone" placeholder="(425) 555-0100" />
+    </div>
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" name="email" placeholder="jane@email.com" required />
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label>I'm inquiring about</label>
+    <select name="inquiry">
+      <option>Scheduling a Tour</option>
+      <option>Admissions Information</option>
+      <option>Pricing & Insurance</option>
+      <option>Care Services</option>
+      <option>Other</option>
+    </select>
+  </div>
+
+  <div class="form-field">
+    <label>Message</label>
+    <textarea name="message" placeholder="Tell us about your loved one..."></textarea>
+  </div>
+
+  <button type="submit" class="btn-primary">Send Message</button>
+
+</form>
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-field {
       display: flex;
@@ -1132,7 +1174,6 @@
             <textarea placeholder="Tell us a little about your loved one and how we can help…"></textarea>
           </div>
           <div class="form-success" id="formSuccess">✅ Thank you! We'll be in touch within one business day.</div>
-          <button class="btn-primary" onclick="submitForm()" style="font-size:.95rem;">Send Message</button>
         </div>
       </div>
     </div>
@@ -1197,11 +1238,7 @@
     });
   });
 
-  // Form submit
-  function submitForm() {
-    document.getElementById('formSuccess').classList.add('show');
-    setTimeout(() => document.getElementById('formSuccess').classList.remove('show'), 5000);
-  }
+
 </script>
 
 </body>
