@@ -84,39 +84,44 @@ await page.goto('https://lisa.aus.com/my-shift-offers');
 await page.waitForTimeout(5000);
 
 // Check for "no shifts" message
-const noShiftsMessage = await page
-  .locator('text=There are no remaining shift offers.')
-  .count();
+  const noShiftsLocator = page.locator('text=There are no remaining shift offers.');
+
+const noShiftsMessage = await noShiftsLocator.count();
+const messageText = await noShiftsLocator.first().textContent();
+
+console.log('Text count:', noShiftsMessage);
+console.log('Message text:', messageText);
 
     console.log('Text:' , noShiftsMessage);
 
-if (Number(noShiftsMessage) === 0) {
-  console.log('❌ No shifts available.');
-} else {
-  console.log('✅ Shifts available! Sending email...');
-}
+    const noShifts = noShiftsMessage > 0;
 
-try {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'barisobrooks@gmail.com',
-      pass: emailPass,
-    },
-  });
-
-  const mailOptions = {
-    from: 'barisobrooks@gmail.com',
-    to: 'barisohussein3@gmail.com',
-    subject: '🚨 LISA Shifts Available!',
-    text: 'Shifts are available! Go claim them now.',
-  };
-
-  await transporter.sendMail(mailOptions);
-  console.log('✅ Email sent!');
-} catch (err) {
-  console.error('❌ Failed to send email:', err);
-}
+    if (noShifts) {
+      console.log("❌ No shifts available.");
+    } else {
+      console.log("✅ Shifts available!");
+    
+      try {
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'barisobrooks@gmail.com',
+            pass: emailPass,
+          },
+        });
+    
+        await transporter.sendMail({
+          from: 'barisobrooks@gmail.com',
+          to: 'barisohussein3@gmail.com',
+          subject: '🚨 LISA Shifts Available!',
+          text: `Shifts are available!\n\nMessage from site:\n${messageText || 'No message found'}\n\nGo claim them now.`,
+        });
+    
+        console.log("✅ Email sent!");
+      } catch (err) {
+        console.error("❌ Email failed:", err);
+      }
+    }
 
   // 8️⃣ Keep browser open to see result (optional)
   await page.pause();
