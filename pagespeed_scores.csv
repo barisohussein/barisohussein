@@ -1242,3 +1242,5 @@ timestamp,url,strategy,performance,test_type
 2026-05-07 03:28:39,https://www.brooksrunning.com/en_us,mobile,31.0,mobile_fast
 2026-05-07 14:20:10,https://www.brooksrunning.com/en_us,mobile,38.0,mobile_slow
 2026-05-07 14:21:01,https://www.brooksrunning.com/en_us,mobile,36.0,mobile_fast
+2026-05-08 03:24:12,https://www.brooksrunning.com/en_us,mobile,32.0,mobile_slow
+2026-05-08 03:25:35,https://www.brooksrunning.com/en_us,mobile,60.0,mobile_fast
