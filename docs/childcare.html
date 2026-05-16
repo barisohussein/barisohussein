@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Childcare for All | Affordable Childcare in Columbia City, Seattle</title>
+  <meta name="description" content="Childcare for All connects Columbia City and Southeast Seattle families with free and affordable childcare, WCCC subsidies, and trusted local providers. Submit your info — we'll reach out personally." />
+  <meta name="keywords" content="childcare Columbia City, affordable childcare Seattle, WCCC subsidy Seattle, free daycare Seattle, preschool Southeast Seattle, childcare near me Seattle" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://YOUR-USERNAME.github.io/childcare-for-all/" />
+  <meta property="og:title" content="Childcare for All | Columbia City, Seattle" />
+  <meta property="og:description" content="Free childcare matching for Southeast Seattle families. WCCC, ECEAP, and trusted local providers." />
+  <meta property="og:type" content="website" />
+
+  <!-- Local Business Schema for Google -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"LocalBusiness","name":"Childcare for All",
+   "description":"Connecting Southeast Seattle families with free and affordable childcare programs including WCCC subsidies and ECEAP.",
+   "address":{"@type":"PostalAddress","addressLocality":"Columbia City","addressRegion":"WA","postalCode":"98118","addressCountry":"US"},
+   "areaServed":["Columbia City","Rainier Valley","Rainier Beach","Beacon Hill","Mount Baker","South Seattle"],
+   "priceRange":"Free","serviceType":["Childcare Referral","WCCC Subsidy","ECEAP Enrollment"]}
+  </script>
+
+  <!-- EmailJS SDK — sends email directly from browser using your Gmail -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:       #2a7d6f;
+      --teal-dark:  #1c5a4f;
+      --teal-light: #e6f4f1;
+      --gold:       #d4883a;
+      --gold-hover: #b8732e;
+      --cream:      #fafaf7;
+      --white:      #ffffff;
+      --charcoal:   #1e2a28;
+      --muted:      #637370;
+      --border:     #dde8e5;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: var(--teal);
+      color: rgba(255,255,255,0.92);
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .logo-wrap { display: flex; flex-direction: column; line-height: 1; }
+    .logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 800; color: var(--teal);
+    }
+    .logo-loc {
+      font-size: 0.65rem; letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--muted); margin-top: 2px; font-weight: 600;
+    }
+    .nav-btn {
+      background: var(--gold); color: white; padding: 10px 24px;
+      border-radius: 100px; text-decoration: none;
+      font-size: 0.88rem; font-weight: 700;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .nav-btn:hover { background: var(--gold-hover); transform: translateY(-1px); }
+
+    /* HERO LAYOUT */
+    .hero-wrap {
+      max-width: 1120px; margin: 0 auto;
+      padding: 64px 48px 56px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 60px; align-items: start;
+    }
+
+    /* LEFT */
+    .hero-left { padding-top: 8px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--teal-light); color: var(--teal);
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 18px;
+    }
+    .hero-left h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 3.5vw, 3.1rem);
+      line-height: 1.18; font-weight: 800; color: var(--charcoal); margin-bottom: 18px;
+    }
+    .hero-left h1 em { font-style: italic; color: var(--teal); }
+    .hero-desc {
+      font-size: 1rem; line-height: 1.78; color: var(--muted);
+      margin-bottom: 28px; max-width: 460px;
+    }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 36px; }
+    .badge {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 100px; padding: 6px 13px;
+      font-size: 0.78rem; font-weight: 700; color: var(--charcoal);
+    }
+    .badge-dot { width: 7px; height: 7px; background: var(--teal); border-radius: 50%; }
+    .features { display: flex; flex-direction: column; gap: 14px; }
+    .feature {
+      display: flex; align-items: flex-start; gap: 13px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 18px;
+    }
+    .feat-icon {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: var(--teal-light); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .feat-text strong { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 2px; }
+    .feat-text span { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    /* FORM CARD */
+    .form-card {
+      background: var(--white); border-radius: 22px;
+      box-shadow: 0 10px 48px rgba(42,125,111,0.13);
+      border: 1px solid var(--border); overflow: hidden;
+      position: sticky; top: 90px;
+    }
+    .form-top {
+      background: var(--teal); color: white; padding: 22px 28px 20px;
+    }
+    .form-top h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 700; margin-bottom: 4px;
+    }
+    .form-top p { font-size: 0.8rem; opacity: 0.8; line-height: 1.5; }
+    .form-body { padding: 24px 28px 26px; }
+    .field-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label {
+      display: block; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--charcoal); margin-bottom: 4px;
+    }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: 'Nunito', sans-serif; font-size: 0.88rem;
+      color: var(--charcoal); background: var(--cream); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(42,125,111,0.1);
+      background: white;
+    }
+    input.error { border-color: #d32f2f !important; }
+    input::placeholder, textarea::placeholder { color: #bbb; }
+    textarea { resize: vertical; min-height: 66px; font-size: 0.85rem; }
+
+    .submit-btn {
+      width: 100%; padding: 13px; background: var(--gold);
+      color: white; border: none; border-radius: 11px;
+      font-family: 'Nunito', sans-serif; font-size: 0.97rem; font-weight: 700;
+      cursor: pointer; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+    .submit-btn:hover { background: var(--gold-hover); box-shadow: 0 4px 18px rgba(212,136,58,0.3); }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: #bbb; cursor: default; box-shadow: none; }
+
+    .privacy {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; color: var(--muted); margin-top: 10px;
+    }
+    .status-bar {
+      display: none; align-items: center; gap: 8px;
+      padding: 10px 13px; border-radius: 9px; margin-top: 10px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .status-bar.sending { background: #e6f4f1; color: var(--teal); display: flex; }
+    .status-bar.sent    { background: #edf7ed; color: #2e7d32; display: flex; }
+    .status-bar.failed  { background: #fdecea; color: #c62828; display: flex; }
+
+    .success-view {
+      display: none; text-align: center; padding: 36px 28px;
+    }
+    .success-icon {
+      width: 60px; height: 60px; background: var(--teal-light);
+      border-radius: 50%; font-size: 1.6rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .success-view h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 10px;
+    }
+    .success-view p { font-size: 0.86rem; color: var(--muted); line-height: 1.65; }
+
+    /* TRUST BAR */
+    .trust-bar {
+      background: var(--teal-light);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 18px 48px;
+    }
+    .trust-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; font-weight: 700; color: var(--teal-dark);
+    }
+
+    /* AREAS */
+    .areas-wrap { background: var(--charcoal); color: white; padding: 64px 48px; }
+    .areas-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .section-eye {
+      font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+      font-weight: 700; color: #5bbfaf; margin-bottom: 10px;
+    }
+    .areas-wrap h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 14px;
+    }
+    .areas-wrap p { font-size: 0.88rem; line-height: 1.75; color: rgba(255,255,255,0.6); margin-bottom: 22px; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+    .area-tag {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.8); font-size: 0.78rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 100px;
+    }
+    .subsidy-list { display: flex; flex-direction: column; gap: 14px; }
+    .sub-item {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 13px; padding: 16px 18px;
+      display: flex; align-items: flex-start; gap: 13px;
+    }
+    .sub-icon {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: rgba(42,125,111,0.3); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .sub-item strong { display: block; font-size: 0.87rem; margin-bottom: 3px; }
+    .sub-item span { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* FOOTER */
+    footer {
+      background: #111e1c; color: rgba(255,255,255,0.45);
+      padding: 32px 48px; font-size: 0.78rem; text-align: center;
+    }
+    footer strong { color: white; }
+
+    /* RESPONSIVE */
+    @media (max-width: 860px) {
+      nav { padding: 14px 22px; }
+      .hero-wrap { grid-template-columns: 1fr; gap: 36px; padding: 40px 22px; }
+      .form-card { position: static; }
+      .areas-inner { grid-template-columns: 1fr; gap: 36px; }
+      .trust-bar, .areas-wrap { padding-left: 22px; padding-right: 22px; }
+      footer { padding: 28px 22px; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  🌿 Free childcare matching service — Columbia City &amp; Southeast Seattle
+</div>
+
+<nav>
+  <div class="logo-wrap">
+    <span class="logo-name">Childcare for All</span>
+    <span class="logo-loc">Columbia City · Seattle</span>
+  </div>
+  <a href="#signup" class="nav-btn">Find Care Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero-wrap">
+  <div class="hero-left">
+    <div class="eyebrow">📍 Columbia City, Seattle</div>
+    <h1>Quality childcare<br/>should be <em>within reach</em><br/>for every family</h1>
+    <p class="hero-desc">
+      Childcare for All connects Southeast Seattle families with free and affordable childcare — including WCCC subsidies, ECEAP preschool, and trusted licensed providers right in your neighborhood.
+    </p>
+    <div class="badge-row">
+      <div class="badge"><div class="badge-dot"></div>100% Free</div>
+      <div class="badge"><div class="badge-dot"></div>WCCC Subsidy Help</div>
+      <div class="badge"><div class="badge-dot"></div>Licensed Providers</div>
+      <div class="badge"><div class="badge-dot"></div>Multilingual Support</div>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="feat-icon">🔍</div>
+        <div class="feat-text">
+          <strong>Personal Childcare Matching</strong>
+          <span>We review your family's needs and connect you directly with vetted local providers.</span>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feat-icon">💸</div>
+        <div class="feat-text">
+          <strong>Subsidy Navigation — WCCC &amp; ECEAP</strong>
+          <span>We help you apply for Washington State childcare subsidies and find accepting providers.</span>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feat-icon">🌍</div>
+        <div class="feat-text">
+          <strong>Multilingual Support</strong>
+          <span>We serve families in Spanish, Somali, Vietnamese, Amharic, and more.</span>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feat-icon">📞</div>
+        <div class="feat-text">
+          <strong>We Reach Out to You</strong>
+          <span>Submit the form and a real person will email you within 1–2 business days.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card" id="signup">
+    <div class="form-top">
+      <h2>Find Childcare Near You</h2>
+      <p>Submit your info — we'll personally reach out within 1–2 business days.</p>
+    </div>
+    <div class="form-body">
+      <div id="lead-form">
+        <div class="field-group">
+          <div class="field-row">
+            <div>
+              <label for="fname">First Name *</label>
+              <input type="text" id="fname" placeholder="Maria" autocomplete="given-name"/>
+            </div>
+            <div>
+              <label for="lname">Last Name *</label>
+              <input type="text" id="lname" placeholder="Garcia" autocomplete="family-name"/>
+            </div>
+          </div>
+          <div>
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" placeholder="maria@email.com" autocomplete="email"/>
+          </div>
+          <div>
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="(206) 555-0100" autocomplete="tel"/>
+          </div>
+          <div class="field-row">
+            <div>
+              <label for="zip">ZIP Code</label>
+              <input type="text" id="zip" placeholder="98118" maxlength="5"/>
+            </div>
+            <div>
+              <label for="children">No. of Children</label>
+              <select id="children">
+                <option value="">Select…</option>
+                <option>1</option><option>2</option><option>3</option><option>4+</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="age">Child's Age Range</label>
+            <select id="age">
+              <option value="">Select…</option>
+              <option>Infant (0–12 months)</option>
+              <option>Toddler (1–2 years)</option>
+              <option>Preschool (3–5 years)</option>
+              <option>School-Age (5–12 years)</option>
+              <option>Multiple ages</option>
+            </select>
+          </div>
+          <div>
+            <label for="caretype">Type of Care Needed</label>
+            <select id="caretype">
+              <option value="">Select…</option>
+              <option>Full-time daycare</option>
+              <option>Part-time care</option>
+              <option>After-school care</option>
+              <option>Drop-in / flexible</option>
+              <option>In-home nanny</option>
+              <option>Special needs support</option>
+            </select>
+          </div>
+          <div>
+            <label for="subsidy">Interested in Subsidy Programs?</label>
+            <select id="subsidy">
+              <option value="">Select…</option>
+              <option>Yes — WCCC (Working Connections Child Care)</option>
+              <option>Yes — ECEAP (Early Childhood Education)</option>
+              <option>Yes — not sure which</option>
+              <option>No — looking for private pay</option>
+            </select>
+          </div>
+          <div>
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" placeholder="Languages spoken, schedule needs, neighborhood, etc."></textarea>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="submit-btn" onclick="submitLead()">
+          Connect Me With Childcare →
+        </button>
+        <div class="status-bar" id="status-bar"></div>
+        <p class="privacy">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Your information is private and never sold or shared.
+        </p>
+      </div>
+
+      <div class="success-view" id="success-view">
+        <div class="success-icon">🌿</div>
+        <h3>You're on our list!</h3>
+        <p>Thank you for reaching out to Childcare for All. Our team will contact you within 1–2 business days with childcare options matched to your family.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item">✅ Licensed &amp; Background-Checked Providers</div>
+    <div class="trust-item">🌍 Multilingual Staff</div>
+    <div class="trust-item">💸 WCCC &amp; ECEAP Subsidy Help</div>
+    <div class="trust-item">📞 Personal 1-on-1 Outreach</div>
+    <div class="trust-item">🏡 Rooted in Columbia City Since 2019</div>
+  </div>
+</div>
+
+<!-- AREAS -->
+<section class="areas-wrap">
+  <div class="areas-inner">
+    <div>
+      <p class="section-eye">Areas We Serve</p>
+      <h2>Rooted in Columbia City — serving all of Southeast Seattle</h2>
+      <p>We primarily serve families in Southeast Seattle but help connect all Seattle-area families to childcare resources and subsidies.</p>
+      <div class="tag-cloud">
+        <span class="area-tag">Columbia City</span>
+        <span class="area-tag">Rainier Valley</span>
+        <span class="area-tag">Rainier Beach</span>
+        <span class="area-tag">Beacon Hill</span>
+        <span class="area-tag">Mount Baker</span>
+        <span class="area-tag">Hillman City</span>
+        <span class="area-tag">Seward Park</span>
+        <span class="area-tag">Othello</span>
+        <span class="area-tag">Georgetown</span>
+        <span class="area-tag">Skyway</span>
+        <span class="area-tag">South Seattle</span>
+      </div>
+    </div>
+    <div class="subsidy-list">
+      <div class="sub-item">
+        <div class="sub-icon">💼</div>
+        <div>
+          <strong>Working Connections Child Care (WCCC)</strong>
+          <span>WA State subsidy for income-qualifying working families. We guide you through the application and connect you with accepting providers.</span>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-icon">🎓</div>
+        <div>
+          <strong>ECEAP — Early Childhood Education</strong>
+          <span>Free preschool for eligible 3–4 year olds. Slots fill fast — we help you get on lists early.</span>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-icon">🤝</div>
+        <div>
+          <strong>Head Start &amp; Early Head Start</strong>
+          <span>Federal programs for low-income families with children birth–5. We connect you to local enrollment.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>Childcare for All</strong> · Columbia City, Seattle, WA 98118<br/>
+  <span style="margin-top:6px;display:block;">© 2026 Childcare for All. All rights reserved.</span>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+  EMAIL SETUP INSTRUCTIONS (read before going live):
+
+  1. Go to https://www.emailjs.com and create a FREE account
+  2. Click "Add New Service" → choose Gmail → connect your Gmail account
+     → copy your SERVICE ID (looks like: service_xxxxxxx)
+  3. Click "Email Templates" → Create Template → paste this in the template body:
+     ────────────────────────────────────────────────
+     New Lead — Childcare for All
+     Submitted: {{timestamp}}
+
+     Name:     {{first_name}} {{last_name}}
+     Email:    {{email}}
+     Phone:    {{phone}}
+     ZIP:      {{zip}}
+     Children: {{children}}
+     Age Range:{{age_range}}
+     Care Type:{{care_type}}
+     Subsidy:  {{subsidy}}
+     Notes:    {{notes}}
+
+     Reply directly: {{email}}
+     ────────────────────────────────────────────────
+     Set "To Email" = your Gmail address
+     Set "Reply To" = {{email}}
+     → copy your TEMPLATE ID (looks like: template_xxxxxxx)
+  4. Click "Account" → copy your PUBLIC KEY (looks like: aBcDeFgHiJk...)
+  5. Replace the 3 placeholder values below with your real IDs
+═══════════════════════════════════════════════════════════ -->
+<script>
+  // ── PASTE YOUR EMAILJS CREDENTIALS HERE ──────────────────
+  const EMAILJS_PUBLIC_KEY  = 'R6Dtu6PObg07M0oxl';       // from Account page
+  const EMAILJS_SERVICE_ID  = 'service_wwwq9am';       // e.g. service_abc123
+  const EMAILJS_TEMPLATE_ID = 'template_czg9335';      // e.g. template_xyz789
+  // ─────────────────────────────────────────────────────────
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  async function submitLead() {
+    const btn    = document.getElementById('submit-btn');
+    const status = document.getElementById('status-bar');
+
+    const fname = document.getElementById('fname').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    // Validate
+    if (!fname) {
+      document.getElementById('fname').classList.add('error');
+      document.getElementById('fname').focus();
+      setTimeout(() => document.getElementById('fname').classList.remove('error'), 2500);
+      return;
+    }
+    if (!email || !email.includes('@')) {
+      document.getElementById('email').classList.add('error');
+      document.getElementById('email').focus();
+      setTimeout(() => document.getElementById('email').classList.remove('error'), 2500);
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    status.className    = 'status-bar sending';
+    status.style.display = 'flex';
+    status.textContent  = '⏳ Sending your information…';
+
+    const templateParams = {
+      timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }),
+      first_name: fname,
+      last_name:  document.getElementById('lname').value.trim(),
+      email:      email,
+      phone:      document.getElementById('phone').value.trim()   || 'Not provided',
+      zip:        document.getElementById('zip').value.trim()     || 'Not provided',
+      children:   document.getElementById('children').value       || 'Not specified',
+      age_range:  document.getElementById('age').value            || 'Not specified',
+      care_type:  document.getElementById('caretype').value       || 'Not specified',
+      subsidy:    document.getElementById('subsidy').value        || 'Not specified',
+      notes:      document.getElementById('notes').value.trim()   || 'None',
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+      // Show success screen
+      document.getElementById('lead-form').style.display  = 'none';
+      document.getElementById('success-view').style.display = 'block';
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      btn.disabled    = false;
+      btn.textContent = 'Connect Me With Childcare →';
+      status.className    = 'status-bar failed';
+      status.textContent  = '⚠️ Something went wrong. Please try again or email us directly.';
+    }
+  }
+</script>
+
+</body>
+</html>
