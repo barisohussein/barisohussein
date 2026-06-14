@@ -156,9 +156,10 @@ dashboard_data = {
         "top_category_amount": round(float(category_summary.iloc[0]), 2) if len(category_summary) else 0,
     }
 }
+# Output to docs/ folder so dashboard.html can load it
+json_out = os.path.join(BASE_DIR, "docs", "dashboard_data.json")
 
-# Output to repo root so dashboard.html can load it
-json_out = os.path.join(BASE_DIR, "dashboard_data.json")
+os.makedirs(os.path.dirname(json_out), exist_ok=True)
 
 with open(json_out, "w") as f:
     json.dump(dashboard_data, f, indent=2)
