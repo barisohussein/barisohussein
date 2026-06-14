@@ -14,7 +14,7 @@ if not csv_files:
     raise FileNotFoundError("No CSV found in the data/ folder.")
 
 # Use the most recently modified CSV if multiple exist
-file_path = max(csv_files, key=os.path.getmtime)
+file_path = sorted(csv_files)[-1]
 print(f"📂 Reading: {file_path}")
 
 # ─── Load & Clean ─────────────────────────────────────────────────────────────
