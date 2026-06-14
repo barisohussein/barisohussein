@@ -8,14 +8,17 @@ from datetime import datetime
 
 # Auto-detect the CSV in the data/ folder (relative to this script)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_files = glob.glob(os.path.join(BASE_DIR, "data", "*.csv"))
+csv_files = glob.glob(os.path.join(BASE_DIR, "data", "Chase*.CSV")) + \
+            glob.glob(os.path.join(BASE_DIR, "data", "Chase*.csv"))
 
 if not csv_files:
-    raise FileNotFoundError("No CSV found in the data/ folder.")
+    raise FileNotFoundError("No Chase CSV found in the data/ folder.")
 
-# Use the most recently modified CSV if multiple exist
+# Chase filenames contain the date (e.g. Chase8872_Activity_20260614.CSV) — latest sorts last
 file_path = sorted(csv_files)[-1]
 print(f"📂 Reading: {file_path}")
+
+
 
 # ─── Load & Clean ─────────────────────────────────────────────────────────────
 
