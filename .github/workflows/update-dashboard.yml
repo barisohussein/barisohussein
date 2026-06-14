@@ -18,9 +18,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Remove old dashboard data
-        run: rm -f dashboard_data.json
-
       - name: Run processing script
         run: python process.py
 
@@ -28,6 +25,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add dashboard_data.json
+          git add docs/dashboard_data.json
           git diff --cached --quiet || git commit -m "Auto-update dashboard data"
           git push
