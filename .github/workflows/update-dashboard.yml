@@ -3,7 +3,7 @@ name: Update Dashboard
 on:
   push:
     paths:
-      - 'data/*.csv'   # only triggers when a CSV is pushed
+      - 'data/*.CSV'   # only triggers when a CSV is pushed
 
 jobs:
   update:
