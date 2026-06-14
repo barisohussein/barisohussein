@@ -24,7 +24,7 @@ print(f"📂 Reading: {file_path}")
 
 df = pd.read_csv(file_path, engine="python", skiprows=1)
 df = df.iloc[:, :-1]
-df.columns = ["Details", "Posting Date", "Description", "Amount", "Type", "Balance"]
+df.columns = ["Details", "Posting Date", "Description", "Amount", "Type", "Balance","Extra"]
 
 # ─── Parse Dates & Amounts ────────────────────────────────────────────────────
 
