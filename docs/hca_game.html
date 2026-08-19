@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WA HCA Skills Exam Trainer</title>
+<style>
+  :root{
+    --ink:#1c2b2d;
+    --paper:#f6f3ea;
+    --panel:#ffffff;
+    --teal:#0f5b56;
+    --teal-dark:#0a3f3c;
+    --clay:#c0562f;
+    --gold:#d1a13a;
+    --line:#dcd6c4;
+    --good:#1f7a4d;
+    --good-bg:#e3f3e8;
+    --bad:#b3402a;
+    --bad-bg:#fbe6e0;
+    --muted:#6b6459;
+    --radius:14px;
+    --shadow:0 6px 20px rgba(28,43,45,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:'Iowan Old Style','Georgia',serif;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(15,91,86,.05), transparent 45%),
+      var(--paper);
+    color:var(--ink);
+  }
+  .sans{font-family:'Avenir Next','Segoe UI',Helvetica,Arial,sans-serif}
+  .wrap{max-width:980px;margin:auto;padding:20px 18px 60px}
+
+  header{
+    background:linear-gradient(135deg,var(--teal-dark),var(--teal));
+    color:#f4efe0;
+    border-radius:20px;
+    padding:28px 26px;
+    margin-bottom:20px;
+    position:relative;
+    overflow:hidden;
+  }
+  header:before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(244,239,224,.10) 1px, transparent 1px);
+    background-size:16px 16px;
+    opacity:.5;
+  }
+  header .eyebrow{
+    font-family:'Avenir Next',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:12px;
+    color:var(--gold);
+    font-weight:700;
+    position:relative;
+  }
+  h1{margin:6px 0 4px;font-size:30px;font-weight:700;position:relative;line-height:1.15}
+  .sub{color:#d9e6df;font-size:15px;max-width:60ch;position:relative}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;position:relative;font-family:'Avenir Next',sans-serif}
+  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(244,239,224,.25);padding:9px 14px;border-radius:10px;font-size:14px}
+  .stat b{display:block;font-size:19px;color:#fff}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;font-family:'Avenir Next',sans-serif}
+  .tab{
+    background:var(--panel);color:var(--teal-dark);border:1px solid var(--line);
+    border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;
+  }
+  .tab.active{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark)}
+  .tab:focus-visible, button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow)}
+  .hidden{display:none!important}
+
+  button{font-family:inherit;cursor:pointer}
+  .btn{border:0;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:700;font-family:'Avenir Next',sans-serif}
+  .btn.primary{background:var(--teal-dark);color:#fff}
+  .btn.primary:hover{background:var(--teal)}
+  .btn.green{background:var(--good);color:#fff}
+  .btn.red{background:var(--bad);color:#fff}
+  .btn.ghost{background:transparent;color:var(--teal-dark);border:1.5px solid var(--teal-dark)}
+  .btn.gold{background:var(--gold);color:#3a2a08}
+
+  .skill-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .pill{
+    background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:9px 12px;font-family:'Avenir Next',sans-serif;font-size:13.5px;font-weight:600;color:var(--ink);
+    text-align:left;
+  }
+  .pill.active{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark)}
+  .pill .diff{display:block;font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+  .pill.active .diff{color:#cfe3dc}
+
+  .skill-title{font-size:24px;margin:18px 0 2px;font-weight:700}
+  .small{font-size:13px;color:var(--muted);font-family:'Avenir Next',sans-serif}
+  .memory{
+    background:#fbf6e6;border:1px dashed var(--gold);
+    padding:14px 16px;border-radius:10px;margin:16px 0;font-family:'Avenir Next',sans-serif;
+  }
+  .memory strong{display:block;margin-bottom:6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--clay)}
+  .memory .chain{font-weight:700;color:var(--teal-dark);letter-spacing:.01em}
+  .memory .oneliner{margin-top:8px;color:var(--ink)}
+
+  .steps{counter-reset:step;list-style:none;padding:0;margin:16px 0 0}
+  .steps li{
+    counter-increment:step;padding:12px 14px 12px 50px;border-bottom:1px solid var(--line);
+    position:relative;font-size:15px;line-height:1.45;
+  }
+  .steps li:last-child{border-bottom:0}
+  .steps li:before{
+    content:counter(step);position:absolute;left:8px;top:10px;background:var(--teal-dark);color:#fff;
+    width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:bold;
+    font-family:'Avenir Next',sans-serif;font-size:13px;
+  }
+  .steps li.crit:before{background:var(--clay)}
+  .crit-tag{
+    display:inline-block;margin-left:8px;font-family:'Avenir Next',sans-serif;font-size:10px;
+    background:var(--bad-bg);color:var(--bad);padding:2px 7px;border-radius:6px;font-weight:700;letter-spacing:.03em;
+    vertical-align:middle;
+  }
+
+  .quizQ{font-size:19px;font-weight:700;margin:14px 0 16px;line-height:1.4}
+  .quizQ .skillname{color:var(--teal-dark)}
+  .answers{display:grid;gap:10px}
+  .answer{
+    text-align:left;background:#fbfaf5;border:1.5px solid var(--line);border-radius:10px;
+    padding:13px 15px;font-size:14.5px;line-height:1.4;font-family:'Avenir Next',sans-serif;
+  }
+  .answer:hover:not(:disabled){border-color:var(--teal);background:#f0f6f3}
+  .answer:disabled{cursor:default}
+  .answer.correct{background:var(--good-bg);border-color:var(--good)}
+  .answer.wrong{background:var(--bad-bg);border-color:var(--bad)}
+
+  .feedback{padding:14px 16px;border-radius:10px;margin-top:16px;font-weight:700;font-family:'Avenir Next',sans-serif;font-size:14.5px}
+  .feedback.correct{background:var(--good-bg);color:var(--good)}
+  .feedback.wrong{background:var(--bad-bg);color:var(--bad)}
+  .next{margin-top:14px}
+
+  .progress{height:9px;background:#eae5d4;border-radius:10px;overflow:hidden;margin:4px 0 18px}
+  .bar{height:100%;background:var(--gold);width:0%;transition:width .3s}
+
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .match-item{
+    padding:14px 15px;background:#fbfaf5;border:2px solid var(--line);border-radius:10px;cursor:pointer;
+    text-align:left;font-family:'Avenir Next',sans-serif;font-size:13.5px;line-height:1.35;
+  }
+  .match-item.selected{border-color:var(--teal);background:#eef4ff}
+  .match-item.matched{border-color:var(--good);background:var(--good-bg);cursor:default;opacity:.8}
+  .match-item:disabled{cursor:default}
+
+  .flash{
+    font-size:20px;font-weight:600;min-height:120px;display:grid;place-items:center;text-align:center;
+    background:#fbfaf5;border:1px solid var(--line);border-radius:12px;padding:24px;margin:14px 0;line-height:1.4;
+  }
+  .recall-input{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:15px;font-family:inherit;margin:10px 0}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  select{padding:9px 12px;border-radius:8px;border:1.5px solid var(--line);font-family:'Avenir Next',sans-serif;font-size:14px}
+  .empty-note{font-family:'Avenir Next',sans-serif;color:var(--muted);font-size:13px;margin-top:8px}
+
+  @media(max-width:650px){
+    .wrap{padding:12px}
+    .card{padding:16px}
+    .match-grid{grid-template-columns:1fr}
+    h1{font-size:24px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Washington State &middot; Home Care Aide Skills Exam</div>
+  <h1>HCA Skills Trainer</h1>
+  <div class="sub">Every checkpoint below is drawn from the official DOH/Prometric skills checklist — memory chains help you hold the order, then the drills test real recall.</div>
+  <div class="stats">
+    <div class="stat"><b id="statScore">0</b>Score</div>
+    <div class="stat"><b id="statStreak">0</b>Streak</div>
+    <div class="stat"><b id="statMastered">0/16</b>Mastered</div>
+    <div class="stat"><b id="statBest">0</b>Quiz best</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="learn">Learn</button>
+  <button class="tab" data-tab="quiz">Quick Quiz</button>
+  <button class="tab" data-tab="recall">Step Recall</button>
+  <button class="tab" data-tab="match">Match Game</button>
+</div>
+
+<section id="learn" class="card">
+  <h2>Learn a skill</h2>
+  <p class="small">Checkpoints in <span style="color:var(--clay);font-weight:700">orange</span> are the ones candidates most often forget — infection control, safe distance from bed edge, and correctly re-covering/re-positioning the client at the end.</p>
+  <div id="skillButtons" class="skill-pills"></div>
+  <div id="skillContent"></div>
+</section>
+
+<section id="quiz" class="card hidden">
+  <h2>Quick Quiz</h2>
+  <div class="row" style="margin-bottom:10px">
+    <label class="small" for="quizLenSelect">Length:</label>
+    <select id="quizLenSelect" class="sans">
+      <option value="10">10 questions</option>
+      <option value="15">15 questions</option>
+      <option value="20">20 questions</option>
+    </select>
+    <button class="btn ghost" id="quizRestartBtn">Restart</button>
+  </div>
+  <div class="progress"><div id="quizBar" class="bar"></div></div>
+  <div id="quizArea"></div>
+</section>
+
+<section id="recall" class="card hidden">
+  <h2>Step Recall</h2>
+  <p class="small">Say or type the next checkpoint from memory before revealing the answer. Be honest — this only helps you if you grade yourself accurately.</p>
+  <div class="row" style="margin-bottom:6px">
+    <button class="btn ghost" id="recallSkipBtn">Different skill</button>
+  </div>
+  <div id="recallArea"></div>
+</section>
+
+<section id="match" class="card hidden">
+  <h2>Match the Steps</h2>
+  <p class="small">Click a step number, then click its matching checkpoint text.</p>
+  <div class="row" style="margin-bottom:6px">
+    <button class="btn ghost" id="matchNewBtn">New round</button>
+  </div>
+  <div id="matchArea"></div>
+</section>
+</div>
+
+<script>
+/* ============================================================
+   DATA — condensed from the official 2013 WA DOH / Prometric
+   Home Care Aide Skills Checklist. "crit" flags checkpoints
+   candidates most commonly miss (safety / infection control /
+   completion checkpoints).
+   ============================================================ */
+const skills = [
+{
+ name:"Handwashing", difficulty:"Tested first — unprompted",
+ chain:"WET → SOAP → LATHER → 20 SEC → RINSE → DOWN → TOWEL → AREAS → OFF → TRASH → CLEAN",
+ memory:"Wet, soap, lather it all, scrub 20 seconds, rinse hands-down, dry with a towel, use the towel on the faucet, trash it, end clean.",
+ steps:[
+ {t:"Wet hands and wrists under running water to begin cleansing."},
+ {t:"Apply soap to hands to begin washing."},
+ {t:"Lather all surfaces of hands and wrists."},
+ {t:"Use friction, rubbing soapy hands together, for a minimum of 20 seconds.", crit:1},
+ {t:"Rinse hands and wrists under running water to remove soap."},
+ {t:"Keep hands pointed downward while washing and rinsing.", crit:1},
+ {t:"Use a clean, dry paper towel to dry hands and wrists."},
+ {t:"Confine drying to the areas washed."},
+ {t:"Use the paper towel to turn the water off after hands are cleansed.", crit:1},
+ {t:"Dispose of the used paper towel in the trash."},
+ {t:"End the procedure with clean hands, avoiding contamination (faucet, dispenser, sink, trash can).", crit:1}
+ ]
+},
+{
+ name:"Common Care Practices", difficulty:"Scored on every single skill",
+ chain:"ID → INFECTION CONTROL → SOCIAL → RIGHTS → SAFETY → COMFORT → REACH",
+ memory:"Introduce yourself, control infection, meet social needs, protect rights, keep it safe, keep it comfortable, leave items within reach.",
+ steps:[
+ {t:"Identify yourself to the client when beginning care.", crit:1},
+ {t:"Use infection control measures and Standard Precautions to protect the client and yourself throughout the procedure.", crit:1},
+ {t:"Promote the client's social and human needs throughout the procedure."},
+ {t:"Promote the client's rights throughout the procedure."},
+ {t:"Promote the client's safety throughout the procedure.", crit:1},
+ {t:"Promote the client's comfort throughout the procedure."},
+ {t:"Leave common-use items within the client's reach at the end of care (phone, glasses, remote, tissues, water).", crit:1}
+ ]
+},
+{
+ name:"Feed a Client", difficulty:"Medium",
+ chain:"ID → UPRIGHT → SIT → PROTECTOR → BITE-SIZE → SWALLOW → ALTERNATE → FLUID → TALK → CLEAN → CLEAR → TRASH",
+ memory:"Sit the client upright, sit yourself down, protector on, bite-size portions, wait for the swallow, alternate foods, offer fluids, talk with them, finish clean.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Ensure the client is sitting upright in the chair before you begin feeding."},
+ {t:"Sit down to feed the client."},
+ {t:"Offer or apply a clothing protector before beginning; remove it before completing the procedure."},
+ {t:"Limit the amount of food on the fork or spoon to bite-size."},
+ {t:"Wait to offer another bite or fluid until the client has swallowed or the mouth is confirmed empty.", crit:1},
+ {t:"Alternate the type of food offered, or ask the client's preference for each bite."},
+ {t:"Offer the client fluid to drink during the meal."},
+ {t:"Talk with the client during the meal."},
+ {t:"Leave the client with a clean mouth area at the end of the skill."},
+ {t:"Leave the overbed table clean and dry, cleared of meal items."},
+ {t:"Dispose of the clothing protector (if used) and trash appropriately."}
+ ]
+},
+{
+ name:"Help a Client to Walk", difficulty:"Hard",
+ chain:"ID → DESTINATION → LEAN → PUSH-UP → 90° KNEES → HAND ON → CUE STAND → WALK BESIDE → DISTANCE → FEELINGS → CENTER LEGS → REACH → HAND ON → HIPS BACK",
+ memory:"Explain the destination, lean forward, push up with arms, knees at 90°, hand on arm/back/waist, cue to stand, walk slightly behind/beside, check in, center legs before sitting, reach for the chair, hips back in the seat.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Explain the walking destination before the client begins walking."},
+ {t:"Have the client lean forward on the seat of the chair before standing."},
+ {t:"Cue the client to push up with the arms from the chair to stand."},
+ {t:"Prepare the client for standing by positioning knees at a 90&deg; angle with feet flat on the floor."},
+ {t:"Place your hand on the client's arm, back, or waist when the client stands.", crit:1},
+ {t:"Cue the client to stand."},
+ {t:"Walk slightly behind and to one side of the client while walking.", crit:1},
+ {t:"Ambulate the client the required distance."},
+ {t:"Ask how the client feels after standing or while walking."},
+ {t:"Cue positioning before the client sits, with legs centered against the seat of the chair.", crit:1},
+ {t:"Cue the client to reach for the chair before sitting."},
+ {t:"Place your hand on the client's arm, back, or waist when the client sits.", crit:1},
+ {t:"Leave the client sitting safely in the chair with hips against the back of the seat."}
+ ]
+},
+{
+ name:"Help a Client to Take Medication", difficulty:"Medium-Hard",
+ chain:"ID → SCHEDULE → ADVISE → NAME → BOTTLE → LABEL → CAP-POUR → DOSE-TO-HAND → CUE → NO-TOUCH → WATER → DRINK → SWALLOWED → CLOSE",
+ memory:"Check the schedule, advise it's time, right name, right bottle, check the label, pour into the cap without touching, dose into hand without touching, cue, hands-off assist, full glass of water, confirm swallowed, close and return the bottle.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Check the client's medication schedule."},
+ {t:"Advise the client it is time to take medicine."},
+ {t:"Select the medication labeled with the client's name.", crit:1},
+ {t:"Select the correct medication bottle.", crit:1},
+ {t:"Review the medication label before removing medication from the bottle."},
+ {t:"Pour the pill(s) into the cap of the bottle without touching the medication.", crit:1},
+ {t:"Give the correct dose from the cap into the client's hand without touching the medication.", crit:1},
+ {t:"Cue the client to take the medication."},
+ {t:"Assist without placing your hand over the client's hand, tipping the client's hand to the mouth, or placing pills directly in the mouth.", crit:1},
+ {t:"Provide the client a cup of water to use for swallowing."},
+ {t:"Cue the client to drink the full cup of water."},
+ {t:"Ask, or check, that the medication was swallowed.", crit:1},
+ {t:"Close the medication bottle and return it to the box before ending."}
+ ]
+},
+{
+ name:"Provide Mouth Care to a Client", difficulty:"Medium",
+ chain:"ID → GLOVES → WET → PASTE → TOPS/SIDES → CIRCLES → TONGUE → RINSE WATER → CATCH BASIN → CLEAN/DRY → BARRIER → RINSE/STORE → GLOVES OFF",
+ memory:"Gloves on, wet the brush, paste on, brush tops and sides, gentle circles, brush the tongue, rinse water offered, catch basin at the chin, clean and dry when done, gloves off without contaminating.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Apply clean gloves before brushing teeth.", crit:1},
+ {t:"Wet the toothbrush with water before brushing."},
+ {t:"Apply toothpaste to the toothbrush."},
+ {t:"Brush the tops and side surfaces of the client's teeth."},
+ {t:"Use gentle circular motions on the side surfaces of teeth and gums."},
+ {t:"Brush, or offer to brush, the client's tongue."},
+ {t:"Provide the client clean water in a cup to rinse."},
+ {t:"Hold a basin or separate cup near the client's chin to collect rinse water and spit."},
+ {t:"Leave the client's mouth area clean and dry at completion."},
+ {t:"Use a barrier (towel) to protect clothing during care and remove it at completion."},
+ {t:"Rinse and dry the basin and rinse the toothbrush before storing."},
+ {t:"Dispose of used linens and trash appropriately; leave the overbed table dry."},
+ {t:"Remove gloves without contaminating yourself after rinsing and storing equipment.", crit:1}
+ ]
+},
+{
+ name:"Clean and Store a Client's Denture", difficulty:"Medium",
+ chain:"ID → GLOVES → COOL WATER → PASTE → BRUSH IN/OUT → RINSE → CUP W/ WATER → NO CONTAMINATE → PROTECT SINK → DRAIN → STORE → GLOVES OFF",
+ memory:"Gloves, cool/tepid water only, paste, brush inner and outer, rinse off paste, store in a cup of clean water, never let it float unprotected in the sink, brush over a lined sink to prevent breakage.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Apply gloves before handling the denture.", crit:1},
+ {t:"Use cool or tepid water when cleaning and rinsing the denture."},
+ {t:"Use toothpaste to cleanse the denture."},
+ {t:"Brush the inner and outer surfaces of the denture."},
+ {t:"Rinse the denture in water to remove toothpaste after brushing."},
+ {t:"Place the clean denture in a denture cup filled with clean, cool/tepid water or denture solution."},
+ {t:"Prevent contamination of the denture throughout the procedure (never float it in sink water or set it on an unprotected surface).", crit:1},
+ {t:"Use a technique to reduce breakage risk if dropped — brush over a sink lined with a washcloth/towel and filled with water, inside a basin.", crit:1},
+ {t:"Drain the sink and remove the liner (if used) at the end of the skill."},
+ {t:"Rinse the toothbrush, store equipment, and dispose of trash and used linens appropriately."},
+ {t:"Remove gloves without contaminating yourself after rinsing and storing equipment."}
+ ]
+},
+{
+ name:"Provide Fingernail and Hand Care", difficulty:"Medium",
+ chain:"ID → SAFE WATER → COMFORT CHECK → SOAK → DRY BETWEEN → PAT → ORANGE STICK → WIPE STICK → EMERY → SMOOTH → LOTION → GLOVES/CLEANUP",
+ memory:"Safe water temp, ask if it's comfortable, soak the fingers, dry between fingers by patting (not rubbing), orange stick under nails, wipe it between nails, emery board to file, smooth tips, lotion after.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Use water of a safe temperature for soaking the hand."},
+ {t:"Ask the client if the water temperature is comfortable."},
+ {t:"Soak the client's fingers in a basin of water before cleaning or shaping nails."},
+ {t:"Dry the client's hand, including between fingers, before nail care."},
+ {t:"Dry the hand by patting with a towel, not rubbing."},
+ {t:"Use an orange stick to clean under fingernails and remove residue."},
+ {t:"Wipe the orange stick on a towel before cleaning under another fingernail (avoid cross-contamination)."},
+ {t:"Use an emery board to file fingernails."},
+ {t:"Leave fingernail tips smooth and free of rough edges."},
+ {t:"Offer or apply hand lotion after fingernail care is completed."},
+ {t:"Wear gloves during care and while rinsing/drying equipment.", crit:1},
+ {t:"Store equipment, dispose of used linens/trash appropriately, leave the overbed table dry."},
+ {t:"Remove gloves without contaminating yourself after rinsing and storing equipment."}
+ ]
+},
+{
+ name:"Provide Foot Care", difficulty:"Hard",
+ chain:"ID → INSPECT → SOAK → SAFE WATER → COMFORT → SUBMERGE → SOAP-FREE RINSE → WASH → RINSE → DRY BETWEEN → PAT → ORANGE STICK → WIPE → EMERY STRAIGHT → SMOOTH → LOTION NOT-BETWEEN → GLOVES",
+ memory:"Inspect first (between toes, heels), soak, safe/comfortable water, wash entire foot including between toes, rinse, dry between toes by patting, orange stick + wipe, file toenails straight across, lotion everywhere except between the toes.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Observe the skin condition of the foot — separate toes to check between them, and turn the foot to check heels — before cleansing.", crit:1},
+ {t:"Soak the client's foot in a basin of water before cleaning or shaping toenails."},
+ {t:"Use water of a safe temperature for soaking the foot."},
+ {t:"Ask if the water temperature is comfortable before the foot is fully submerged."},
+ {t:"Submerge the foot in water with the basin filled enough to cover it completely."},
+ {t:"Keep rinse water soap-free — apply soap to the washcloth directly, or use two separate basins."},
+ {t:"Wash the entire foot, including between toes, with a soapy washcloth."},
+ {t:"Rinse to remove soap from the foot and between toes."},
+ {t:"Dry the foot, including between toes, before nail care."},
+ {t:"Dry the foot by patting with a towel, not rubbing."},
+ {t:"Use an orange stick to clean under nails and remove residue."},
+ {t:"Wipe the orange stick on a towel before cleaning under another toenail."},
+ {t:"Use an emery board to file toenails straight across.", crit:1},
+ {t:"Leave the top edge of toenails smooth and free of rough edges."},
+ {t:"Apply lotion to the foot after nail care, avoiding lotion between the toes.", crit:1},
+ {t:"Wear gloves during foot care and while rinsing/drying equipment.", crit:1},
+ {t:"Store equipment, dispose of used linens/trash appropriately, and leave the floor dry."},
+ {t:"Remove gloves without contaminating yourself after rinsing and storing equipment."}
+ ]
+},
+{
+ name:"Help Dress a Client with a Weak Arm", difficulty:"Medium",
+ chain:"ID → CHOICE → WEAK ARM FIRST → CUE ASSIST → SEATED FOR PANTS → SUPPORT PULL-UP → SOCKS/SHOES SEATED → SMOOTH/SECURE → GENTLE → ALIGNED",
+ memory:"Client chooses the outfit, weak arm goes into the sleeve first, cue the client to help, stay seated for pants, support while pulling pants up, socks and shoes while seated, gentle movements, finish aligned.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Include the client in choosing what to wear."},
+ {t:"Place the shirt sleeve over the weak arm before the unaffected arm.", crit:1},
+ {t:"Cue the client to assist with dressing."},
+ {t:"Have the client seated when putting feet and legs into pants."},
+ {t:"Provide support to the client when pulling up and securing pants."},
+ {t:"Provide assistance to put on socks and shoes while the client is seated."},
+ {t:"Leave socks smooth and shoes secured properly."},
+ {t:"Move the client's extremities gently and naturally, avoiding overextension.", crit:1},
+ {t:"Complete dressing with clothing secured and aligned properly."}
+ ]
+},
+{
+ name:"Put a Knee-High Stocking on a Client's Leg", difficulty:"Medium",
+ chain:"ID → INSIDE-OUT TO HEEL → FOOT PLACEMENT → TOE/HEEL POSITION → PULL NO-TWIST → SMOOTH → TOE ROOM → TO KNEE → GENTLE",
+ memory:"Turn the stocking inside out to the heel, place it over toes/foot/heel, pull up without twisting, keep it smooth and wrinkle-free, leave toe room, raise it to the knee, move the leg gently.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Prepare the stocking by turning it inside out to at least the heel area."},
+ {t:"Place the foot of the stocking over the toes, foot, and heel."},
+ {t:"Complete application over the foot with toes and heel in the proper position for the stocking design."},
+ {t:"Pull the stocking up the leg, ensuring it is not twisted.", crit:1},
+ {t:"Leave the stocking smooth and wrinkle-free."},
+ {t:"Leave room at the toe area so the stocking is not tight against the toes."},
+ {t:"Leave the stocking raised to the knee."},
+ {t:"Move the client's leg gently, supporting the extremity, avoiding overextension."}
+ ]
+},
+{
+ name:"Passive Range of Motion — Shoulder, Knee, Ankle", difficulty:"Hard",
+ chain:"ID → SUPPORT ELBOW/WRIST → FLEX/EXT → ABD/ADD → ROTATE → SUPPORT KNEE/ANKLE → KNEE FLEX/EXT → SUPPORT ANKLE/FOOT → ANKLE FLEX/EXT → 3 REPS → COMFORT → SLOW/GENTLE",
+ memory:"Support the joint above and below wherever you move it. Shoulder: flex/extend, then out-and-in, then rotate. Knee: bend and straighten. Ankle: push forward, then point down. Three reps each, ask about comfort, keep it slow and controlled.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Support the client's arm, holding under the elbow and wrist joint areas, while exercising the shoulder.", crit:1},
+ {t:"Raise the straightened arm from the bed toward the head of bed and return, as one repetition (flexion/extension)."},
+ {t:"Move the straightened arm away from the side of the body toward the head of bed and return (abduction/adduction)."},
+ {t:"Provide rotation exercise to the shoulder."},
+ {t:"Support the client's knee and ankle joints while exercising the knee.", crit:1},
+ {t:"Bend the knee to the point of resistance, then straighten as one repetition (flexion/extension)."},
+ {t:"Support the client's ankle, holding under the ankle area and foot, while exercising the ankle.", crit:1},
+ {t:"Push the foot forward toward the leg, then in a separate motion push the foot pointed down toward the foot of bed (flexion/extension)."},
+ {t:"Provide three repetitions of each shoulder, knee, and ankle exercise.", crit:1},
+ {t:"Ask the client about comfort level throughout the exercises."},
+ {t:"Provide controlled, slow, gentle movements when exercising shoulder, knee, and ankle.", crit:1}
+ ]
+},
+{
+ name:"Perineal Care to a Female Client", difficulty:"Hard",
+ chain:"ID → SAFE WATER → GLOVES → PROTECT SHEET → SOAPY CLOTH → CLEAN STROKE → FRONT-TO-BACK → SOAP-FREE RINSE → RINSE → PAT DRY F-TO-B → LABIAL FOLDS → SAFE EDGE ON TURN → PERI-ANAL WASH → F-TO-B ANAL → DRY UNDERPAD → MINIMIZE EXPOSURE → GLOVES → CLEANUP → COVER",
+ memory:"Safe water, gloves, protect the sheet, soapy cloth, clean stroke each time, always front to back, soap-free rinse, pat dry front to back, don't forget labial folds/groin, safe distance from bed edge on the turn, peri-anal front to back too, dry underpad at the end, cover with the top sheet.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Use water that is a safe temperature to cleanse the client."},
+ {t:"Apply gloves before cleansing the perineal area.", crit:1},
+ {t:"Use a pad or towel to protect the bottom sheet from becoming wet."},
+ {t:"Use a soapy washcloth to cleanse the perineal area."},
+ {t:"Use a clean area on the washcloth for each washing and rinsing stroke."},
+ {t:"Wipe the perineal area from front to back for all cleansing and rinsing strokes.", crit:1},
+ {t:"Keep water in the basin soap-free for use as rinse water (soap on the cloth directly, or two separate basins)."},
+ {t:"Rinse the perineal area using a soap-free, clean, wet washcloth or soap-free area of the same cloth."},
+ {t:"Dry the perineal area by patting with a towel, moving from front to back."},
+ {t:"Provide cleansing, rinsing, and drying that includes the labial folds and extends into the groin (skin-fold) area."},
+ {t:"Position the client a safe distance from the edge of the bed when turned on the side during care.", crit:1},
+ {t:"Wash, rinse, and dry the peri-anal area and buttocks."},
+ {t:"Wipe from front to back when washing, rinsing, and drying the peri-anal area.", crit:1},
+ {t:"Leave the client on a dry underpad or sheet at completion."},
+ {t:"Minimize exposure of the client's body during the procedure.", crit:1},
+ {t:"Wear gloves while providing care, rinsing/drying equipment, and handling soiled linens."},
+ {t:"Rinse, dry, and store the basin; dispose of used linens and trash appropriately."},
+ {t:"Remove gloves without contaminating yourself after rinsing and storing equipment."},
+ {t:"Leave the client covered with the top sheet at completion.", crit:1}
+ ]
+},
+{
+ name:"Catheter Care", difficulty:"Hard",
+ chain:"ID → SAFE WATER → GLOVES → SOAPY CLOTH → CHANGE SPOT → ONE-DIRECTION DOWN → SOAP-FREE RINSE → 4-INCH → HOLD NEAR MEATUS → DRY WET AREAS → PAT → NO KINKS → BAG BELOW BLADDER → MINIMIZE EXPOSURE → SAFE EDGE → GLOVES → CLEANUP → COVER",
+ memory:"Safe water, gloves, soapy cloth with a fresh spot each stroke, always one direction — meatus downward and away, wash/rinse at least 4 inches, hold near the meatus so you don't tug, pat dry, no kinks in the tubing, bag always below the bladder, cover with the top sheet.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Use water that is a safe temperature to cleanse the client."},
+ {t:"Apply gloves before handling the catheter, tubing, drainage bag, or beginning cleansing.", crit:1},
+ {t:"Use a soapy washcloth to cleanse the catheter."},
+ {t:"Change to a clean spot on the washcloth for each washing and rinsing stroke."},
+ {t:"Cleanse and rinse the catheter moving in one direction: from the opening (meatus) downward, away from the body.", crit:1},
+ {t:"Keep water in the basin soap-free for use as rinse water (soap on the cloth directly, or two separate basins)."},
+ {t:"Wash and rinse at least 4 inches of catheter from the meatus downward.", crit:1},
+ {t:"Rinse the cleansed area with a clean, wet, soap-free washcloth or soap-free area of the same cloth."},
+ {t:"Hold the catheter near the meatus to prevent tugging when washing and rinsing.", crit:1},
+ {t:"Leave skin areas that became wet during care, and the bed sheets, dry at completion."},
+ {t:"Dry skin areas by patting."},
+ {t:"Leave catheter tubing free of kinks at completion.", crit:1},
+ {t:"Keep the urinary drainage bag positioned lower than the bladder throughout care and at the end.", crit:1},
+ {t:"Minimize exposure of the client's body during the procedure."},
+ {t:"Position the client a safe distance from the edge of the bed if turned on the side during care.", crit:1},
+ {t:"Wear gloves while providing care, rinsing/drying equipment, and handling soiled linens."},
+ {t:"Rinse, dry, and store the basin; dispose of used linens and trash appropriately."},
+ {t:"Remove gloves without contaminating yourself after rinsing and storing equipment."},
+ {t:"Leave the client covered with the top sheet at completion."}
+ ]
+},
+{
+ name:"Transfer a Client from Bed to Wheelchair", difficulty:"Hard",
+ chain:"ID → CHAIR NEAR BED → NON-SKID SHOES → SUPPORT TO SIT → GAIT BELT ON → FLAT-HAND FIT → PIVOT POSITION → FEET FLAT → FOOTRESTS CLEAR → LOCK WHEELS → BRACE LEGS → GRASP BELT → CUE STAND → TURN TO CENTER → HOLD ARMREST → LOWER GENTLY → HIPS BACK → FEET ON RESTS → BELT OFF",
+ memory:"Chair near the bed, non-skid shoes, support to sit up, gait belt on with flat-hand fit, position the chair for a pivot, feet flat, footrests cleared, lock the wheels, brace the legs, grasp the belt, cue to stand, turn to center over the seat, lower gently, hips back, feet on the rests, belt off last.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Have the wheelchair positioned near the bed before assisting the client to sit."},
+ {t:"Assist the client to apply non-skid footwear before standing."},
+ {t:"Provide support behind the client's shoulders/back and hips to help the client sit up at the edge of the bed."},
+ {t:"Apply the transfer (gait) belt before standing the client for transfer.", crit:1},
+ {t:"Apply the gait belt over clothing, fitted so only a flat hand fits between belt and body.", crit:1},
+ {t:"Position the wheelchair for a pivot: front interior wheel at the side of the bed, chair parallel or slightly angled."},
+ {t:"Have the client's feet, wearing shoes, positioned flat on the floor before standing."},
+ {t:"Ensure footrests are raised, removed, or swung out of the way before transferring.", crit:1},
+ {t:"Lock the wheels before beginning the transfer.", crit:1},
+ {t:"Brace one or both of the client's lower extremities when assisting to stand.", crit:1},
+ {t:"Grasp the gait belt on the sides or around the back when assisting to stand and throughout the transfer.", crit:1},
+ {t:"Cue the client to stand."},
+ {t:"Turn the client upon standing so the back of the legs are centered against the wheelchair seat."},
+ {t:"Cue the client to hold onto the armrest(s) before sitting."},
+ {t:"Provide controlled, gentle lowering into the wheelchair seat."},
+ {t:"Complete the transfer with the client's hips positioned against the back of the seat."},
+ {t:"Leave the client seated in proper body alignment with feet repositioned on the footrests."},
+ {t:"Remove the gait belt after the transfer is complete."}
+ ]
+},
+{
+ name:"Turn and Reposition a Client onto His/Her Side", difficulty:"Hard",
+ chain:"ID → HOLD HIP/SHOULDER → SAFE EDGE → BACK PADDING → SIDE-LYING NO HIPBONE → TOP LEG SUPPORT → TOP HIP ALIGN → KNEE FLEXED → ANKLES SEPARATED → HEAD PILLOW → LOWER ARM FREE → UPPER ARM SUPPORT → COVER",
+ memory:"Hold at hip and shoulder, safe distance from the bed edge, pad the back to hold the position, no pressure on the hipbone, pillow supports the top leg and hip alignment, top knee bent, ankles apart, head on a pillow, lower arm stays free, upper arm supported, cover with the top sheet.",
+ steps:[
+ {t:"Identify yourself to the client."},
+ {t:"Hold the client at the hip and shoulder area when turning onto the side.", crit:1},
+ {t:"Position the client a safe distance from the edge of the bed when turned onto the side.", crit:1},
+ {t:"Position a device (padding/pillow) against the back, rolled and tucked to maintain the side-lying position."},
+ {t:"Leave the client in a side-lying position, avoiding direct pressure on the hipbone.", crit:1},
+ {t:"Use a device (padding/pillow) to support the top leg."},
+ {t:"Use a device (padding/pillow) to maintain alignment of the top hip."},
+ {t:"Leave the top knee flexed."},
+ {t:"Leave ankles and knees separated."},
+ {t:"Leave the client in a side-lying position with the head supported by a pillow."},
+ {t:"Leave the client's lower arm and shoulder free, not tucked underneath."},
+ {t:"Support the upper arm using padding or a pillow."},
+ {t:"Leave the client covered with the top sheet at completion.", crit:1}
+ ]
+}
+];
+
+const TOTAL_SKILLS = skills.length;
+
+/* ============================================================
+   STATE + PERSISTENCE (Claude.ai-safe: no localStorage)
+   ============================================================ */
+let state = { score:0, streak:0, quizBest:0, mastered:[] };
+let storageReady = false;
+
+async function loadState(){
+  try{
+    const r = await window.storage.get('hca_state', false);
+    if(r && r.value){ state = Object.assign(state, JSON.parse(r.value)); }
+  }catch(e){ /* no saved state yet */ }
+  storageReady = true;
+  renderStats();
+}
+async function saveState(){
+  if(!storageReady) return;
+  try{ await window.storage.set('hca_state', JSON.stringify(state), false); }
+  catch(e){ console.error('save failed', e); }
+}
+function renderStats(){
+  document.getElementById('statScore').textContent = state.score;
+  document.getElementById('statStreak').textContent = state.streak;
+  document.getElementById('statMastered').textContent = state.mastered.length + '/' + TOTAL_SKILLS;
+  document.getElementById('statBest').textContent = state.quizBest;
+}
+function addScore(n){ state.score += n; state.streak += 1; saveState(); renderStats(); }
+function breakStreak(){ state.streak = 0; saveState(); renderStats(); }
+function markMastered(i){
+  if(!state.mastered.includes(i)) state.mastered.push(i);
+  saveState(); renderStats();
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.getElementById(btn.dataset.tab).classList.remove('hidden');
+    btn.classList.add('active');
+    if(btn.dataset.tab==='quiz') startQuiz();
+    if(btn.dataset.tab==='recall') startRecall();
+    if(btn.dataset.tab==='match') startMatch();
+  });
+});
+
+/* ============================================================
+   LEARN TAB
+   ============================================================ */
+let currentSkill = 0;
+function renderSkillButtons(){
+  const box = document.getElementById('skillButtons');
+  box.innerHTML = '';
+  skills.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.className = 'pill' + (i===currentSkill?' active':'');
+    b.innerHTML = `<span class="diff">${s.difficulty}</span>${s.name}`;
+    b.addEventListener('click', ()=>loadSkill(i));
+    box.appendChild(b);
+  });
+}
+function loadSkill(i){
+  currentSkill = i;
+  renderSkillButtons();
+  const s = skills[i];
+  const content = document.getElementById('skillContent');
+  content.innerHTML = '';
+
+  const h = document.createElement('h2');
+  h.className = 'skill-title';
+  h.textContent = s.name;
+  content.appendChild(h);
+
+  const diff = document.createElement('div');
+  diff.className = 'small';
+  diff.textContent = 'Note: ' + s.difficulty;
+  content.appendChild(diff);
+
+  const mem = document.createElement('div');
+  mem.className = 'memory';
+  mem.innerHTML = `<strong>Memory chain</strong><div class="chain">${s.chain}</div><div class="oneliner">${s.memory}</div>`;
+  content.appendChild(mem);
+
+  const ol = document.createElement('ol');
+  ol.className = 'steps';
+  s.steps.forEach(st=>{
+    const li = document.createElement('li');
+    if(st.crit) li.classList.add('crit');
+    li.innerHTML = st.t + (st.crit ? '<span class="crit-tag">Often missed</span>' : '');
+    ol.appendChild(li);
+  });
+  content.appendChild(ol);
+
+  const readBtn = document.createElement('button');
+  readBtn.className = 'btn primary';
+  readBtn.style.marginTop = '14px';
+  readBtn.textContent = '🔊 Read Steps Aloud';
+  readBtn.addEventListener('click', ()=>speakSkill(s));
+  content.appendChild(readBtn);
+
+  const masterBtn = document.createElement('button');
+  masterBtn.className = 'btn ' + (state.mastered.includes(i) ? 'gold' : 'ghost');
+  masterBtn.style.marginTop = '14px';
+  masterBtn.style.marginLeft = '10px';
+  masterBtn.textContent = state.mastered.includes(i) ? '★ Mastered' : 'Mark as Mastered';
+  masterBtn.addEventListener('click', ()=>{ markMastered(i); loadSkill(i); });
+  content.appendChild(masterBtn);
+}
+function speakSkill(s){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const text = s.name + '. Memory chain: ' + s.chain.replace(/→/g,',') + '. Steps: ' + s.steps.map(x=>x.t.replace(/<[^>]+>/g,'')).join('. ');
+  speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+
+/* ============================================================
+   QUICK QUIZ  (DOM-built — no inline onclick strings, so
+   apostrophes/quotes in checklist text can never break a button)
+   ============================================================ */
+let quizIndex=0, quizTotal=10, quizScoreThisRound=0;
+
+document.getElementById('quizLenSelect').addEventListener('change', startQuiz);
+document.getElementById('quizRestartBtn').addEventListener('click', startQuiz);
+
+function startQuiz(){
+  quizTotal = parseInt(document.getElementById('quizLenSelect').value, 10) || 10;
+  quizIndex = 0;
+  quizScoreThisRound = 0;
+  document.getElementById('quizBar').style.width = '0%';
+  nextQuiz();
+}
+function pickRandomStep(){
+  const s = skills[Math.floor(Math.random()*skills.length)];
+  const idx = Math.floor(Math.random()*s.steps.length);
+  return {skill:s, idx};
+}
+function nextQuiz(){
+  const area = document.getElementById('quizArea');
+  if(quizIndex >= quizTotal){
+    if(quizScoreThisRound > state.quizBest){ state.quizBest = quizScoreThisRound; saveState(); renderStats(); }
+    area.innerHTML = '';
+    const done = document.createElement('div');
+    done.className = 'flash';
+    done.innerHTML = `Quiz complete!<br><br>You scored <b>${quizScoreThisRound}</b> / ${quizTotal*10} points this round.`;
+    area.appendChild(done);
+    const again = document.createElement('button');
+    again.className = 'btn primary';
+    again.textContent = 'Play Again';
+    again.addEventListener('click', startQuiz);
+    area.appendChild(again);
+    return;
+  }
+
+  const {skill, idx} = pickRandomStep();
+  const correct = skill.steps[idx].t;
+  let opts = [correct];
+  let guard = 0;
+  while(opts.length < 4 && guard < 200){
+    guard++;
+    const rs = skills[Math.floor(Math.random()*skills.length)];
+    const rt = rs.steps[Math.floor(Math.random()*rs.steps.length)].t;
+    if(!opts.includes(rt)) opts.push(rt);
+  }
+  opts.sort(()=>Math.random()-0.5);
+
+  area.innerHTML = '';
+  const qcount = document.createElement('div');
+  qcount.className = 'small';
+  qcount.textContent = `Question ${quizIndex+1} of ${quizTotal}`;
+  area.appendChild(qcount);
+
+  const q = document.createElement('div');
+  q.className = 'quizQ';
+  const prevText = idx===0 ? 'the candidate identifying themself and beginning care' : skill.steps[idx-1].t.replace(/<[^>]+>/g,'');
+  q.innerHTML = `For <span class="skillname">${skill.name}</span>, what comes right after:<br>&ldquo;${prevText}&rdquo;?`;
+  area.appendChild(q);
+
+  const answers = document.createElement('div');
+  answers.className = 'answers';
+  opts.forEach(optText=>{
+    const b = document.createElement('button');
+    b.className = 'answer';
+    b.innerHTML = optText;
+    b.addEventListener('click', ()=>answerQuiz(b, optText, correct, answers));
+    answers.appendChild(b);
+  });
+  area.appendChild(answers);
+
+  const fb = document.createElement('div');
+  fb.id = 'qFeedback';
+  area.appendChild(fb);
+}
+function answerQuiz(btn, chosen, correct, answersBox){
+  answersBox.querySelectorAll('.answer').forEach(b=>{
+    b.disabled = true;
+    if(b.innerHTML === correct) b.classList.add('correct');
+  });
+  if(chosen !== correct) btn.classList.add('wrong');
+
+  const fb = document.getElementById('qFeedback');
+  fb.innerHTML = '';
+  const msg = document.createElement('div');
+  if(chosen === correct){
+    quizScoreThisRound += 10;
+    addScore(10);
+    msg.className = 'feedback correct';
+    msg.textContent = 'Correct! +10';
+  } else {
+    breakStreak();
+    msg.className = 'feedback wrong';
+    msg.textContent = 'Not quite — the correct next checkpoint is highlighted above.';
+  }
+  fb.appendChild(msg);
+
+  quizIndex++;
+  document.getElementById('quizBar').style.width = (quizIndex/quizTotal*100)+'%';
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn primary next';
+  nextBtn.textContent = quizIndex >= quizTotal ? 'See Results' : 'Next Question';
+  nextBtn.addEventListener('click', nextQuiz);
+  fb.appendChild(nextBtn);
+}
+
+/* ============================================================
+   STEP RECALL
+   ============================================================ */
+let recallIndex = 0, recallStep = 0;
+
+document.getElementById('recallSkipBtn').addEventListener('click', startRecall);
+
+function startRecall(){
+  recallIndex = Math.floor(Math.random()*skills.length);
+  recallStep = 0;
+  renderRecall();
+}
+function renderRecall(){
+  const area = document.getElementById('recallArea');
+  const s = skills[recallIndex];
+  area.innerHTML = '';
+
+  if(recallStep >= s.steps.length){
+    const done = document.createElement('div');
+    done.className = 'flash';
+    done.textContent = `Nice work — you went through every checkpoint for "${s.name}".`;
+    area.appendChild(done);
+
+    const row = document.createElement('div');
+    row.className = 'row';
+    const masterBtn = document.createElement('button');
+    masterBtn.className = 'btn green';
+    masterBtn.textContent = '★ Mark Skill Mastered';
+    masterBtn.addEventListener('click', ()=>{ markMastered(recallIndex); startRecall(); });
+    row.appendChild(masterBtn);
+    const again = document.createElement('button');
+    again.className = 'btn primary';
+    again.textContent = 'Another Skill';
+    again.addEventListener('click', startRecall);
+    row.appendChild(again);
+    area.appendChild(row);
+    return;
+  }
+
+  const h = document.createElement('h3');
+  h.textContent = s.name;
+  area.appendChild(h);
+
+  const mem = document.createElement('div');
+  mem.className = 'memory';
+  mem.innerHTML = `<strong>Memory chain</strong><div class="chain">${s.chain}</div>`;
+  area.appendChild(mem);
+
+  const prompt = document.createElement('div');
+  prompt.className = 'flash';
+  prompt.textContent = `What is checkpoint ${recallStep+1}?`;
+  area.appendChild(prompt);
+
+  const input = document.createElement('input');
+  input.className = 'recall-input';
+  input.type = 'text';
+  input.placeholder = 'Type your answer (optional) then reveal it';
+  area.appendChild(input);
+
+  const showBtn = document.createElement('button');
+  showBtn.className = 'btn primary';
+  showBtn.textContent = 'Show Answer';
+  showBtn.addEventListener('click', ()=>showRecallAnswer(area, s));
+  area.appendChild(showBtn);
+}
+function showRecallAnswer(area, s){
+  const existing = document.getElementById('recallAnswer');
+  if(existing) existing.remove();
+  const wrap = document.createElement('div');
+  wrap.id = 'recallAnswer';
+
+  const ans = document.createElement('div');
+  ans.className = 'feedback correct';
+  ans.innerHTML = s.steps[recallStep].t + (s.steps[recallStep].crit ? '<span class="crit-tag">Often missed</span>' : '');
+  wrap.appendChild(ans);
+
+  const row = document.createElement('div');
+  row.className = 'row next';
+  const noBtn = document.createElement('button');
+  noBtn.className = 'btn ghost';
+  noBtn.textContent = "I didn't know it";
+  noBtn.addEventListener('click', ()=>{ breakStreak(); recallStep++; renderRecall(); });
+  row.appendChild(noBtn);
+  const yesBtn = document.createElement('button');
+  yesBtn.className = 'btn green';
+  yesBtn.textContent = 'I knew it';
+  yesBtn.addEventListener('click', ()=>{ addScore(5); recallStep++; renderRecall(); });
+  row.appendChild(yesBtn);
+  wrap.appendChild(row);
+
+  area.appendChild(wrap);
+}
+
+/* ============================================================
+   MATCH GAME
+   ============================================================ */
+let matchPairs = [], matchSelectedIndex = null, matchedCount = 0;
+
+document.getElementById('matchNewBtn').addEventListener('click', startMatch);
+
+function startMatch(){
+  const s = skills[Math.floor(Math.random()*skills.length)];
+  const n = Math.min(6, s.steps.length);
+  const chosenIdx = [];
+  while(chosenIdx.length < n){
+    const r = Math.floor(Math.random()*s.steps.length);
+    if(!chosenIdx.includes(r)) chosenIdx.push(r);
+  }
+  chosenIdx.sort((a,b)=>a-b);
+
+  matchPairs = [];
+  chosenIdx.forEach((stepIdx, order)=>{
+    const pairId = 'p'+stepIdx;
+    matchPairs.push({pairId, text:`Step ${order+1} of "${s.name}"`, type:'label'});
+    matchPairs.push({pairId, text:s.steps[stepIdx].t.replace(/<[^>]+>/g,''), type:'content'});
+  });
+  matchPairs.sort(()=>Math.random()-0.5);
+  matchSelectedIndex = null;
+  matchedCount = 0;
+  renderMatch();
+}
+function renderMatch(){
+  const area = document.getElementById('matchArea');
+  area.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'match-grid';
+  matchPairs.forEach((item, i)=>{
+    const b = document.createElement('button');
+    b.className = 'match-item';
+    b.textContent = item.text;
+    b.addEventListener('click', ()=>selectMatch(i, b));
+    grid.appendChild(b);
+  });
+  area.appendChild(grid);
+}
+function selectMatch(i, btn){
+  if(btn.classList.contains('matched')) return;
+
+  if(matchSelectedIndex === null){
+    matchSelectedIndex = i;
+    btn.classList.add('selected');
+    return;
+  }
+  if(matchSelectedIndex === i) return;
+
+  const grid = btn.parentElement;
+  const prevBtn = grid.children[matchSelectedIndex];
+  const a = matchPairs[matchSelectedIndex];
+  const c = matchPairs[i];
+
+  if(a.pairId === c.pairId && a.type !== c.type){
+    prevBtn.classList.remove('selected');
+    prevBtn.classList.add('matched'); prevBtn.disabled = true;
+    btn.classList.add('matched'); btn.disabled = true;
+    addScore(5);
+    matchedCount++;
+    matchSelectedIndex = null;
+    if(matchedCount === matchPairs.length/2){
+      setTimeout(()=>{
+        const area = document.getElementById('matchArea');
+        area.innerHTML = '';
+        const done = document.createElement('div');
+        done.className = 'flash';
+        done.innerHTML = `Perfect match! +${matchedCount*5} points.`;
+        area.appendChild(done);
+        const again = document.createElement('button');
+        again.className = 'btn primary';
+        again.textContent = 'Play Again';
+        again.addEventListener('click', startMatch);
+        area.appendChild(again);
+      }, 350);
+    }
+  } else {
+    breakStreak();
+    btn.classList.add('selected');
+    setTimeout(()=>{
+      prevBtn.classList.remove('selected');
+      btn.classList.remove('selected');
+      matchSelectedIndex = null;
+    }, 550);
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  await loadState();
+  renderSkillButtons();
+  loadSkill(0);
+})();
+</script>
+</body>
+</html>
