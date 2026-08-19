@@ -188,6 +188,7 @@
   <button class="tab" data-tab="quiz">Quick Quiz</button>
   <button class="tab" data-tab="recall">Step Recall</button>
   <button class="tab" data-tab="match">Match Game</button>
+  <button class="tab" data-tab="reveal">Step Reveal</button>
 </div>
 
 <section id="learn" class="card">
@@ -229,6 +230,22 @@
   </div>
   <div id="matchArea"></div>
 </section>
+
+<section id="reveal" class="card hidden">
+  <h2>Step Reveal</h2>
+  <p class="small">No memory chain, no hints — just the blank checkpoint list. Say the checkpoint out loud from memory, then click it to reveal and check yourself.</p>
+  <div class="row" style="margin-bottom:10px">
+    <label class="small" for="revealSkillSelect">Skill:</label>
+    <select id="revealSkillSelect" class="sans"></select>
+    <button class="btn ghost" id="revealHideAllBtn">Hide All</button>
+    <button class="btn ghost" id="revealRevealAllBtn">Reveal All</button>
+  </div>
+  <div class="row" style="margin-bottom:10px">
+    <button class="tab mode-tab active" id="revealModeChecklist" data-mode="checklist">Full Checkpoints</button>
+    <button class="tab mode-tab" id="revealModeCheat" data-mode="cheat">Cheat Sheet Steps</button>
+  </div>
+  <div id="revealArea"></div>
+</section>
 </div>
 
 <script>
@@ -243,6 +260,7 @@ const skills = [
  name:"Handwashing", difficulty:"Tested first — unprompted",
  chain:"WET → SOAP → LATHER → 20 SEC → RINSE → DOWN → TOWEL → AREAS → OFF → TRASH → CLEAN",
  memory:"Wet, soap, lather it all, scrub 20 seconds, rinse hands-down, dry with a towel, use the towel on the faucet, trash it, end clean.",
+ cheat:["Wet hands & wrists","Apply soap","Lather all surfaces","Scrub 20 seconds","Rinse under water","Keep hands down","Dry with towel","Only washed areas","Towel off the faucet","Trash the towel","End clean, no contamination"],
  steps:[
  {t:"Wet hands and wrists under running water to begin cleansing."},
  {t:"Apply soap to hands to begin washing."},
@@ -261,6 +279,7 @@ const skills = [
  name:"Common Care Practices", difficulty:"Scored on every single skill",
  chain:"ID → INFECTION CONTROL → SOCIAL → RIGHTS → SAFETY → COMFORT → REACH",
  memory:"Introduce yourself, control infection, meet social needs, protect rights, keep it safe, keep it comfortable, leave items within reach.",
+ cheat:["Introduce yourself","Infection control","Social needs","Client's rights","Safety","Comfort","Items within reach"],
  steps:[
  {t:"Identify yourself to the client when beginning care.", crit:1},
  {t:"Use infection control measures and Standard Precautions to protect the client and yourself throughout the procedure.", crit:1},
@@ -275,6 +294,7 @@ const skills = [
  name:"Feed a Client", difficulty:"Medium",
  chain:"ID → UPRIGHT → SIT → PROTECTOR → BITE-SIZE → SWALLOW → ALTERNATE → FLUID → TALK → CLEAN → CLEAR → TRASH",
  memory:"Sit the client upright, sit yourself down, protector on, bite-size portions, wait for the swallow, alternate foods, offer fluids, talk with them, finish clean.",
+ cheat:["Introduce yourself","Client sits upright","You sit down too","Protector on","Bite-size portions","Wait for the swallow","Alternate food","Offer fluids","Talk with client","Clean mouth after","Clear the table","Dispose protector/trash"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Ensure the client is sitting upright in the chair before you begin feeding."},
@@ -294,6 +314,7 @@ const skills = [
  name:"Help a Client to Walk", difficulty:"Hard",
  chain:"ID → DESTINATION → LEAN → PUSH-UP → 90° KNEES → HAND ON → CUE STAND → WALK BESIDE → DISTANCE → FEELINGS → CENTER LEGS → REACH → HAND ON → HIPS BACK",
  memory:"Explain the destination, lean forward, push up with arms, knees at 90°, hand on arm/back/waist, cue to stand, walk slightly behind/beside, check in, center legs before sitting, reach for the chair, hips back in the seat.",
+ cheat:["Introduce yourself","Explain destination","Lean forward first","Push up with arms","Knees at 90°","Hand on arm/back/waist","Cue to stand","Walk beside/behind","Go the full distance","Ask how they feel","Center legs before sitting","Cue to reach for chair","Hand on arm/back/waist again","Hips back in seat"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Explain the walking destination before the client begins walking."},
@@ -315,6 +336,7 @@ const skills = [
  name:"Help a Client to Take Medication", difficulty:"Medium-Hard",
  chain:"ID → SCHEDULE → ADVISE → NAME → BOTTLE → LABEL → CAP-POUR → DOSE-TO-HAND → CUE → NO-TOUCH → WATER → DRINK → SWALLOWED → CLOSE",
  memory:"Check the schedule, advise it's time, right name, right bottle, check the label, pour into the cap without touching, dose into hand without touching, cue, hands-off assist, full glass of water, confirm swallowed, close and return the bottle.",
+ cheat:["Introduce yourself","Check schedule","Advise it's time","Correct client name","Correct bottle","Review label","Pour into cap","Dose into hand, no touch","Cue to take","Hands off client's hand","Give cup of water","Drink full cup","Confirm swallowed","Close & return bottle"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Check the client's medication schedule."},
@@ -336,6 +358,7 @@ const skills = [
  name:"Provide Mouth Care to a Client", difficulty:"Medium",
  chain:"ID → GLOVES → WET → PASTE → TOPS/SIDES → CIRCLES → TONGUE → RINSE WATER → CATCH BASIN → CLEAN/DRY → BARRIER → RINSE/STORE → GLOVES OFF",
  memory:"Gloves on, wet the brush, paste on, brush tops and sides, gentle circles, brush the tongue, rinse water offered, catch basin at the chin, clean and dry when done, gloves off without contaminating.",
+ cheat:["Introduce yourself","Gloves on","Wet the brush","Toothpaste on","Brush tops & sides","Gentle circles","Brush the tongue","Offer rinse water","Catch basin at chin","Leave mouth clean & dry","Barrier towel used","Rinse & store equipment","Dispose trash, dry table","Gloves off"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Apply clean gloves before brushing teeth.", crit:1},
@@ -357,6 +380,7 @@ const skills = [
  name:"Clean and Store a Client's Denture", difficulty:"Medium",
  chain:"ID → GLOVES → COOL WATER → PASTE → BRUSH IN/OUT → RINSE → CUP W/ WATER → NO CONTAMINATE → PROTECT SINK → DRAIN → STORE → GLOVES OFF",
  memory:"Gloves, cool/tepid water only, paste, brush inner and outer, rinse off paste, store in a cup of clean water, never let it float unprotected in the sink, brush over a lined sink to prevent breakage.",
+ cheat:["Introduce yourself","Gloves on","Cool or tepid water","Toothpaste on","Brush inner & outer","Rinse off paste","Store in cup of water","Never let it float unprotected","Protect the sink while cleaning","Drain sink, remove liner","Store equipment","Gloves off"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Apply gloves before handling the denture.", crit:1},
@@ -376,6 +400,7 @@ const skills = [
  name:"Provide Fingernail and Hand Care", difficulty:"Medium",
  chain:"ID → SAFE WATER → COMFORT CHECK → SOAK → DRY BETWEEN → PAT → ORANGE STICK → WIPE STICK → EMERY → SMOOTH → LOTION → GLOVES/CLEANUP",
  memory:"Safe water temp, ask if it's comfortable, soak the fingers, dry between fingers by patting (not rubbing), orange stick under nails, wipe it between nails, emery board to file, smooth tips, lotion after.",
+ cheat:["Introduce yourself","Safe water temperature","Ask if comfortable","Soak fingers","Dry between fingers","Pat, don't rub","Orange stick under nails","Wipe stick between nails","File with emery board","Smooth the tips","Apply lotion","Gloves on","Clean up equipment","Gloves off"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Use water of a safe temperature for soaking the hand."},
@@ -397,6 +422,7 @@ const skills = [
  name:"Provide Foot Care", difficulty:"Hard",
  chain:"ID → INSPECT → SOAK → SAFE WATER → COMFORT → SUBMERGE → SOAP-FREE RINSE → WASH → RINSE → DRY BETWEEN → PAT → ORANGE STICK → WIPE → EMERY STRAIGHT → SMOOTH → LOTION NOT-BETWEEN → GLOVES",
  memory:"Inspect first (between toes, heels), soak, safe/comfortable water, wash entire foot including between toes, rinse, dry between toes by patting, orange stick + wipe, file toenails straight across, lotion everywhere except between the toes.",
+ cheat:["Introduce yourself","Inspect the foot first","Soak the foot","Safe water temperature","Ask if comfortable","Fully submerge foot","Keep rinse water soap-free","Wash entire foot","Rinse well, between toes too","Dry between toes","Pat, don't rub","Orange stick under nails","Wipe stick clean between nails","File straight across","Smooth the edges","Lotion, skip between toes","Gloves on","Clean up equipment","Gloves off"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Observe the skin condition of the foot — separate toes to check between them, and turn the foot to check heels — before cleansing.", crit:1},
@@ -423,6 +449,7 @@ const skills = [
  name:"Help Dress a Client with a Weak Arm", difficulty:"Medium",
  chain:"ID → CHOICE → WEAK ARM FIRST → CUE ASSIST → SEATED FOR PANTS → SUPPORT PULL-UP → SOCKS/SHOES SEATED → SMOOTH/SECURE → GENTLE → ALIGNED",
  memory:"Client chooses the outfit, weak arm goes into the sleeve first, cue the client to help, stay seated for pants, support while pulling pants up, socks and shoes while seated, gentle movements, finish aligned.",
+ cheat:["Introduce yourself","Client's choice of clothes","Weak arm goes in first","Cue client to assist","Seated for pants","Support the pull-up","Socks/shoes while seated","Smooth & secure","Move gently","Finish aligned"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Include the client in choosing what to wear."},
@@ -440,6 +467,7 @@ const skills = [
  name:"Put a Knee-High Stocking on a Client's Leg", difficulty:"Medium",
  chain:"ID → INSIDE-OUT TO HEEL → FOOT PLACEMENT → TOE/HEEL POSITION → PULL NO-TWIST → SMOOTH → TOE ROOM → TO KNEE → GENTLE",
  memory:"Turn the stocking inside out to the heel, place it over toes/foot/heel, pull up without twisting, keep it smooth and wrinkle-free, leave toe room, raise it to the knee, move the leg gently.",
+ cheat:["Introduce yourself","Turn inside-out to heel","Place over toes/foot/heel","Toes & heel positioned right","Pull up, no twist","Keep smooth, no wrinkles","Leave room at toes","Raise to the knee","Move leg gently"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Prepare the stocking by turning it inside out to at least the heel area."},
@@ -456,6 +484,7 @@ const skills = [
  name:"Passive Range of Motion — Shoulder, Knee, Ankle", difficulty:"Hard",
  chain:"ID → SUPPORT ELBOW/WRIST → FLEX/EXT → ABD/ADD → ROTATE → SUPPORT KNEE/ANKLE → KNEE FLEX/EXT → SUPPORT ANKLE/FOOT → ANKLE FLEX/EXT → 3 REPS → COMFORT → SLOW/GENTLE",
  memory:"Support the joint above and below wherever you move it. Shoulder: flex/extend, then out-and-in, then rotate. Knee: bend and straighten. Ankle: push forward, then point down. Three reps each, ask about comfort, keep it slow and controlled.",
+ cheat:["Introduce yourself","Support elbow & wrist","Shoulder flex/extend","Shoulder abduct/adduct","Shoulder rotate","Support knee & ankle","Knee bend/straighten","Support ankle & foot","Ankle push/point","3 reps of each","Ask about comfort","Slow & gentle throughout"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Support the client's arm, holding under the elbow and wrist joint areas, while exercising the shoulder.", crit:1},
@@ -475,6 +504,7 @@ const skills = [
  name:"Perineal Care to a Female Client", difficulty:"Hard",
  chain:"ID → SAFE WATER → GLOVES → PROTECT SHEET → SOAPY CLOTH → CLEAN STROKE → FRONT-TO-BACK → SOAP-FREE RINSE → RINSE → PAT DRY F-TO-B → LABIAL FOLDS → SAFE EDGE ON TURN → PERI-ANAL WASH → F-TO-B ANAL → DRY UNDERPAD → MINIMIZE EXPOSURE → GLOVES → CLEANUP → COVER",
  memory:"Safe water, gloves, protect the sheet, soapy cloth, clean stroke each time, always front to back, soap-free rinse, pat dry front to back, don't forget labial folds/groin, safe distance from bed edge on the turn, peri-anal front to back too, dry underpad at the end, cover with the top sheet.",
+ cheat:["Introduce yourself","Safe water temperature","Gloves on","Protect the bottom sheet","Soapy washcloth","Fresh stroke each time","Always front to back","Keep rinse water soap-free","Rinse clean","Pat dry, front to back","Don't skip labial folds/groin","Safe distance from bed edge","Wash peri-anal area","Front to back there too","Leave on dry underpad","Minimize exposure","Gloves during cleanup too","Rinse & store basin","Gloves off, no contamination","Cover with top sheet"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Use water that is a safe temperature to cleanse the client."},
@@ -502,6 +532,7 @@ const skills = [
  name:"Catheter Care", difficulty:"Hard",
  chain:"ID → SAFE WATER → GLOVES → SOAPY CLOTH → CHANGE SPOT → ONE-DIRECTION DOWN → SOAP-FREE RINSE → 4-INCH → HOLD NEAR MEATUS → DRY WET AREAS → PAT → NO KINKS → BAG BELOW BLADDER → MINIMIZE EXPOSURE → SAFE EDGE → GLOVES → CLEANUP → COVER",
  memory:"Safe water, gloves, soapy cloth with a fresh spot each stroke, always one direction — meatus downward and away, wash/rinse at least 4 inches, hold near the meatus so you don't tug, pat dry, no kinks in the tubing, bag always below the bladder, cover with the top sheet.",
+ cheat:["Introduce yourself","Safe water temperature","Gloves on","Soapy washcloth","Fresh spot each stroke","One direction: meatus downward","Keep rinse water soap-free","At least 4 inches from meatus","Rinse with soap-free cloth","Hold near meatus, no tugging","Leave wet areas dry","Dry by patting","No kinks in tubing","Bag below bladder","Minimize exposure","Safe distance from bed edge","Gloves during cleanup","Rinse & store basin","Gloves off, no contamination","Cover with top sheet"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Use water that is a safe temperature to cleanse the client."},
@@ -529,6 +560,7 @@ const skills = [
  name:"Transfer a Client from Bed to Wheelchair", difficulty:"Hard",
  chain:"ID → CHAIR NEAR BED → NON-SKID SHOES → SUPPORT TO SIT → GAIT BELT ON → FLAT-HAND FIT → PIVOT POSITION → FEET FLAT → FOOTRESTS CLEAR → LOCK WHEELS → BRACE LEGS → GRASP BELT → CUE STAND → TURN TO CENTER → HOLD ARMREST → LOWER GENTLY → HIPS BACK → FEET ON RESTS → BELT OFF",
  memory:"Chair near the bed, non-skid shoes, support to sit up, gait belt on with flat-hand fit, position the chair for a pivot, feet flat, footrests cleared, lock the wheels, brace the legs, grasp the belt, cue to stand, turn to center over the seat, lower gently, hips back, feet on the rests, belt off last.",
+ cheat:["Introduce yourself","Chair near the bed","Non-skid shoes on","Support client to sit up","Gait belt on before standing","Flat-hand fit on belt","Position chair to pivot","Feet flat on floor","Footrests out of the way","Lock the wheels","Brace the legs","Grasp the belt","Cue to stand","Turn to center over seat","Cue to hold armrest","Lower gently","Hips against seat back","Feet back on footrests","Remove gait belt"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Have the wheelchair positioned near the bed before assisting the client to sit."},
@@ -555,6 +587,7 @@ const skills = [
  name:"Turn and Reposition a Client onto His/Her Side", difficulty:"Hard",
  chain:"ID → HOLD HIP/SHOULDER → SAFE EDGE → BACK PADDING → SIDE-LYING NO HIPBONE → TOP LEG SUPPORT → TOP HIP ALIGN → KNEE FLEXED → ANKLES SEPARATED → HEAD PILLOW → LOWER ARM FREE → UPPER ARM SUPPORT → COVER",
  memory:"Hold at hip and shoulder, safe distance from the bed edge, pad the back to hold the position, no pressure on the hipbone, pillow supports the top leg and hip alignment, top knee bent, ankles apart, head on a pillow, lower arm stays free, upper arm supported, cover with the top sheet.",
+ cheat:["Introduce yourself","Hold hip & shoulder to turn","Safe distance from bed edge","Pad the back to hold position","No pressure on hipbone","Support the top leg","Align the top hip","Top knee flexed","Ankles separated","Head supported on pillow","Lower arm left free","Upper arm supported","Cover with top sheet"],
  steps:[
  {t:"Identify yourself to the client."},
  {t:"Hold the client at the hip and shoulder area when turning onto the side.", crit:1},
@@ -610,15 +643,16 @@ function markMastered(i){
 /* ============================================================
    TABS
    ============================================================ */
-document.querySelectorAll('.tab').forEach(btn=>{
+document.querySelectorAll('.tab:not(.mode-tab)').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab:not(.mode-tab)').forEach(b=>b.classList.remove('active'));
     document.getElementById(btn.dataset.tab).classList.remove('hidden');
     btn.classList.add('active');
     if(btn.dataset.tab==='quiz') startQuiz();
     if(btn.dataset.tab==='recall') startRecall();
     if(btn.dataset.tab==='match') startMatch();
+    if(btn.dataset.tab==='reveal') startReveal();
   });
 });
 
@@ -981,6 +1015,132 @@ function selectMatch(i, btn){
       matchSelectedIndex = null;
     }, 550);
   }
+}
+
+/* ============================================================
+   STEP REVEAL — click each checkpoint to unhide it, one by one.
+   No memory chain, no "often missed" tags, no preview text.
+   ============================================================ */
+let revealSkillIndex = 0;
+let revealedSet = new Set();
+let revealMode = 'checklist'; // 'checklist' or 'cheat'
+
+document.getElementById('revealModeChecklist').addEventListener('click', ()=>setRevealMode('checklist'));
+document.getElementById('revealModeCheat').addEventListener('click', ()=>setRevealMode('cheat'));
+function setRevealMode(mode){
+  revealMode = mode;
+  document.getElementById('revealModeChecklist').classList.toggle('active', mode==='checklist');
+  document.getElementById('revealModeCheat').classList.toggle('active', mode==='cheat');
+  revealedSet = new Set();
+  renderReveal();
+}
+function getCheatWords(s){
+  return s.cheat || getChainWords(s);
+}
+
+function populateRevealSelect(){
+  const sel = document.getElementById('revealSkillSelect');
+  sel.innerHTML = '';
+  skills.forEach((s,i)=>{
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = s.name;
+    sel.appendChild(opt);
+  });
+  sel.value = revealSkillIndex;
+}
+document.getElementById('revealSkillSelect').addEventListener('change', (e)=>{
+  revealSkillIndex = parseInt(e.target.value, 10);
+  revealedSet = new Set();
+  renderReveal();
+});
+document.getElementById('revealHideAllBtn').addEventListener('click', ()=>{
+  revealedSet = new Set();
+  renderReveal();
+});
+document.getElementById('revealRevealAllBtn').addEventListener('click', ()=>{
+  const s = skills[revealSkillIndex];
+  const count = revealMode === 'cheat' ? getCheatWords(s).length : s.steps.length;
+  revealedSet = new Set(Array.from({length:count}, (_,i)=>i));
+  renderReveal();
+});
+
+function startReveal(){
+  populateRevealSelect();
+  revealedSet = new Set();
+  renderReveal();
+}
+function renderReveal(){
+  const s = skills[revealSkillIndex];
+  const area = document.getElementById('revealArea');
+  area.innerHTML = '';
+
+  if(revealMode === 'cheat'){
+    const words = getCheatWords(s);
+    const progress = document.createElement('div');
+    progress.className = 'small';
+    progress.style.marginBottom = '10px';
+    progress.textContent = `${revealedSet.size} of ${words.length} steps revealed`;
+    area.appendChild(progress);
+
+    const ol = document.createElement('ol');
+    ol.className = 'steps';
+    words.forEach((word, i)=>{
+      const li = document.createElement('li');
+      const isRevealed = revealedSet.has(i);
+      const btn = document.createElement('button');
+      btn.className = 'answer';
+      btn.style.width = '100%';
+      btn.style.display = 'block';
+      btn.style.fontFamily = "'Avenir Next',sans-serif";
+      btn.style.fontWeight = '700';
+      btn.style.letterSpacing = '.01em';
+      if(isRevealed){
+        btn.textContent = word;
+        btn.classList.add('correct');
+      } else {
+        btn.textContent = 'Step ' + (i+1) + ' — click to reveal';
+      }
+      btn.addEventListener('click', ()=>{
+        if(revealedSet.has(i)){ revealedSet.delete(i); } else { revealedSet.add(i); addScore(2); }
+        renderReveal();
+      });
+      li.appendChild(btn);
+      ol.appendChild(li);
+    });
+    area.appendChild(ol);
+    return;
+  }
+
+  const progress = document.createElement('div');
+  progress.className = 'small';
+  progress.style.marginBottom = '10px';
+  progress.textContent = `${revealedSet.size} of ${s.steps.length} checkpoints revealed`;
+  area.appendChild(progress);
+
+  const ol = document.createElement('ol');
+  ol.className = 'steps';
+  s.steps.forEach((st, i)=>{
+    const li = document.createElement('li');
+    const isRevealed = revealedSet.has(i);
+    const btn = document.createElement('button');
+    btn.className = 'answer';
+    btn.style.width = '100%';
+    btn.style.display = 'block';
+    if(isRevealed){
+      btn.textContent = st.t.replace(/<[^>]+>/g,'');
+      btn.classList.add('correct');
+    } else {
+      btn.textContent = 'Checkpoint ' + (i+1) + ' — click to reveal';
+    }
+    btn.addEventListener('click', ()=>{
+      if(revealedSet.has(i)){ revealedSet.delete(i); } else { revealedSet.add(i); addScore(2); }
+      renderReveal();
+    });
+    li.appendChild(btn);
+    ol.appendChild(li);
+  });
+  area.appendChild(ol);
 }
 
 /* ============================================================
