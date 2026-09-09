@@ -133,7 +133,6 @@ def main():
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/trace-4/120441.html?dwvar_120441_color=198',
         'https://www.brooksrunning.com/en_us/womens/shoes/treadmill-shoes/',
         'https://www.brooksrunning.com/en_us/featured/adrenaline-gts/',
-        'https://www.brooksrunning.com/en_us/mens/shoes/road-running-shoes/hyperion-max-3/110467.html?dwvar_110467_color=670',
         'https://www.brooksrunning.com/en_us/womens/shoes/road-running-shoes/ghost-max-3/120457.html',
         'https://www.brooksrunning.com/en_us/featured/unisex-running-shoes/hyperion-elite-5/100049.html?dwvar_100049_color=681'
     }
