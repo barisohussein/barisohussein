@@ -1,0 +1,47 @@
+name: Check JLS listings and send alert
+
+on:
+  schedule:
+    - cron: '0 13 * * *'  # Daily at 13:00 UTC (~6am/5am Pacific depending on DST). Adjust as you like.
+  workflow_dispatch: # allows manual trigger from the Actions tab
+
+permissions:
+  contents: write  # needed so the workflow can commit the updated state file back
+
+jobs:
+  check-listings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Run listings check
+        env:
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          CC_RECIPIENT: ${{ secrets.EMAIL_CC }}
+        run: python check_listings.py
+
+      - name: Commit updated listings state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/known_listings.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update known listings [skip ci]"
+            git push
+          fi
